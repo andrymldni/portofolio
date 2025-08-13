@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== Tema berbasis CSS variables (dark default, light via data-theme) ===== */
+:root {
+  --bg: 16 16 18; /* dark background */
+  --fg: 232 232 236; /* dark foreground text */
+  --muted: 160 160 175;
+  --brand: 99 102 241; /* indigo-500 */
+}
+:root[data-theme="light"] {
+  --bg: 250 250 252; /* light background */
+  --fg: 14 14 18; /* light foreground text */
+  --muted: 90 90 105;
+  --brand: 79 70 229; /* indigo-600 */
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  @apply bg-[rgb(var(--bg))] text-[rgb(var(--fg))] antialiased;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+::selection {
+  background: rgba(99, 102, 241, 0.25);
+}
+
+/* ===== Util tampilan premium / komponen dasar ===== */
+.gradient-text {
+  background: linear-gradient(90deg, #818cf8, #22d3ee, #34d399);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card {
+  @apply rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md
+         shadow-[0_0_0_1px_rgba(255,255,255,0.03)] transition-transform;
+}
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* Varian kartu untuk tema terang */
+:root[data-theme="light"] .card {
+  @apply border-black/10 bg-black/5 shadow-[0_0_0_1px_rgba(0,0,0,0.04)];
+}
+
+.container {
+  @apply mx-auto max-w-6xl px-4;
+}
+
+.glow-text {
+  text-shadow: 0 0 18px rgba(129, 140, 248, 0.45);
+}
+
+/* Fokus ring konsisten di seluruh elemen interaktif */
+:where(a, button, input, textarea, select) {
+  outline: none;
+}
+:where(a, button, input, textarea, select):focus-visible {
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.6);
+  border-radius: 0.75rem;
+}
+
+/* Scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #818cf8 transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #818cf8, #22d3ee);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Particles overlay */
+.particles {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image: url("/particles.svg");
+  background-size: cover;
+}
+@media (prefers-reduced-motion: reduce) {
+  .particles {
+    display: none;
+  }
+}
+
+/* Lift content above background layer */
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Variabel util semantik (opsional dipakai di komponen) ===== */
+.text-fg {
+  color: rgb(var(--fg));
+}
+.text-muted {
+  color: rgb(var(--muted));
+}
+
+/* =============================================================================
+   THEME FIXES untuk LIGHT MODE
+   Mengatasi komponen yang masih memakai kelas Tailwind berbasis "white"
+   agar tetap terbaca di background terang tanpa refactor besar.
+   Letakkan BLOK INI PALING BAWAH file.
+============================================================================= */
+:root[data-theme="light"] .text-white {
+  color: rgb(var(--fg)) !important;
+}
+:root[data-theme="light"] .text-white\/90 {
+  color: rgb(var(--fg) / 0.9) !important;
+}
+:root[data-theme="light"] .text-white\/80 {
+  color: rgb(var(--fg) / 0.8) !important;
+}
+:root[data-theme="light"] .text-white\/70 {
+  color: rgb(var(--fg) / 0.7) !important;
+}
+:root[data-theme="light"] .text-white\/60 {
+  color: rgb(var(--fg) / 0.6) !important;
+}
+:root[data-theme="light"] .text-white\/50 {
+  color: rgb(var(--fg) / 0.5) !important;
+}
+:root[data-theme="light"] .text-white\/40 {
+  color: rgb(var(--fg) / 0.4) !important;
+}
+:root[data-theme="light"] .text-white\/30 {
+  color: rgb(var(--fg) / 0.3) !important;
+}
+
+/* Border & background util yang tadinya putih -> pakai warna teks tema */
+:root[data-theme="light"] .border-white\/10 {
+  border-color: rgb(var(--fg) / 0.1) !important;
+}
+:root[data-theme="light"] .border-white\/20 {
+  border-color: rgb(var(--fg) / 0.2) !important;
+}
+:root[data-theme="light"] .bg-white\/5 {
+  background-color: rgb(var(--fg) / 0.06) !important;
+}
+:root[data-theme="light"] .bg-white\/10 {
+  background-color: rgb(var(--fg) / 0.12) !important;
+}
