@@ -17,7 +17,16 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Andry – Portfolio",
   description: "Portfolio modern dengan animasi halus dan performa cepat",
-  icons: [{ rel: "icon", url: "/favicon.ico" }],
+  icons: {
+    icon: [
+      { url: "/favicon.ico" }, // fallback universal
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+    ],
+    // Uncomment jika kamu sudah menaruh file berikut di /public
+    // apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/favicon.ico"],
+  },
   openGraph: {
     title: "Andry – Portfolio",
     description: "AI & Web Modern Portfolio",
@@ -53,8 +62,9 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
       <body className={inter.className}>
-        {/* Background Layers (partikel dipindah ke CSS util) */}
+        {/* Background Layers */}
         <div className="particles" />
+        {/* App */}
         <div className="app-shell">
           <Navbar />
           {children}
