@@ -10,9 +10,9 @@
 ---
 
 ## 📸 Preview
-![Portfolio Screenshot](public/og.png)
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5f361bfc-51db-492a-8991-a16163d1103d" />
 
-Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
+Live Demo: **[andrymldni.dev](https://portofolio-delta-liard.vercel.app/)**
 
 ---
 
