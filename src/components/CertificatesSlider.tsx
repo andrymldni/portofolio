@@ -47,15 +47,17 @@ function CertModal({
         exit={{ opacity: 0, y: 16, scale: 0.97 }}
         transition={{ type: "spring", duration: 0.45, bounce: 0.25 }}
         onClick={(e) => e.stopPropagation()}
-        className="card relative w-full max-w-lg overflow-hidden p-0"
+        className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0"
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70"
-        >
-          <X size={16} />
-        </button>
+        <div className="sticky top-3 z-10 flex h-0 justify-end pr-3">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70"
+          >
+            <X size={16} />
+          </button>
+        </div>
 
         {cert.image ? (
           <div className="relative h-64 w-full bg-black/20 sm:h-80">
@@ -136,7 +138,19 @@ export default function CertificatesSlider() {
       onBlur={() => setPaused(false)}
       className="relative"
     >
-      <div className="relative h-[320px] sm:h-[300px]">
+      <motion.div
+        className="relative -mx-4 h-[320px] touch-pan-y overflow-hidden px-4 sm:h-[300px] cursor-grab active:cursor-grabbing"
+        drag="x"
+        dragConstraints={{ left: 0, right: 0 }}
+        dragElastic={0.2}
+        onDragStart={() => setPaused(true)}
+        onDragEnd={(_, info) => {
+          const SWIPE_THRESHOLD = 45;
+          if (info.offset.x < -SWIPE_THRESHOLD) next();
+          else if (info.offset.x > SWIPE_THRESHOLD) prev();
+          setPaused(false);
+        }}
+      >
         {certifications.map((cert, i) => {
           const offset = ringOffset(i, index, n);
           const abs = Math.abs(offset);
@@ -211,7 +225,7 @@ export default function CertificatesSlider() {
             </motion.div>
           );
         })}
-      </div>
+      </motion.div>
 
       {/* Controls */}
       <div className="mt-4 flex items-center justify-center gap-4">

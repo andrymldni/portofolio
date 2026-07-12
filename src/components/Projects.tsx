@@ -41,15 +41,17 @@ function ProjectModal({
         exit={{ opacity: 0, y: 16, scale: 0.97 }}
         transition={{ type: "spring", duration: 0.45, bounce: 0.25 }}
         onClick={(e) => e.stopPropagation()}
-        className="card relative w-full max-w-lg overflow-hidden p-0"
+        className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0"
       >
-        <button
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70"
-        >
-          <X size={16} />
-        </button>
+        <div className="sticky top-3 z-10 flex h-0 justify-end pr-3">
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md hover:bg-black/70"
+          >
+            <X size={16} />
+          </button>
+        </div>
 
         {project.image && (
           <div className="relative h-44 w-full sm:h-56">
