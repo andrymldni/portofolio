@@ -19,9 +19,32 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
+const SITE_URL = "https://andrymldni.dev";
+const SITE_TITLE = "Andry Syva Maldini – Data Scientist & BI Portfolio";
+const SITE_DESCRIPTION =
+  "Portfolio of Andry Syva Maldini, a Data Scientist & Business Intelligence specialist from Jakarta, Indonesia — data pipelines, predictive modeling, and BI dashboards built with Python, SQL, Spark & Power BI.";
+
 export const metadata: Metadata = {
-  title: "Andry – Portfolio",
-  description: "A modern portfolio with smooth animations and fast performance",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_TITLE,
+    template: "%s · Andry Syva Maldini",
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    "Andry Syva Maldini",
+    "Data Scientist",
+    "Data Analyst",
+    "Business Intelligence",
+    "Data Engineer",
+    "Portfolio",
+    "Python",
+    "SQL",
+    "Machine Learning",
+    "Jakarta Indonesia",
+  ],
+  authors: [{ name: "Andry Syva Maldini", url: SITE_URL }],
+  creator: "Andry Syva Maldini",
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -43,16 +66,54 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   openGraph: {
-    title: "Andry – Portfolio",
-    description: "AI & Web Modern Portfolio",
-    url: "https://andry.dev",
-    siteName: "andrymldni.dev",
-    images: [
-      { url: "/og.png", width: 1200, height: 630, alt: "Andry Portfolio" },
-    ],
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: "/",
+    siteName: "Andry Syva Maldini — Portfolio",
     type: "website",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    creator: "@andrymldni",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+    },
   },
   alternates: { canonical: "/" },
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Andry Syva Maldini",
+  url: SITE_URL,
+  jobTitle: [
+    "Data Scientist",
+    "Business Intelligence",
+    "Data Analyst",
+    "Data Engineer",
+  ],
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Jakarta",
+    addressCountry: "ID",
+  },
+  email: "mailto:andrymldni@gmail.com",
+  sameAs: [
+    "https://github.com/andrymldni",
+    "https://www.linkedin.com/in/andrymldni",
+    "https://www.instagram.com/andrymldni",
+    "https://twitter.com/andrymldni",
+  ],
 };
 
 // Inisialisasi tema secepat mungkin (hindari FOUC)
@@ -75,6 +136,10 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
+        />
       </head>
       <body className={`${jakarta.className} ${jakarta.variable}`}>
         {/* Background Layers */}

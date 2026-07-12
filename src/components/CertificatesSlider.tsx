@@ -177,7 +177,7 @@ export default function CertificatesSlider() {
                       src={cert.image}
                       alt={cert.name}
                       fill
-                      sizes="280px"
+                      sizes="(max-width: 640px) 240px, 280px"
                       className="object-cover"
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-black/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />

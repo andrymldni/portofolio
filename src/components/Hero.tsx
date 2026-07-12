@@ -22,8 +22,8 @@ export default function Hero() {
     <section className="relative grid min-h-[80vh] place-items-center pt-10 overflow-hidden">
       <div className="relative grid w-full items-center gap-10 md:grid-cols-2">
         <div className="text-center md:text-left">
-          <h1 className="font-extrabold tracking-tight leading-tight">
-            <span className="inline-flex items-center gap-2 whitespace-nowrap text-3xl sm:text-5xl md:text-7xl">
+          <h1 className="font-extrabold tracking-tight leading-tight text-2xl sm:text-5xl md:text-7xl">
+            <span className="inline-flex flex-wrap items-center justify-center gap-2 md:justify-start">
               <span className="text-white">Hi There</span>
               <motion.span
                 role="img"
@@ -126,7 +126,7 @@ export default function Hero() {
             alt="Andry's photo"
             fill
             priority
-            sizes="(max-width: 768px) 9rem, (max-width: 1024px) 12rem, 16rem"
+            sizes="(max-width: 640px) 9rem, (max-width: 768px) 12rem, 16rem"
             className="rounded-full object-cover"
           />
         </motion.div>

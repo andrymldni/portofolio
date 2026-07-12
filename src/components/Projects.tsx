@@ -159,7 +159,7 @@ export default function Projects({
                 }
                 alt={p.title}
                 fill
-                sizes="(max-width: 768px) 100vw, 50vw"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 className="object-cover"
                 loading="lazy"
               />
