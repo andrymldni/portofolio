@@ -4,16 +4,18 @@
 
 /* ===== Tema berbasis CSS variables (dark default, light via data-theme) ===== */
 :root {
-  --bg: 16 16 18; /* dark background */
+  --bg: 8 8 14; /* dark navy / near-black background */
   --fg: 232 232 236; /* dark foreground text */
   --muted: 160 160 175;
-  --brand: 99 102 241; /* indigo-500 */
+  --brand: 168 85 247; /* violet-500 — neon purple accent */
+  --brand-2: 56 189 248; /* sky-400 — electric blue accent */
 }
 :root[data-theme="light"] {
   --bg: 250 250 252; /* light background */
   --fg: 14 14 18; /* light foreground text */
   --muted: 90 90 105;
-  --brand: 79 70 229; /* indigo-600 */
+  --brand: 147 51 234; /* violet-600 */
+  --brand-2: 2 132 199; /* sky-600 */
 }
 
 html,
@@ -33,7 +35,7 @@ html {
 
 /* ===== Util tampilan premium / komponen dasar ===== */
 .gradient-text {
-  background: linear-gradient(90deg, #818cf8, #22d3ee, #34d399);
+  background: linear-gradient(90deg, #c084fc, #a855f7, #38bdf8);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -57,7 +59,7 @@ html {
 }
 
 .glow-text {
-  text-shadow: 0 0 18px rgba(129, 140, 248, 0.45);
+  text-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
 }
 
 /* Fokus ring konsisten di seluruh elemen interaktif */
@@ -86,26 +88,128 @@ html {
   background: transparent;
 }
 
-/* Particles overlay */
-.particles {
+/* Starfield motion background (canvas, see components/Starfield.tsx) */
+.starfield {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.18;
-  background-image: url("/particles.svg");
-  background-size: cover;
+  opacity: 0.85;
+  transition: opacity 0.4s ease;
 }
-@media (prefers-reduced-motion: reduce) {
-  .particles {
-    display: none;
-  }
+:root[data-theme="light"] .starfield {
+  opacity: 0.28;
+}
+
+/* Ambient gradient glow — adds depth/freshness behind sections without
+   competing with foreground text (sits under .app-shell, above starfield) */
+.ambient-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(680px circle at 12% 0%, rgba(168, 85, 247, 0.16), transparent 60%),
+    radial-gradient(620px circle at 92% 30%, rgba(56, 189, 248, 0.13), transparent 60%),
+    radial-gradient(700px circle at 50% 100%, rgba(168, 85, 247, 0.10), transparent 60%);
+}
+:root[data-theme="light"] .ambient-glow {
+  background:
+    radial-gradient(680px circle at 12% 0%, rgba(168, 85, 247, 0.08), transparent 60%),
+    radial-gradient(620px circle at 92% 30%, rgba(2, 132, 199, 0.07), transparent 60%),
+    radial-gradient(700px circle at 50% 100%, rgba(168, 85, 247, 0.05), transparent 60%);
+}
+
+/* ===== Inline CV / Resume document ===== */
+.cv-download-btn {
+  @apply inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white
+         shadow-[0_0_24px_rgba(168,85,247,0.45)] transition-transform hover:-translate-y-0.5;
+  background: linear-gradient(135deg, rgb(var(--brand)), rgb(var(--brand-2)));
+}
+
+.cv-paper {
+  background: #ffffff;
+  color: #18181b;
+  border-radius: 1.25rem;
+  box-shadow:
+    0 30px 60px -20px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(168, 85, 247, 0.15);
+}
+
+.cv-heading {
+  color: rgb(var(--brand));
+  letter-spacing: 0.02em;
+}
+
+.cv-divider {
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--brand)) 0%,
+    rgba(168, 85, 247, 0.15) 60%,
+    transparent 100%
+  );
 }
 
 /* Lift content above background layer */
 .app-shell {
   position: relative;
   z-index: 1;
+}
+
+/* ===== Tech carousel (marquee) ===== */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-scroll 32s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ===== Scrollbar-less snap carousels (certificates, etc.) ===== */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ===== Modal backdrop ===== */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(4, 4, 8, 0.72);
+  backdrop-filter: blur(6px);
 }
 
 /* ===== Variabel util semantik (opsional dipakai di komponen) ===== */

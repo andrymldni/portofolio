@@ -1,8 +1,15 @@
 "use client";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
+  const hrefFor = (hash: string) => (isHome ? hash : `/${hash}`);
+
   return (
     <footer className="border-t border-white/10 mt-16 bg-black/20 backdrop-blur-md">
       <div className="container py-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/60">
@@ -11,28 +18,37 @@ export default function Footer() {
             © {year} Andry Syva Maldini
           </p>
           <p className="mt-1 text-white/50">
-            Dibuat dengan ❤️ Next.js, Tailwind CSS & Framer Motion
+            Built with ❤️ using Next.js, Tailwind CSS & Framer Motion
           </p>
         </div>
         <nav
           aria-label="Footer Navigation"
           className="flex flex-wrap gap-6 text-white/70 text-sm justify-center"
         >
-          <a href="#home" className="hover:text-white transition-colors">
+          <Link href="/" className="hover:text-white transition-colors">
             Home
-          </a>
-          <a href="#about" className="hover:text-white transition-colors">
+          </Link>
+          <Link
+            href={hrefFor("#about")}
+            className="hover:text-white transition-colors"
+          >
             About
-          </a>
-          <a href="#resume" className="hover:text-white transition-colors">
-            Resume
-          </a>
-          <a href="#projects" className="hover:text-white transition-colors">
-            Portofolio
-          </a>
-          <a href="#contact" className="hover:text-white transition-colors">
+          </Link>
+          <Link href="/cv" className="hover:text-white transition-colors">
+            CV
+          </Link>
+          <Link
+            href={hrefFor("#projects")}
+            className="hover:text-white transition-colors"
+          >
+            Projects
+          </Link>
+          <Link
+            href={hrefFor("#contact")}
+            className="hover:text-white transition-colors"
+          >
             Contact
-          </a>
+          </Link>
         </nav>
         <div className="flex gap-4 items-center">
           <a

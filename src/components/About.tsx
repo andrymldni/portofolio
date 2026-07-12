@@ -28,21 +28,20 @@ export default function About() {
         </h3>
         <p className="text-base text-white/70 leading-relaxed">
           <em>
-            I am a Data Science graduate from Universitas Pembangunan Nasional
-            "Veteran" Jawa Timur with a strong passion for leveraging Machine
-            Learning, Deep Learning, and Computer Vision to create impactful
-            solutions. For my thesis, I developed an AI-based system for
-            detecting online gambling advertisements, integrated into a web
-            application to support end-to-end content moderation for images and
-            text. Proficient in Python, SQL, and data visualization, I also
-            bring strong communication, problem-solving, and team collaboration
-            skills. I am committed to continuous learning and contributing to
-            innovations that deliver real value to businesses and society.
+            Data Science graduate with a strong background in data pipeline
+            architecture, predictive modeling, and business intelligence,
+            supported by hands-on experience across government institutions
+            and state-owned enterprises. Skilled in Python, SQL, Apache
+            Spark, PostgreSQL, Docker, and Linux, along with Bash, Google
+            Cloud, and Grafana to support operational and strategic
+            decision-making. Known for being analytical, detail-oriented,
+            adaptable, and comfortable working in collaborative, fast-paced
+            environments.
           </em>
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-            <span className="rounded-lg bg-indigo-500/20 p-2">
+            <span className="rounded-lg bg-violet-500/20 p-2">
               <Globe size={16} />
             </span>
             <div>
@@ -51,16 +50,16 @@ export default function About() {
             </div>
           </div>
           <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-            <span className="rounded-lg bg-indigo-500/20 p-2">
+            <span className="rounded-lg bg-violet-500/20 p-2">
               <MapPin size={16} />
             </span>
             <div>
               <p className="text-xs text-white/60">Address</p>
-              <p className="text-sm font-medium">Surabaya</p>
+              <p className="text-sm font-medium">Jakarta</p>
             </div>
           </div>
           <div className="sm:col-span-2 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">
-            <span className="rounded-lg bg-indigo-500/20 p-2">
+            <span className="rounded-lg bg-violet-500/20 p-2">
               <Mail size={16} />
             </span>
             <div className="min-w-0">
@@ -74,14 +73,6 @@ export default function About() {
             </div>
           </div>
         </div>
-        <a
-          href="/CV_andrymldni.pdf"
-          target="_blank"
-          className="mt-4 card px-3 py-2 text-sm md:text-base w-fit"
-          aria-label="See CV"
-        >
-          📄 See CV
-        </a>
       </Card>
 
       <div className="grid gap-6">
@@ -93,13 +84,12 @@ export default function About() {
           className="card p-6"
         >
           <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
-            <LineChart size={18} /> What I Do — Data Science
+            <LineChart size={18} /> Data & Business Intelligence
           </h3>
           <p className="text-base text-white/70 mt-2 leading-relaxed">
-            Full-cycle model development: from data exploration, cleaning, and
-            feature engineering to building tree-based and deep learning models,
-            complemented by light MLOps practices for tracking, serving, and
-            monitoring.
+            End-to-end data work: ETL pipelines, big data processing with
+            Apache Spark, and predictive modeling — translated into Power BI
+            and Metabase dashboards that support real operational decisions.
           </p>
         </Card>
         <Card
@@ -113,9 +103,9 @@ export default function About() {
             <Users size={18} /> Engage with a Community
           </h3>
           <p className="text-base text-white/70 mt-2 leading-relaxed">
-            Engaged in community knowledge sharing, basic mentorship, and
-            technical documentation to facilitate easy replication of knowledge
-            for the team.
+            Engaged in community knowledge sharing, technical event support,
+            and documentation to make knowledge easy to transfer within a
+            team.
           </p>
         </Card>
         <Card
@@ -126,12 +116,12 @@ export default function About() {
           className="card p-6"
         >
           <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
-            <Rocket size={18} /> Loading a Project
+            <Rocket size={18} /> Infrastructure & MLOps
           </h3>
           <p className="text-base text-white/70 mt-2 leading-relaxed">
-            Configuration and initialization of ML projects: environment setup,
-            data loading pipelines, and integration of pre-built models and
-            scripts to accelerate development.
+            Comfortable with Docker, Linux, Bash, and Google Cloud for
+            deployment, plus a working foundation in MLOps for reliable,
+            production-ready data systems.
           </p>
         </Card>
       </div>

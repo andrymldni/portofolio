@@ -1,10 +1,15 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Starfield from "@/components/Starfield";
 
-const inter = Inter({ subsets: ["latin"] });
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+});
 
 export const viewport: Viewport = {
   themeColor: [
@@ -16,17 +21,27 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: "Andry – Portfolio",
-  description: "Portfolio modern dengan animasi halus dan performa cepat",
+  description: "A modern portfolio with smooth animations and fast performance",
   icons: {
     icon: [
-      { url: "/favicon.ico" }, // fallback universal
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      {
+        url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
+      },
+      {
+        url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
+      },
     ],
-    // Uncomment jika kamu sudah menaruh file berikut di /public
-    // apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
     shortcut: ["/favicon.ico"],
   },
+  manifest: "/site.webmanifest",
   openGraph: {
     title: "Andry – Portfolio",
     description: "AI & Web Modern Portfolio",
@@ -57,13 +72,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="id" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
       </head>
-      <body className={inter.className}>
+      <body className={`${jakarta.className} ${jakarta.variable}`}>
         {/* Background Layers */}
-        <div className="particles" />
+        <Starfield />
+        <div className="ambient-glow" />
         {/* App */}
         <div className="app-shell">
           <Navbar />

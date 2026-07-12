@@ -6,8 +6,9 @@ import { Github, Linkedin, Instagram, Twitter } from "lucide-react";
 
 const TITLES = [
   "Data Scientist",
+  "Business Intelligence",
   "Data Analyst",
-  "GDG Surabaya Organizer",
+  "Data Engineer",
 ];
 
 export default function Hero() {
@@ -19,7 +20,6 @@ export default function Hero() {
 
   return (
     <section className="relative grid min-h-[80vh] place-items-center pt-10 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none bg-[url('/particles.svg')] bg-cover opacity-20" />
       <div className="relative grid w-full items-center gap-10 md:grid-cols-2">
         <div className="text-center md:text-left">
           <h1 className="font-extrabold tracking-tight leading-tight">
@@ -64,14 +64,10 @@ export default function Hero() {
               href="#contact"
               className="card px-4 py-2 text-sm bg-emerald-500/20 hover:bg-emerald-500/40"
             >
-              📩 Hubungi Saya
+              📩 Say Hello
             </a>
-            <a
-              href="/CV_andrymldni.pdf"
-              target="_blank"
-              className="card px-4 py-2 text-sm"
-            >
-              📄 Download CV
+            <a href="#projects" className="card px-4 py-2 text-sm">
+              🚀 View Projects
             </a>
           </motion.div>
           <motion.div
@@ -124,10 +120,10 @@ export default function Hero() {
           transition={{ type: "spring", duration: 0.9 }}
           className="relative mx-auto h-36 w-36 sm:h-48 sm:w-48 md:h-64 md:w-64"
         >
-          <div className="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-tr from-indigo-500/40 via-cyan-400/20 to-emerald-400/30 blur-2xl" />
+          <div className="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-tr from-violet-500/40 via-cyan-400/20 to-emerald-400/30 blur-2xl" />
           <Image
             src="/profile.jpeg"
-            alt="Foto Andry"
+            alt="Andry's photo"
             fill
             priority
             sizes="(max-width: 768px) 9rem, (max-width: 1024px) 12rem, 16rem"

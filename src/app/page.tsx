@@ -4,25 +4,39 @@ import dynamic from "next/dynamic";
 const Hero = dynamic(() => import("@/components/Hero"), { ssr: false });
 const Section = dynamic(() => import("@/components/Section"));
 const About = dynamic(() => import("@/components/About"));
-const Resume = dynamic(() => import("@/components/Resume"));
+const TechCarousel = dynamic(() => import("@/components/TechCarousel"));
+const CertificatesSlider = dynamic(
+  () => import("@/components/CertificatesSlider")
+);
 const Projects = dynamic(() => import("@/components/Projects"));
 const Contact = dynamic(() => import("@/components/Contact"));
 
 export default function HomePage() {
   return (
     <main className="container">
-      {/* Hero tidak dibungkus Section agar tidak muncul heading "Home" */}
+      {/* Hero isn't wrapped in a Section so it doesn't get a "Home" heading */}
       <Hero />
 
       <Section id="about" title="About Me">
         <About />
       </Section>
 
-      <Section id="resume" title="Resume">
-        <Resume />
+      <Section
+        title="Tools & Technologies"
+        subtitle="The stack I reach for day-to-day — from data pipelines and analysis to deployment."
+      >
+        <TechCarousel />
       </Section>
 
-      <Section id="projects" title="Portofolio">
+      <Section
+        id="certifications"
+        title="Certifications"
+        subtitle="Credentials backing up my work in data, analytics, and cloud."
+      >
+        <CertificatesSlider />
+      </Section>
+
+      <Section id="projects" title="Projects">
         <Projects />
       </Section>
 
