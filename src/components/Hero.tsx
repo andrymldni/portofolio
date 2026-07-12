@@ -118,15 +118,15 @@ export default function Hero() {
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 0.9 }}
-          className="relative mx-auto h-36 w-36 sm:h-48 sm:w-48 md:h-64 md:w-64"
+          className="relative mx-auto h-44 w-44 sm:h-60 sm:w-60 md:h-72 md:w-72 lg:h-80 lg:w-80"
         >
-          <div className="pointer-events-none absolute -inset-6 rounded-full bg-gradient-to-tr from-violet-500/40 via-cyan-400/20 to-emerald-400/30 blur-2xl" />
+          <div className="pointer-events-none absolute -inset-8 rounded-full bg-gradient-to-tr from-violet-500/40 via-cyan-400/20 to-emerald-400/30 blur-2xl" />
           <Image
             src="/profile.jpeg"
             alt="Andry's photo"
             fill
             priority
-            sizes="(max-width: 640px) 9rem, (max-width: 768px) 12rem, 16rem"
+            sizes="(max-width: 640px) 11rem, (max-width: 768px) 15rem, (max-width: 1024px) 18rem, 20rem"
             className="rounded-full object-cover"
           />
         </motion.div>
