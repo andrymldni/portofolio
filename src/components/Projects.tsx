@@ -217,20 +217,6 @@ export default function Projects({
   );
   const [active, setActive] = useState<Project | null>(null);
 
-  const container = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.06, delayChildren: 0.03 } },
-  };
-  const item = {
-    hidden: { y: 18, opacity: 0, scale: 0.98 },
-    show: {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      transition: { type: "spring", stiffness: 120, damping: 16 },
-    },
-  };
-
   const handlePointerMove = (e: React.PointerEvent<HTMLElement>) => {
     if (e.pointerType !== "mouse") return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -238,7 +224,6 @@ export default function Projects({
     e.currentTarget.style.setProperty("--my", `${e.clientY - rect.top}px`);
   };
 
-  const Grid: any = reduce ? "div" : motion.div;
   const Card: any = reduce ? "article" : motion.article;
 
   return (
@@ -271,37 +256,31 @@ export default function Projects({
         </div>
       )}
 
-      <Grid
-        {...(reduce
-          ? {}
-          : {
-              variants: container,
-              initial: "hidden",
-              whileInView: "show",
-              viewport: { once: true, margin: "-100px" },
-            })}
-        className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-      >
-        <AnimatePresence mode="popLayout">
-          {list.map((p) => (
-            <Card
-              key={p.title}
-              layout={reduce ? undefined : true}
-              {...(reduce ? {} : { variants: item, exit: { opacity: 0, scale: 0.96 } })}
-              onPointerMove={handlePointerMove}
-              className={`group relative card cursor-pointer overflow-hidden p-0 text-left ${
-                p.featured ? "sm:col-span-2" : ""
-              }`}
-              whileHover={reduce ? undefined : { y: -4 }}
-              whileTap={reduce ? undefined : { scale: 0.995 }}
-              onClick={() => setActive(p)}
-              role="button"
-              tabIndex={0}
-              aria-haspopup="dialog"
-              onKeyDown={(e: React.KeyboardEvent) => {
-                if (e.key === "Enter" || e.key === " ") setActive(p);
-              }}
-            >
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {list.map((p) => (
+          <Card
+            key={p.title}
+            {...(reduce
+              ? {}
+              : {
+                  initial: { opacity: 0 },
+                  animate: { opacity: 1 },
+                  transition: { duration: 0.25 },
+                })}
+            onPointerMove={handlePointerMove}
+            className={`group relative card cursor-pointer overflow-hidden p-0 text-left ${
+              p.featured ? "sm:col-span-2" : ""
+            }`}
+            whileHover={reduce ? undefined : { y: -4 }}
+            whileTap={reduce ? undefined : { scale: 0.995 }}
+            onClick={() => setActive(p)}
+            role="button"
+            tabIndex={0}
+            aria-haspopup="dialog"
+            onKeyDown={(e: React.KeyboardEvent) => {
+              if (e.key === "Enter" || e.key === " ") setActive(p);
+            }}
+          >
               <div
                 className={`relative w-full ${p.featured ? "h-52 sm:h-64" : "h-44"}`}
               >
@@ -389,10 +368,9 @@ export default function Projects({
                     "radial-gradient(600px circle at var(--mx, 50%) var(--my, 50%), rgba(168,85,247,0.14), transparent 40%)",
                 }}
               />
-            </Card>
-          ))}
-        </AnimatePresence>
-      </Grid>
+          </Card>
+        ))}
+      </div>
 
       <AnimatePresence>
         {active && (
