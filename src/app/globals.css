@@ -251,6 +251,35 @@ html {
   color: rgb(var(--fg) / 0.3) !important;
 }
 
+/* =============================================================================
+   LOW-END / TOUCH DEVICE PERFORMANCE
+   backdrop-filter (blur) is one of the priciest paint operations on
+   low-end mobile GPUs, and .card uses it everywhere (project cards, tech
+   carousel, cert slider — dozens of instances on screen at once). Coarse
+   pointer is a solid proxy for "phone/tablet"; drop the blur there and
+   compensate with a touch more opacity so cards stay legible.
+============================================================================= */
+@media (pointer: coarse) {
+  .card,
+  .backdrop-blur-md,
+  .backdrop-blur-sm,
+  .backdrop-blur-xl {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  .card {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+  :root[data-theme="light"] .card {
+    background-color: rgba(0, 0, 0, 0.06);
+  }
+  .modal-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(4, 4, 8, 0.88);
+  }
+}
+
 /* Border & background util yang tadinya putih -> pakai warna teks tema */
 :root[data-theme="light"] .border-white\/10 {
   border-color: rgb(var(--fg) / 0.1) !important;

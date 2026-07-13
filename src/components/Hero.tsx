@@ -1,7 +1,14 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useReducedMotion,
+} from "framer-motion";
 import { Github, Linkedin, Instagram, Twitter } from "lucide-react";
 
 const TITLES = [
@@ -17,6 +24,27 @@ export default function Hero() {
     const t = setInterval(() => setIdx((i) => (i + 1) % TITLES.length), 2200);
     return () => clearInterval(t);
   }, []);
+
+  // Subtle 3D tilt on the profile photo, desktop-with-mouse only.
+  const reduce = useReducedMotion();
+  const photoRef = useRef<HTMLDivElement | null>(null);
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
+  const springX = useSpring(tiltX, { stiffness: 150, damping: 14 });
+  const springY = useSpring(tiltY, { stiffness: 150, damping: 14 });
+  const rotateX = useTransform(springY, [-0.5, 0.5], [8, -8]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-8, 8]);
+
+  const handlePhotoMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (reduce || e.pointerType !== "mouse" || !photoRef.current) return;
+    const rect = photoRef.current.getBoundingClientRect();
+    tiltX.set((e.clientX - rect.left) / rect.width - 0.5);
+    tiltY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+  const resetTilt = () => {
+    tiltX.set(0);
+    tiltY.set(0);
+  };
 
   return (
     <section className="relative grid min-h-[80vh] place-items-center pt-10 overflow-hidden">
@@ -115,9 +143,13 @@ export default function Hero() {
           </motion.div>
         </div>
         <motion.div
+          ref={photoRef}
           initial={{ scale: 0.95, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ type: "spring", duration: 0.9 }}
+          onPointerMove={handlePhotoMove}
+          onPointerLeave={resetTilt}
+          style={{ rotateX, rotateY, transformPerspective: 600 }}
           className="relative mx-auto h-44 w-44 sm:h-60 sm:w-60 md:h-72 md:w-72 lg:h-80 lg:w-80"
         >
           <div className="pointer-events-none absolute -inset-8 rounded-full bg-gradient-to-tr from-violet-500/40 via-cyan-400/20 to-emerald-400/30 blur-2xl" />

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Starfield from "@/components/Starfield";
+import ScrollProgress from "@/components/ScrollProgress";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -145,6 +146,7 @@ export default function RootLayout({
         {/* Background Layers */}
         <Starfield />
         <div className="ambient-glow" />
+        <ScrollProgress />
         {/* App */}
         <div className="app-shell">
           <Navbar />

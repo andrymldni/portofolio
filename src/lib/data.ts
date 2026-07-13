@@ -2,13 +2,29 @@ export type Project = {
   title: string;
   stack?: string[];
   link?: string;
+  /** Live demo / deployed app URL, shown as a secondary CTA when present. */
+  demo?: string;
   image?: string;
+  /** Marks the project for a larger "featured" grid cell on desktop. */
+  featured?: boolean;
   category?: string;
   desc?: string;
   details?: string;
 };
 
 export const projects: Project[] = [
+  {
+    title: "FloraScan — Plant Disease Scanner",
+    stack: ["JavaScript", "TensorFlow.js", "Computer Vision"],
+    link: "https://github.com/andrymldni/plantDisease",
+    demo: "https://andrymldni.github.io/plantDisease/",
+    image: "/projects/florascan.png",
+    featured: true,
+    category: "Computer Vision",
+    desc: "Scan a leaf photo, get an instant plant-disease diagnosis in the browser.",
+    details:
+      "A browser-based plant disease scanner: snap or upload a leaf photo and an in-browser TensorFlow.js model identifies the disease instantly, with zero server round-trip. Built to give smallholder farmers and hobby growers a fast, accessible diagnosis tool that runs on any phone browser.",
+  },
   {
     title: "Human Resources Analytics",
     stack: ["Python", "Docker", "Metabase"],
@@ -48,6 +64,51 @@ export const projects: Project[] = [
     desc: "Personalized book recommendations via ML.",
     details:
       "A book recommendation system combining content-based and collaborative filtering. The model was evaluated using precision@k and AUC to make sure recommendations stay relevant and genuinely personal for each user.",
+  },
+  {
+    title: "Bike Sharing Analytics Dashboard",
+    stack: ["Python", "Pandas", "Streamlit"],
+    link: "https://github.com/andrymldni/Dicoding-Bikes-Sharing",
+    category: "Data Analytics",
+    desc: "Interactive dashboard uncovering ridership trends and seasonality.",
+    details:
+      "End-to-end data wrangling, EDA, and visualization on a bike-share ridership dataset — cleaning raw ride logs, exploring usage patterns by weather, season, and time of day, then shipping the findings as an interactive Streamlit dashboard for quick exploration.",
+  },
+  {
+    title: "Student Dropout Prediction",
+    stack: ["Python", "Scikit-learn", "Classification"],
+    link: "https://github.com/andrymldni/Dicoding-Student-Status-Predictions",
+    category: "ML",
+    desc: "Early-warning model flagging students at risk of dropping out.",
+    details:
+      "A classification model built for an education institute that flags students likely to drop out before it happens, using academic and demographic features. The goal: give the institution enough lead time to step in with guidance and support before a student disengages.",
+  },
+  {
+    title: "Campus Placement Prediction",
+    stack: ["Python", "MLOps", "Classification"],
+    link: "https://github.com/andrymldni/Dicoding-MLOps-Campus",
+    category: "MLOps",
+    desc: "Binary classifier predicting university admission placement outcomes.",
+    details:
+      "A binary classification pipeline predicting campus placement/admission outcomes from applicant data, built as an MLOps submission with an emphasis on a reproducible flow — from data validation through to model packaging and evaluation.",
+  },
+  {
+    title: "Gesture Volume Control",
+    stack: ["Python", "OpenCV", "MediaPipe"],
+    link: "https://github.com/andrymldni/GestureVolumeControl",
+    category: "Computer Vision",
+    desc: "Control system volume in real time using hand-gesture recognition.",
+    details:
+      "A real-time computer-vision app that reads hand landmarks from a webcam feed and maps thumb-to-index finger distance to system volume — a hands-free interface built with OpenCV, MediaPipe hand tracking, and Pycaw for native audio control.",
+  },
+  {
+    title: "Cek Kata Baku",
+    stack: ["Python", "NLP"],
+    link: "https://github.com/andrymldni/cek-kata-baku",
+    category: "NLP",
+    desc: "Checks Indonesian words against standard spelling with smart suggestions.",
+    details:
+      "A lightweight tool that checks whether an Indonesian word is 'baku' (standard) per KBBI, and suggests the closest valid alternative when it isn't — handy for quick writing cleanup and language-consistency checks.",
   },
 ];
 

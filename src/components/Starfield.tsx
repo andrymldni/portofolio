@@ -38,26 +38,46 @@ export default function Starfield() {
     ).matches;
     const canHover = window.matchMedia("(hover: hover)").matches;
 
+    // Adaptive quality: keep the effect cheap on low-end phones so it
+    // doesn't compete with the rest of the page for CPU/GPU/battery.
+    const nav = navigator as Navigator & {
+      deviceMemory?: number;
+      connection?: { saveData?: boolean; effectiveType?: string };
+    };
+    const saveData = !!nav.connection?.saveData;
+    const slowConnection = ["slow-2g", "2g"].includes(
+      nav.connection?.effectiveType ?? ""
+    );
+    const lowCores = (nav.hardwareConcurrency ?? 8) <= 4;
+    const lowMemory = (nav.deviceMemory ?? 8) <= 4;
+    const smallScreen = Math.min(window.innerWidth, window.innerHeight) < 700;
+    const lowPower =
+      saveData || slowConnection || (smallScreen && (lowCores || lowMemory));
+
     let width = 0;
     let height = 0;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 2);
     let stars: Star[] = [];
     let shooters: Shooter[] = [];
     let raf = 0;
     let resizeTimer: ReturnType<typeof setTimeout>;
     let nextShooterAt = 0;
+    let running = false;
 
     // Subtle parallax target — mouse position normalized to [-1, 1]
     let parallax = { x: 0, y: 0 };
     let parallaxTarget = { x: 0, y: 0 };
 
-    const STAR_COUNT_BASE = 170;
+    const STAR_COUNT_BASE = lowPower ? 60 : 170;
+    const MIN_STARS = lowPower ? 30 : 70;
+    const ENABLE_SHOOTERS = !lowPower;
+    const ENABLE_GLOW = !lowPower;
 
     const seedStars = () => {
       const count = Math.round(
         (STAR_COUNT_BASE * (width * height)) / (1440 * 900)
       );
-      stars = Array.from({ length: Math.max(70, count) }, () => ({
+      stars = Array.from({ length: Math.max(MIN_STARS, count) }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
         z: Math.random() * 0.85 + 0.15,
@@ -132,8 +152,8 @@ export default function Starfield() {
         ctx.fillStyle = `rgba(205, 198, 255, ${alpha.toFixed(3)})`;
         ctx.fill();
 
-        // gentle glow on the brighter, closer stars only
-        if (s.z > 0.75) {
+        // gentle glow on the brighter, closer stars only (skipped in low-power mode)
+        if (ENABLE_GLOW && s.z > 0.75) {
           ctx.beginPath();
           ctx.arc(px, py, s.r * s.z * 2.6, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(168, 130, 255, ${(alpha * 0.12).toFixed(3)})`;
@@ -141,26 +161,28 @@ export default function Starfield() {
         }
       }
 
-      maybeSpawnShooter(t);
-      shooters = shooters.filter((sh) => sh.life > 0);
-      for (const sh of shooters) {
-        sh.x += sh.vx;
-        sh.y += sh.vy;
-        sh.life -= 0.02;
-        const tailX = sh.x - sh.vx * (sh.len / 8);
-        const tailY = sh.y - sh.vy * (sh.len / 8);
-        const grad = ctx.createLinearGradient(sh.x, sh.y, tailX, tailY);
-        grad.addColorStop(0, `rgba(255, 255, 255, ${sh.life})`);
-        grad.addColorStop(1, "rgba(168, 130, 255, 0)");
-        ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.6;
-        ctx.beginPath();
-        ctx.moveTo(sh.x, sh.y);
-        ctx.lineTo(tailX, tailY);
-        ctx.stroke();
+      if (ENABLE_SHOOTERS) {
+        maybeSpawnShooter(t);
+        shooters = shooters.filter((sh) => sh.life > 0);
+        for (const sh of shooters) {
+          sh.x += sh.vx;
+          sh.y += sh.vy;
+          sh.life -= 0.02;
+          const tailX = sh.x - sh.vx * (sh.len / 8);
+          const tailY = sh.y - sh.vy * (sh.len / 8);
+          const grad = ctx.createLinearGradient(sh.x, sh.y, tailX, tailY);
+          grad.addColorStop(0, `rgba(255, 255, 255, ${sh.life})`);
+          grad.addColorStop(1, "rgba(168, 130, 255, 0)");
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.6;
+          ctx.beginPath();
+          ctx.moveTo(sh.x, sh.y);
+          ctx.lineTo(tailX, tailY);
+          ctx.stroke();
+        }
       }
 
-      raf = requestAnimationFrame(draw);
+      if (running) raf = requestAnimationFrame(draw);
     };
 
     const drawStatic = () => {
@@ -173,23 +195,43 @@ export default function Starfield() {
       }
     };
 
+    const start = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(draw);
+    };
+    const stop = () => {
+      running = false;
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
+    };
+    // Pause entirely while the tab is hidden — no point burning battery/CPU
+    // animating a canvas nobody can see.
+    const onVisibility = () => {
+      if (reduceMotion) return;
+      if (document.hidden) stop();
+      else start();
+    };
+
     resize();
     window.addEventListener("resize", onResize);
     if (canHover && !reduceMotion) {
       window.addEventListener("pointermove", onPointerMove, { passive: true });
     }
+    document.addEventListener("visibilitychange", onVisibility);
 
     if (reduceMotion) {
       drawStatic();
     } else {
-      raf = requestAnimationFrame(draw);
+      start();
     }
 
     return () => {
       window.removeEventListener("resize", onResize);
       window.removeEventListener("pointermove", onPointerMove);
+      document.removeEventListener("visibilitychange", onVisibility);
       clearTimeout(resizeTimer);
-      if (raf) cancelAnimationFrame(raf);
+      stop();
     };
   }, []);
 
