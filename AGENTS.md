@@ -15,7 +15,7 @@ Portfolio site for Andry Syva Maldini (Data Scientist/BI). Next.js 14 App Router
 - Components are grouped by role: `src/components/layout/` (Navbar, Footer, ScrollProgress), `src/components/sections/` (Hero, About, Projects, CertificatesSlider, TechCarousel, Contact), `src/components/ui/` (Section, BackToTop), `src/components/effects/` (Starfield), `src/components/resume/` (Resume). Keep new components in the matching folder.
 - `src/lib/data.ts` is the single content source driving Projects, TechCarousel, and CertificatesSlider (`projects`, `tools`, `certifications` arrays). Edit content there, not in components.
 - Site-wide identity (email, socials, location, SEO/JSON-LD) is hardcoded across `layout.tsx`, `sections/Contact.tsx`, `sections/About.tsx`, `resume/Resume.tsx` — often duplicated, keep in sync.
-- `src/app/cv/page.tsx` re-renders `<Resume />` inline; the downloadable PDF is `/public/Andry_Syva_Maldini_CV.pdf` (referenced only in `Resume.tsx`; the other `public/CV_*.pdf` is unused).
+- `src/app/cv/page.tsx` re-renders `<Resume />` inline; the downloadable PDF is `/public/Andry_Syva_Maldini_CV.pdf` (referenced only in `Resume.tsx`).
 
 ## Stale README claims
 
