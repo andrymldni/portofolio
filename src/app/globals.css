@@ -28,6 +28,8 @@ body {
 
 html {
   scroll-behavior: smooth;
+  /* Keep anchored sections clear of the sticky navbar (h-16 + breathing room). */
+  scroll-padding-top: 5.5rem;
 }
 ::selection {
   background: rgba(99, 102, 241, 0.25);
@@ -125,6 +127,14 @@ html {
   @apply inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white
          shadow-[0_0_24px_rgba(168,85,247,0.45)] transition-transform hover:-translate-y-0.5;
   background: linear-gradient(135deg, rgb(var(--brand)), rgb(var(--brand-2)));
+}
+
+/* Primary brand button — gradient fill with a soft lift on hover. */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white
+         transition-transform hover:-translate-y-0.5 focus-visible:outline-none;
+  background: linear-gradient(135deg, rgb(var(--brand)), rgb(var(--brand-2)));
+  box-shadow: 0 8px 24px rgba(168, 85, 247, 0.35);
 }
 
 .cv-paper {

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import Resume from "@/components/Resume";
+import Resume from "@/components/resume/Resume";
 
 export const metadata: Metadata = {
   title: "CV — Andry Syva Maldini",

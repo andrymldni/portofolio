@@ -26,18 +26,16 @@ export default function About() {
         <h3 className="text-lg md:text-xl font-semibold flex items-center gap-2">
           <Monitor size={18} /> About
         </h3>
-        <p className="text-base text-white/70 leading-relaxed">
-          <em>
-            Data Science graduate with a strong background in data pipeline
-            architecture, predictive modeling, and business intelligence,
-            supported by hands-on experience across government institutions
-            and state-owned enterprises. Skilled in Python, SQL, Apache
-            Spark, PostgreSQL, Docker, and Linux, along with Bash, Google
-            Cloud, and Grafana to support operational and strategic
-            decision-making. Known for being analytical, detail-oriented,
-            adaptable, and comfortable working in collaborative, fast-paced
-            environments.
-          </em>
+        <p className="text-base text-white/75 leading-relaxed">
+          Data Science graduate with a strong background in data pipeline
+          architecture, predictive modeling, and business intelligence,
+          supported by hands-on experience across government institutions
+          and state-owned enterprises. Skilled in Python, SQL, Apache
+          Spark, PostgreSQL, Docker, and Linux, along with Bash, Google
+          Cloud, and Grafana to support operational and strategic
+          decision-making. Known for being analytical, detail-oriented,
+          adaptable, and comfortable working in collaborative, fast-paced
+          environments.
         </p>
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3">

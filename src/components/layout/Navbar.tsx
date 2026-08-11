@@ -141,25 +141,26 @@ export default function Navbar() {
           andrymldni.dev
         </Link>
 
-        <ul className="hidden gap-6 md:flex items-center">
+        <ul className="hidden items-center gap-1 md:flex">
           {navItems.map((n) => (
             <li key={n.hash}>
               <Link
                 href={hrefFor(n.hash)}
                 onClick={n.hash === "#" ? handleHomeClick : undefined}
-                className={`text-sm relative ${
+                className={`relative rounded-full px-3.5 py-2 text-sm transition-colors ${
                   isHome && active === n.hash
                     ? "text-white"
-                    : "text-white/80 hover:text-white"
+                    : "text-white/75 hover:text-white"
                 }`}
               >
-                {n.label}
                 {isHome && active === n.hash && (
-                  <motion.div
-                    layoutId="active-underline"
-                    className="absolute left-0 -bottom-1 h-[2px] w-full bg-violet-400"
+                  <motion.span
+                    layoutId="nav-pill"
+                    className="absolute inset-0 rounded-full bg-white/10 ring-1 ring-white/10"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
                   />
                 )}
+                <span className="relative z-10">{n.label}</span>
               </Link>
             </li>
           ))}
@@ -222,7 +223,11 @@ export default function Navbar() {
                       if (n.hash === "#") handleHomeClick(e);
                       else setOpen(false);
                     }}
-                    className="block py-2 text-white/80 hover:text-white"
+                    className={`block rounded-lg px-3 py-2 transition-colors ${
+                      isHome && active === n.hash
+                        ? "bg-white/10 text-white"
+                        : "text-white/80 hover:text-white"
+                    }`}
                   >
                     {n.label}
                   </Link>

@@ -45,18 +45,16 @@ Live Demo: **[andrymldni.dev](https://portofolio-delta-liard.vercel.app/)**
 ```
 src/
  ├─ app/
+ │   ├─ cv/             # Halaman CV (merender Resume inline)
  │   ├─ layout.tsx      # Layout utama (Navbar, Footer, background)
  │   ├─ page.tsx        # Halaman utama
  │   └─ globals.css     # Style global + custom class
  └─ components/
-     ├─ Navbar.tsx
-     ├─ Footer.tsx
-     ├─ Hero.tsx
-     ├─ About.tsx
-     ├─ Resume.tsx
-     ├─ Projects.tsx
-     ├─ Section.tsx
-     └─ Contact.tsx
+     ├─ layout/         # Navbar, Footer, ScrollProgress
+     ├─ sections/       # Hero, About, Projects, CertificatesSlider, TechCarousel, Contact
+     ├─ ui/             # Section, BackToTop
+     ├─ effects/        # Starfield
+     └─ resume/         # Resume
 ```
 
 ---

@@ -11,7 +11,11 @@ export default function Footer() {
   const hrefFor = (hash: string) => (isHome ? hash : `/${hash}`);
 
   return (
-    <footer className="border-t border-white/10 mt-16 bg-black/20 backdrop-blur-md">
+    <footer className="relative mt-16 border-t border-white/10 bg-black/20 backdrop-blur-md">
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent"
+        aria-hidden="true"
+      />
       <div className="container py-8 flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-white/60">
         <div className="text-center md:text-left">
           <p className="text-sm font-medium text-white">

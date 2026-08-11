@@ -1,10 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Starfield from "@/components/Starfield";
-import ScrollProgress from "@/components/ScrollProgress";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+import Starfield from "@/components/effects/Starfield";
+import ScrollProgress from "@/components/layout/ScrollProgress";
+import BackToTop from "@/components/ui/BackToTop";
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -153,6 +154,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </div>
+        <BackToTop />
       </body>
     </html>
   );

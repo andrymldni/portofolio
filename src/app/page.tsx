@@ -1,15 +1,17 @@
 "use client";
 import dynamic from "next/dynamic";
 
-const Hero = dynamic(() => import("@/components/Hero"));
-const Section = dynamic(() => import("@/components/Section"));
-const About = dynamic(() => import("@/components/About"));
-const TechCarousel = dynamic(() => import("@/components/TechCarousel"));
-const CertificatesSlider = dynamic(
-  () => import("@/components/CertificatesSlider")
+const Hero = dynamic(() => import("@/components/sections/Hero"));
+const Section = dynamic(() => import("@/components/ui/Section"));
+const About = dynamic(() => import("@/components/sections/About"));
+const TechCarousel = dynamic(
+  () => import("@/components/sections/TechCarousel")
 );
-const Projects = dynamic(() => import("@/components/Projects"));
-const Contact = dynamic(() => import("@/components/Contact"));
+const CertificatesSlider = dynamic(
+  () => import("@/components/sections/CertificatesSlider")
+);
+const Projects = dynamic(() => import("@/components/sections/Projects"));
+const Contact = dynamic(() => import("@/components/sections/Contact"));
 
 export default function HomePage() {
   return (

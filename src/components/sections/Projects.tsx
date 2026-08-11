@@ -257,15 +257,20 @@ export default function Projects({
       )}
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((p) => (
+        {list.map((p, index) => (
           <Card
             key={p.title}
             {...(reduce
               ? {}
               : {
-                  initial: { opacity: 0 },
-                  animate: { opacity: 1 },
-                  transition: { duration: 0.25 },
+                  initial: { opacity: 0, y: 28 },
+                  whileInView: { opacity: 1, y: 0 },
+                  viewport: { once: true, margin: "-60px" },
+                  transition: {
+                    duration: 0.5,
+                    delay: Math.min(index * 0.07, 0.35),
+                    ease: [0.16, 1, 0.3, 1],
+                  },
                 })}
             onPointerMove={handlePointerMove}
             className={`group relative card cursor-pointer overflow-hidden p-0 text-left ${
