@@ -126,7 +126,7 @@ export default function Navbar() {
     <div
       className={`sticky top-0 z-50 transition-all ${
         barIsScrolled
-          ? "backdrop-blur-md bg-black/30 border-b border-white/10"
+          ? "bg-[rgb(var(--bg))] border-b border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.25)]"
           : "bg-transparent"
       }`}
       role="navigation"
@@ -207,7 +207,7 @@ export default function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden border-t border-white/10 bg-black/40"
+            className="md:hidden border-t border-white/10 bg-[rgb(var(--bg))]"
           >
             <ul className="container py-4 space-y-3">
               {navItems.map((n, i) => (
