@@ -1,0 +1,306 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================================================
+   Theme tokens
+   Two themes, one accent. Graphite + light grey in the dark, cool paper + ink
+   in the light, and one blue reserved for the primary action, the role line,
+   section rules and active states. Values are RGB triplets so Tailwind can
+   add opacity (bg-ink/5). The dark set is the fallback before the theme
+   script in layout.tsx runs.
+============================================================================= */
+:root {
+  --canvas: 17 20 24;
+  --surface: 25 29 35;
+  --steel: 36 42 50;
+  --ink: 230 233 238;
+  --muted: 154 163 173;
+  --brand: 110 168 255; /* lighter blue so it holds 4.5:1+ on graphite */
+  --brand-strong: 90 151 240;
+  --brand-ink: 15 18 22; /* text on a blue fill */
+  --ok: 127 207 152;
+  /* Fixed blue for the always-white CV paper, whatever the theme. */
+  --paper-accent: 29 95 194;
+}
+:root[data-theme="light"] {
+  --canvas: 243 245 248;
+  --surface: 251 252 253;
+  --steel: 225 230 236;
+  --ink: 23 27 33;
+  --muted: 95 105 117;
+  --brand: 29 95 194;
+  --brand-strong: 23 79 163;
+  --brand-ink: 255 255 255;
+  --ok: 47 138 79;
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  @apply bg-canvas text-ink antialiased;
+}
+
+html {
+  /* Non-static so framer-motion's useScroll can measure targets against it. */
+  position: relative;
+  scroll-behavior: smooth;
+  /* Keep anchored sections clear of the sticky navbar (h-16 + breathing room). */
+  scroll-padding-top: 5.5rem;
+}
+::selection {
+  background: rgb(var(--brand) / 0.3);
+}
+
+/* One focus style for every interactive element; outline follows any shape. */
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid rgb(var(--brand));
+  outline-offset: 2px;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--ink) / 0.25) transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--ink) / 0.25);
+  border-radius: 999px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* =============================================================================
+   Layers
+   .grain is a fixed sheet of SVG noise under everything: it makes the canvas
+   read as paper / matte card instead of a flat hex. Content sits above it.
+============================================================================= */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+:root[data-theme="light"] .grain {
+  opacity: 0.05;
+}
+.app-shell {
+  position: relative;
+  z-index: 1;
+}
+
+/* Scroll trace (components/effects/ScrollTrace.tsx): sits between the
+   grain and the content, sized to the document by the component. */
+.scroll-trace {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.scroll-trace-line {
+  stroke: rgb(var(--brand));
+  opacity: 0.42;
+}
+.scroll-trace-rules line {
+  stroke: rgb(var(--ink) / 0.09);
+  stroke-width: 1;
+}
+.scroll-trace-dot circle {
+  fill: rgb(var(--brand));
+}
+.scroll-trace-dot-halo {
+  opacity: 0.18;
+}
+:root[data-theme="light"] .scroll-trace-line {
+  opacity: 0.34;
+}
+
+.container {
+  @apply mx-auto max-w-6xl px-5 md:px-6;
+}
+
+/* =============================================================================
+   Components
+============================================================================= */
+/* Solid surface with a hairline. Cards stay flat; elevation is reserved for
+   the CV paper, the active certificate and modals. */
+.card {
+  @apply rounded-xl border border-line bg-surface transition-colors;
+}
+.card:hover {
+  border-color: rgb(var(--ink) / 0.24);
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors;
+  background: rgb(var(--brand));
+  color: rgb(var(--brand-ink));
+}
+.btn-primary:hover {
+  background: rgb(var(--brand-strong));
+}
+.btn-primary:disabled {
+  opacity: 0.6;
+}
+
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-ink transition-colors;
+}
+.btn-secondary:hover {
+  border-color: rgb(var(--ink) / 0.3);
+  background: rgb(var(--ink) / 0.04);
+}
+
+.field {
+  @apply w-full rounded-lg border border-line bg-canvas py-2.5 text-sm text-ink transition-colors placeholder:text-muted/70;
+}
+.field:hover {
+  border-color: rgb(var(--ink) / 0.24);
+}
+.field:focus-visible {
+  outline-offset: 0;
+  border-color: transparent;
+}
+
+/* Muted tints for project covers without a screenshot. Kept close to the
+   canvas so five of them in one grid read as one family, not a rainbow. */
+.cover-slate {
+  background: #1f242b;
+}
+.cover-blue {
+  background: #1d2430;
+}
+.cover-mist {
+  background: #20262a;
+}
+.cover-graphite {
+  background: #22252a;
+}
+:root[data-theme="light"] .cover-slate {
+  background: #d9dfe6;
+}
+:root[data-theme="light"] .cover-blue {
+  background: #d5dde9;
+}
+:root[data-theme="light"] .cover-mist {
+  background: #dde3e4;
+}
+:root[data-theme="light"] .cover-graphite {
+  background: #e0e2e6;
+}
+
+/* =============================================================================
+   Inline CV / Resume document
+   Always a white sheet, so its accent is fixed rather than themed.
+============================================================================= */
+.cv-paper {
+  background: #fcfcfd;
+  color: #171b21;
+  border-radius: 0.75rem;
+  /* The one big shadow on the site: a sheet of paper lifted off the desk. */
+  box-shadow:
+    0 30px 60px -28px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(23, 27, 33, 0.08);
+}
+.cv-accent {
+  color: rgb(var(--paper-accent));
+}
+.cv-heading {
+  color: rgb(var(--paper-accent));
+  letter-spacing: 0.02em;
+}
+.cv-divider {
+  height: 1px;
+  background: rgba(23, 27, 33, 0.14);
+}
+
+/* =============================================================================
+   Tech carousel (marquee)
+   Icons sit in ink and take their brand color only on hover, so sixteen
+   logos scroll past as one quiet strip instead of a colour wall.
+============================================================================= */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-scroll 36s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent 0,
+    #000 8%,
+    #000 92%,
+    transparent 100%
+  );
+}
+.tool-icon {
+  color: rgb(var(--ink) / 0.72);
+  transition: color 0.2s ease;
+}
+.group:hover .tool-icon {
+  color: var(--tool-color);
+}
+
+/* =============================================================================
+   Modal backdrop — the single blurred surface on the site.
+============================================================================= */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(17, 20, 24, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Motion plays regardless of the OS "reduce motion" flag (see
+   MotionProvider); only smooth scrolling defers to it. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* backdrop-filter is expensive on low-end mobile GPUs; the modal scrim is
+   the only user, and it can simply go a touch darker instead. */
+@media (pointer: coarse) {
+  .modal-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(17, 20, 24, 0.82);
+  }
+}

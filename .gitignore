@@ -1,0 +1,8 @@
+node_modules
+.next
+tsconfig.tsbuildinfo
+next-env.d.ts
+.opencode
+AGENTS.md
+CLAUDE.md
+PRODUCT.md
