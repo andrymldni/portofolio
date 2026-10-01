@@ -26,7 +26,9 @@ const ENTRANCES: Entrance[] = [
   { hidden: { opacity: 0, scale: 0.84 }, duration: 0.6 },
   { hidden: { opacity: 0, rotateX: -24, y: 28 }, duration: 0.75 },
   { hidden: { opacity: 0, rotate: -4, y: 36, scale: 0.96 }, duration: 0.7 },
-  { hidden: { opacity: 0, filter: "blur(14px)", scale: 0.98 }, duration: 0.7 },
+  // Transform/opacity only — an animated blur() filter repaints the whole
+  // card every frame and stutters on phones.
+  { hidden: { opacity: 0, scale: 0.92, y: 24 }, duration: 0.7 },
 ];
 
 // Every entrance resolves to this, so a hidden pose only states its own offsets.
@@ -37,7 +39,6 @@ const SHOWN: TargetAndTransition = {
   scale: 1,
   rotate: 0,
   rotateX: 0,
-  filter: "blur(0px)",
 };
 
 function pickNext(exclude: number) {

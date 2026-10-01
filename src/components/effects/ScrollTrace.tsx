@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useMotionValueEvent, useScroll, useSpring } from "framer-motion";
 
@@ -40,6 +40,20 @@ export default function ScrollTrace() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
+  // Desktop (mouse) only. On phones this document-tall SVG is repainted on
+  // every scroll frame and rebuilt whenever the URL bar resizes the
+  // viewport, which made scrolling stutter. Starts off so the server and
+  // first client render match.
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setEnabled(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, []);
+  const active = isHome && enabled;
+
   const svgRef = useRef<SVGSVGElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
   const rulesRef = useRef<SVGGElement | null>(null);
@@ -73,7 +87,7 @@ export default function ScrollTrace() {
   };
 
   useEffect(() => {
-    if (!isHome) return;
+    if (!active) return;
     const svg = svgRef.current;
     const path = pathRef.current;
     const rules = rulesRef.current;
@@ -129,20 +143,28 @@ export default function ScrollTrace() {
     };
 
     build();
+    // Coalesce bursts of size changes (lazy sections, images) into one
+    // rebuild per frame — each rebuild samples the whole path.
+    let raf = 0;
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(build);
+    };
     const shell = document.querySelector(".app-shell");
-    const ro = shell ? new ResizeObserver(() => build()) : null;
+    const ro = shell ? new ResizeObserver(schedule) : null;
     if (shell && ro) ro.observe(shell);
-    window.addEventListener("resize", build);
+    window.addEventListener("resize", schedule);
     return () => {
+      cancelAnimationFrame(raf);
       ro?.disconnect();
-      window.removeEventListener("resize", build);
+      window.removeEventListener("resize", schedule);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHome]);
+  }, [active]);
 
   useMotionValueEvent(smoothY, "change", (v) => paint(v));
 
-  if (!isHome) return null;
+  if (!active) return null;
 
   return (
     <svg
