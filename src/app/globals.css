@@ -296,13 +296,30 @@ html {
   }
 }
 
-/* backdrop-filter is expensive on low-end mobile GPUs; the modal scrim is
-   the only user, and it can simply go a touch darker instead. The grain
-   sheet (an feTurbulence filter over the whole viewport) is dropped too —
-   it's barely visible on a phone and costs real paint time while scrolling. */
+/* Touch devices: live SVG filters and the scroll trace cost real paint time
+   on mobile GPUs and made scrolling stutter, so phones get cheap stand-ins
+   that look the same:
+   - grain: a pre-rendered noise tile instead of the feTurbulence filter;
+   - section rules: static CSS hairlines in place of the trace's SVG rules
+     (ScrollTrace.tsx is off under the same query);
+   - modal scrim: a touch darker instead of backdrop-filter. */
 @media (pointer: coarse) {
   .grain {
-    display: none;
+    background-image: url("/grain.png");
+    background-size: 128px 128px;
+  }
+  main > section[id] {
+    position: relative;
+  }
+  main > section[id]::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: calc(50% - 50vw);
+    width: 100vw;
+    height: 1px;
+    background: rgb(var(--ink) / 0.09);
+    pointer-events: none;
   }
   .modal-backdrop {
     -webkit-backdrop-filter: none;

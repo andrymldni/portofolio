@@ -40,14 +40,15 @@ export default function ScrollTrace() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
-  // Desktop (mouse) only. On phones this document-tall SVG is repainted on
+  // Off on touch devices. On phones this document-tall SVG is repainted on
   // every scroll frame and rebuilt whenever the URL bar resizes the
-  // viewport, which made scrolling stutter. Starts off so the server and
-  // first client render match.
+  // viewport, which made scrolling stutter; the section rules are drawn in
+  // CSS there instead (same `(pointer: coarse)` query in globals.css).
+  // Starts off so the server and first client render match.
   const [enabled, setEnabled] = useState(false);
   useEffect(() => {
-    const mql = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setEnabled(mql.matches);
+    const mql = window.matchMedia("(pointer: coarse)");
+    const update = () => setEnabled(!mql.matches);
     update();
     mql.addEventListener("change", update);
     return () => mql.removeEventListener("change", update);
