@@ -130,9 +130,9 @@ const SKILLS = [
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="mb-4">
-      <h3 className="cv-heading text-lg md:text-xl font-bold uppercase tracking-wide">
+      <h2 className="cv-heading text-lg md:text-xl font-bold uppercase tracking-wide">
         {children}
-      </h3>
+      </h2>
       <div className="cv-divider mt-2 w-full" />
     </div>
   );
@@ -142,7 +142,7 @@ function EntryBlock({ entry }: { entry: Entry }) {
   return (
     <div className="mb-6 last:mb-0">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
-        <h4 className="font-bold text-slate-900">{entry.role}</h4>
+        <h3 className="font-bold text-slate-900">{entry.role}</h3>
         {entry.location && (
           <span
             className="cv-accent text-sm italic"
@@ -153,7 +153,7 @@ function EntryBlock({ entry }: { entry: Entry }) {
       </div>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
         <p className="text-sm text-slate-500">{entry.org}</p>
-        <span className="text-xs italic text-slate-400">{entry.period}</span>
+        <span className="text-xs italic text-slate-600">{entry.period}</span>
       </div>
       {entry.bullets.length > 0 && (
         <ul className="mt-2 space-y-1.5">
@@ -175,17 +175,14 @@ function EntryBlock({ entry }: { entry: Entry }) {
 function PublicationBlock({ pub }: { pub: Publication }) {
   return (
     <div className="mb-6 last:mb-0">
-      <a
-        href={pub.link}
-        target="_blank"
-        rel="noreferrer"
-        className="font-bold text-slate-900 hover:underline"
-      >
-        {pub.title}
-      </a>
+      <h3 className="font-bold text-slate-900">
+        <a href={pub.link} target="_blank" rel="noreferrer" className="hover:underline">
+          {pub.title}
+        </a>
+      </h3>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
         <p className="text-sm text-slate-500">{pub.venue}</p>
-        <span className="text-xs italic text-slate-400">{pub.date}</span>
+        <span className="text-xs italic text-slate-600">{pub.date}</span>
       </div>
       <p className="mt-2 text-sm leading-relaxed text-slate-700">{pub.note}</p>
     </div>
@@ -305,8 +302,8 @@ export default function Resume() {
                 {EDUCATION.map((ed) => (
                   <div key={ed.school}>
                     <div className="flex flex-wrap items-baseline justify-between gap-x-4">
-                      <h4 className="font-bold text-slate-900">{ed.school}</h4>
-                      <span className="text-xs italic text-slate-400">
+                      <h3 className="font-bold text-slate-900">{ed.school}</h3>
+                      <span className="text-xs italic text-slate-600">
                         {ed.period}
                       </span>
                     </div>

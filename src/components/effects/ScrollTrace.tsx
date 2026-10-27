@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useMotionValueEvent, useScroll, useSpring } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
  * Background "trace": one thin blue line that runs down the whole home
@@ -37,6 +38,7 @@ function catmullRomToBezier(pts: [number, number][]) {
 }
 
 export default function ScrollTrace() {
+  const reduce = usePrefersReducedMotion();
   const pathname = usePathname();
   const isHome = pathname === "/";
 
@@ -53,7 +55,7 @@ export default function ScrollTrace() {
     mql.addEventListener("change", update);
     return () => mql.removeEventListener("change", update);
   }, []);
-  const active = isHome && enabled;
+  const active = isHome && enabled && !reduce;
 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const pathRef = useRef<SVGPathElement | null>(null);
@@ -163,7 +165,9 @@ export default function ScrollTrace() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
-  useMotionValueEvent(smoothY, "change", (v) => paint(v));
+  useMotionValueEvent(smoothY, "change", (v) => {
+    if (active) paint(v);
+  });
 
   if (!active) return null;
 

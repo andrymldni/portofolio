@@ -16,7 +16,7 @@ const Contact = dynamic(() => import("@/components/sections/Contact"));
 
 export default function HomePage() {
   return (
-    <main className="container">
+    <main id="main" tabIndex={-1} className="container">
       {/* Hero isn't wrapped in a Section so it doesn't get a "Home" heading */}
       <Hero />
 

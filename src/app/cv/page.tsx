@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function CVPage() {
   return (
-    <main className="container py-10 md:py-16">
+    <main id="main" tabIndex={-1} className="container py-10 md:py-16">
       <Link
         href="/"
         className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"

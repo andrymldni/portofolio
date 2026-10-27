@@ -5,7 +5,6 @@ import {
   motion,
   AnimatePresence,
   useMotionValue,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
@@ -19,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const ROLES = [
   "Data Analyst",
@@ -43,19 +43,17 @@ const SOCIALS: { label: string; href: string; icon: LucideIcon }[] = [
 ];
 
 export default function Hero() {
-  // Only consulted for the two motions tied to input — the scroll parallax
-  // and the pointer tilt. Nothing rendered depends on it, so server and
-  // client markup match.
-  const reduce = useReducedMotion();
+  const reduce = usePrefersReducedMotion();
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
+    if (reduce) return;
     const t = setInterval(
       () => setIdx((i) => (i + 1) % ROLES.length),
       3200
     );
     return () => clearInterval(t);
-  }, []);
+  }, [reduce]);
 
   // Scroll-linked hand-off: as the hero leaves, the copy drifts up and dims
   // while the photo rises a little faster, so About appears to slide in
@@ -123,10 +121,11 @@ export default function Hero() {
             <motion.div
               variants={rise}
               className="mt-5 flex min-h-[1.6em] items-center justify-center text-xl font-semibold sm:text-2xl md:justify-start"
-              aria-live="polite"
             >
+              <span className="sr-only">{ROLES.join(", ")}</span>
               <AnimatePresence mode="wait">
                 <motion.span
+                  aria-hidden="true"
                   key={idx}
                   initial={{ y: 12, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
@@ -195,7 +194,7 @@ export default function Hero() {
               ref={photoRef}
               onPointerMove={handlePhotoMove}
               onPointerLeave={resetTilt}
-              style={{ rotateX, rotateY, transformPerspective: 800 }}
+              style={{ rotateX: reduce ? 0 : rotateX, rotateY: reduce ? 0 : rotateY, transformPerspective: 800 }}
               className="relative aspect-[4/5]"
             >
               {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}

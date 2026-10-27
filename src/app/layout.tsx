@@ -154,6 +154,12 @@ export default function RootLayout({
         />
       </head>
       <body className={`${poppins.className} ${poppins.variable}`}>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-canvas focus:px-4 focus:py-3 focus:text-ink focus:ring-2 focus:ring-brand"
+        >
+          Skip to main content
+        </a>
         <MotionProvider>
           <div className="grain" aria-hidden="true" />
           <ScrollTrace />

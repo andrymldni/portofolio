@@ -65,15 +65,6 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!isHome) return;
-    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
-    if (window.location.hash) {
-      history.replaceState(
-        null,
-        "",
-        window.location.pathname + window.location.search
-      );
-      window.scrollTo(0, 0);
-    }
     // A section becomes current once its top passes this line. It sits
     // below the navbar's scroll-padding (5.5rem), so a section you jump to
     // from the menu lands *above* the line and lights up straight away.
@@ -121,7 +112,12 @@ export default function Navbar() {
   const handleHomeClick = (e: React.MouseEvent) => {
     if (!isHome) return; // let Link navigate normally back to "/"
     e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({
+      top: 0,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "instant"
+        : "smooth",
+    });
     history.replaceState(
       null,
       "",

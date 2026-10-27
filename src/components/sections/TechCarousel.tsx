@@ -43,11 +43,12 @@ const TOOLS: Tool[] = [
 // Duplicated once for a seamless infinite loop (see .marquee-track keyframes)
 const LOOP = [...TOOLS, ...TOOLS];
 
-function ToolCard({ tool }: { tool: Tool }) {
+function ToolCard({ tool, duplicate }: { tool: Tool; duplicate: boolean }) {
   const Icon = tool.icon;
   return (
     <div
-      className="card group flex w-32 shrink-0 flex-col items-center gap-3 px-4 py-5 sm:w-36"
+      className={`card group flex w-32 shrink-0 flex-col items-center gap-3 px-4 py-5 sm:w-36 ${duplicate ? "motion-reduce:hidden" : ""}`}
+      aria-hidden={duplicate || undefined}
       style={{ "--tool-color": tool.brandColor } as CSSProperties}
     >
       <Icon size={28} className="tool-icon" aria-hidden />
@@ -63,7 +64,7 @@ export default function TechCarousel() {
     <div className="marquee-mask -mx-5 overflow-hidden px-5 md:-mx-6 md:px-6">
       <div className="marquee-track flex w-max gap-4">
         {LOOP.map((tool, i) => (
-          <ToolCard key={`${tool.name}-${i}`} tool={tool} />
+          <ToolCard key={`${tool.name}-${i}`} tool={tool} duplicate={i >= TOOLS.length} />
         ))}
       </div>
     </div>

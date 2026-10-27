@@ -6,11 +6,15 @@ import {
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  Pause,
+  Play,
   X,
 } from "lucide-react";
 import Image from "next/image";
 import { certifications, type Certification } from "@/lib/data";
 import { EASE_OUT } from "@/components/ui/Reveal";
+import { useDialog } from "@/hooks/useDialog";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const AUTOPLAY_MS = 4200;
 
@@ -21,15 +25,7 @@ function CertModal({
   cert: Certification;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
+  const { dialogRef, titleId } = useDialog(onClose);
 
   return (
     <motion.div
@@ -38,11 +34,13 @@ function CertModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={cert.name}
     >
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -77,7 +75,7 @@ function CertModal({
         )}
 
         <div className="p-6">
-          <h3 className="text-lg font-semibold text-ink">{cert.name}</h3>
+          <h3 id={titleId} className="text-lg font-semibold text-ink">{cert.name}</h3>
           <p className="mt-1 text-sm text-muted">
             {cert.issuer} · {cert.year}
           </p>
@@ -110,17 +108,22 @@ export default function CertificatesSlider() {
   const n = certifications.length;
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const reduce = usePrefersReducedMotion();
   const [active, setActive] = useState<Certification | null>(null);
+  const closeModal = useCallback(() => setActive(null), []);
   const wrapRef = useRef<HTMLDivElement | null>(null);
 
   const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
   const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
 
   useEffect(() => {
-    if (paused || active) return;
+    if (reduce || paused || hovered || focused || dragging || active) return;
     const id = setInterval(next, AUTOPLAY_MS);
     return () => clearInterval(id);
-  }, [paused, active, next]);
+  }, [reduce, paused, hovered, focused, dragging, active, next]);
 
   const handleCardClick = (i: number, cert: Certification) => {
     if (i === index) {
@@ -133,23 +136,25 @@ export default function CertificatesSlider() {
   return (
     <div
       ref={wrapRef}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocus={() => setPaused(true)}
-      onBlur={() => setPaused(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false);
+      }}
       className="relative"
     >
       <motion.div
         className="relative -mx-5 h-[320px] cursor-grab touch-pan-y overflow-hidden px-5 sm:h-[300px] active:cursor-grabbing md:-mx-6 md:px-6"
-        drag="x"
+        drag={reduce ? false : "x"}
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
-        onDragStart={() => setPaused(true)}
+        onDragStart={() => setDragging(true)}
         onDragEnd={(_, info) => {
           const SWIPE_THRESHOLD = 45;
           if (info.offset.x < -SWIPE_THRESHOLD) next();
           else if (info.offset.x > SWIPE_THRESHOLD) prev();
-          setPaused(false);
+          setDragging(false);
         }}
       >
         {certifications.map((cert, i) => {
@@ -174,15 +179,10 @@ export default function CertificatesSlider() {
                 scale,
                 opacity,
               }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
             >
-              <button
-                type="button"
-                onClick={() => handleCardClick(i, cert)}
-                aria-label={
-                  isActive ? `Open ${cert.name}` : `Show ${cert.name}`
-                }
-                className={`card group block w-full overflow-hidden p-0 text-left transition-shadow ${
+              <div
+                className={`card group relative block w-full overflow-hidden p-0 text-left transition-shadow ${
                   isActive ? "shadow-[0_24px_48px_-24px_rgba(0,0,0,0.55)]" : ""
                 }`}
               >
@@ -207,21 +207,43 @@ export default function CertificatesSlider() {
                   </div>
                 )}
                 <div className="flex flex-col gap-1 p-5">
-                  <h4 className="text-sm font-semibold leading-snug text-ink">
-                    {cert.name}
-                  </h4>
+                  <h3 className="text-sm font-semibold leading-snug text-ink">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.currentTarget.focus();
+                        handleCardClick(i, cert);
+                      }}
+                      aria-haspopup={isActive ? "dialog" : undefined}
+                      aria-label={isActive ? `Open ${cert.name}` : `Show ${cert.name}`}
+                      className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                    >
+                      {cert.name}
+                    </button>
+                  </h3>
                   <p className="text-xs text-muted">{cert.issuer}</p>
                   <span className="mt-2 text-xs font-medium text-muted/80">
                     {cert.year}
                   </span>
                 </div>
-              </button>
+              </div>
             </motion.div>
           );
         })}
       </motion.div>
 
       {/* Controls */}
+      <div className="mt-4 flex justify-center">
+        <button
+          type="button"
+          onClick={() => setPaused((value) => !value)}
+          disabled={reduce}
+          className="card inline-flex items-center gap-2 px-3 py-2 text-xs text-ink disabled:cursor-default"
+        >
+          {paused || reduce ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
+          {reduce ? "Autoplay off (reduced motion)" : paused ? "Play autoplay" : "Pause autoplay"}
+        </button>
+      </div>
       <div className="mt-4 flex items-center justify-center gap-4">
         <button
           type="button"
@@ -263,7 +285,7 @@ export default function CertificatesSlider() {
       </div>
 
       <AnimatePresence>
-        {active && <CertModal cert={active} onClose={() => setActive(null)} />}
+        {active && <CertModal cert={active} onClose={closeModal} />}
       </AnimatePresence>
     </div>
   );

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
@@ -20,6 +20,10 @@ import Image from "next/image";
 import { projects, type Project } from "@/lib/data";
 import { EASE_OUT } from "@/components/ui/Reveal";
 import { useRandomEntrance } from "@/components/ui/RandomReveal";
+import { useDialog } from "@/hooks/useDialog";
+
+const screenshotAlt = (project: Project) =>
+  `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
 
 /** Category → icon + muted tint, used as the cover when a project has no screenshot. */
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -55,15 +59,7 @@ function ProjectModal({
   project: Project;
   onClose: () => void;
 }) {
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [onClose]);
+  const { dialogRef, titleId } = useDialog(onClose);
 
   return (
     <motion.div
@@ -72,11 +68,13 @@ function ProjectModal({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label={project.title}
     >
       <motion.div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: 16, scale: 0.98 }}
@@ -98,7 +96,7 @@ function ProjectModal({
           {project.image ? (
             <Image
               src={project.image}
-              alt={project.title}
+              alt={screenshotAlt(project)}
               fill
               sizes="(max-width: 640px) 100vw, 32rem"
               className="object-cover"
@@ -112,7 +110,7 @@ function ProjectModal({
           {project.category && (
             <p className="text-xs font-medium text-muted">{project.category}</p>
           )}
-          <h3 className="mt-2 text-xl font-semibold text-ink">
+          <h3 id={titleId} className="mt-2 text-xl font-semibold text-ink">
             {project.title}
           </h3>
           {project.stack && (
@@ -178,16 +176,6 @@ function ProjectCard({
       className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
       }`}
-      onClick={() => onOpen(p)}
-      role="button"
-      tabIndex={0}
-      aria-haspopup="dialog"
-      onKeyDown={(e: React.KeyboardEvent) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onOpen(p);
-        }
-      }}
     >
       <div
         className={`relative w-full border-b border-line ${
@@ -197,7 +185,7 @@ function ProjectCard({
         {p.image ? (
           <Image
             src={p.image}
-            alt={p.title}
+            alt={screenshotAlt(p)}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="object-cover"
@@ -219,7 +207,18 @@ function ProjectCard({
         <header className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <h3 className="text-lg font-semibold leading-snug md:text-xl">
-              {p.title}
+              <button
+                type="button"
+                aria-haspopup="dialog"
+                aria-label={`Open details for ${p.title}`}
+                className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                onClick={(e) => {
+                  e.currentTarget.focus();
+                  onOpen(p);
+                }}
+              >
+                {p.title}
+              </button>
             </h3>
             {p.stack && (
               <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
@@ -231,8 +230,7 @@ function ProjectCard({
                 href={p.demo}
                 target="_blank"
                 rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-muted transition-colors hover:text-ink"
+                className="relative z-10 text-muted transition-colors hover:text-ink"
                 aria-label={`Open live demo for ${p.title}`}
                 title="Live demo"
               >
@@ -244,8 +242,7 @@ function ProjectCard({
                 href={p.link}
                 target="_blank"
                 rel="noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="text-muted transition-colors hover:text-ink"
+                className="relative z-10 text-muted transition-colors hover:text-ink"
                 aria-label={`Visit project ${p.title}`}
                 title="Open link"
               >
@@ -294,6 +291,7 @@ export default function Projects({
     [source, activeCategory],
   );
   const [active, setActive] = useState<Project | null>(null);
+  const closeModal = useCallback(() => setActive(null), []);
 
   return (
     <div>
@@ -330,7 +328,7 @@ export default function Projects({
 
       <AnimatePresence>
         {active && (
-          <ProjectModal project={active} onClose={() => setActive(null)} />
+          <ProjectModal project={active} onClose={closeModal} />
         )}
       </AnimatePresence>
     </div>

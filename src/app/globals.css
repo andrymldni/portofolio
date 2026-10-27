@@ -288,11 +288,19 @@ html {
   display: none;
 }
 
-/* Motion plays regardless of the OS "reduce motion" flag (see
-   MotionProvider); only smooth scrolling defers to it. */
+/* Keep all tools visible in a static layout when motion is reduced. */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+  .marquee-track {
+    animation: none;
+    width: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .marquee-mask {
+    mask-image: none;
   }
 }
 
