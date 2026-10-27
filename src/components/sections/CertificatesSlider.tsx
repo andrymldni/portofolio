@@ -146,7 +146,7 @@ export default function CertificatesSlider() {
     >
       <motion.div
         className="relative -mx-5 h-[320px] cursor-grab touch-pan-y overflow-hidden px-5 sm:h-[300px] active:cursor-grabbing md:-mx-6 md:px-6"
-        drag={reduce ? false : "x"}
+        drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
         onDragStart={() => setDragging(true)}
@@ -179,7 +179,7 @@ export default function CertificatesSlider() {
                 scale,
                 opacity,
               }}
-              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
+              transition={{ type: "spring", stiffness: 260, damping: 28 }}
             >
               <div
                 className={`card group relative block w-full overflow-hidden p-0 text-left transition-shadow ${

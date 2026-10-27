@@ -96,7 +96,24 @@ export default function Contact() {
     );
 
     try {
-      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(CONTACT_EMAIL)}&su=${subject}&body=${body}`;
+      let draft: Window | null = null;
+      try {
+        // Open a blank tab first: the noopener feature returns null even on
+        // success, so it cannot distinguish a blocked popup. Detach the
+        // opener before navigating to Gmail for the same isolation.
+        draft = window.open("about:blank", "_blank");
+        if (draft) {
+          draft.opener = null;
+          draft.location.replace(gmailUrl);
+        }
+      } catch {
+        draft?.close();
+        draft = null;
+      }
+      if (!draft) {
+        window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+      }
       setSent("ok");
       setTimeout(() => setSent(false), 5000);
     } catch {
@@ -218,7 +235,7 @@ export default function Contact() {
 
           <p id="form-status" className="text-xs text-muted" aria-live="polite">
             {sent === "ok" &&
-              "If your email app opened, review the draft and send it there."}
+              "If Gmail or your email app opened, review the draft and send it there."}
             {sent === "err" &&
               "Couldn't open your email client. Try again, or email me directly."}
           </p>

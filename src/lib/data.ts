@@ -31,6 +31,7 @@ export const socialLinks = {
 };
 
 export type Project = {
+  slug: string;
   title: string;
   stack?: string[];
   link?: string;
@@ -42,6 +43,10 @@ export type Project = {
   category?: string;
   desc?: string;
   details?: string;
+  problem?: string;
+  role?: string;
+  approach?: string;
+  results?: string;
 };
 
 // Order matters on desktop (3 columns): each featured card spans 2 columns,
@@ -50,6 +55,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     title: "BRILink Sentiment Intelligence",
+    slug: "brilink-sentiment-intelligence",
     stack: ["Airflow", "dbt", "PostgreSQL", "IndoBERT", "Metabase", "Docker"],
     link: "https://github.com/andrymldni/de-sentiment-analisis",
     image: "/projects/brilink-sentiment.jpg",
@@ -61,6 +67,7 @@ export const projects: Project[] = [
   },
   {
     title: "Human Resources Analytics",
+    slug: "human-resources-analytics",
     stack: ["Python", "Docker", "Metabase"],
     link: "https://github.com/andrymldni/Dicoding-HR-Analytics",
     image: "/proyek1.jpeg",
@@ -71,6 +78,7 @@ export const projects: Project[] = [
   },
   {
     title: "Human Stress Detection",
+    slug: "human-stress-detection",
     stack: ["Python", "TensorFlow", "Pipeline"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Pipeline",
     image: "/proyek2.jpeg",
@@ -81,6 +89,7 @@ export const projects: Project[] = [
   },
   {
     title: "FloraScan — Plant Disease Scanner",
+    slug: "florascan",
     stack: ["JavaScript", "TensorFlow.js", "Computer Vision"],
     link: "https://github.com/andrymldni/plantDisease",
     demo: "https://andrymldni.github.io/plantDisease/",
@@ -93,6 +102,7 @@ export const projects: Project[] = [
   },
   {
     title: "Certification Success Prediction",
+    slug: "certification-success-prediction",
     stack: ["Python", "Neural Network", "Streamlit"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%20-%20Andry.md",
     image: "/proyek3.jpeg",
@@ -103,6 +113,7 @@ export const projects: Project[] = [
   },
   {
     title: "Book Recommendation System",
+    slug: "book-recommendation-system",
     stack: ["Python"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%202%20-%20Andry.md",
     image: "/proyek4.jpg",
@@ -113,6 +124,7 @@ export const projects: Project[] = [
   },
   {
     title: "Bike Sharing Analytics Dashboard",
+    slug: "bike-sharing-analytics-dashboard",
     stack: ["Python", "Pandas", "Streamlit"],
     link: "https://github.com/andrymldni/Dicoding-Bikes-Sharing",
     image: "/projects/bike-sharing.jpg",
@@ -123,6 +135,7 @@ export const projects: Project[] = [
   },
   {
     title: "Student Dropout Prediction",
+    slug: "student-dropout-prediction",
     stack: ["Python", "Scikit-learn", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-Student-Status-Predictions",
     image: "/projects/student-dropout.jpg",
@@ -133,6 +146,7 @@ export const projects: Project[] = [
   },
   {
     title: "Campus Placement Prediction",
+    slug: "campus-placement-prediction",
     stack: ["Python", "MLOps", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Campus",
     image: "/projects/campus-placement.jpg",
@@ -143,6 +157,7 @@ export const projects: Project[] = [
   },
   {
     title: "Gesture Volume Control",
+    slug: "gesture-volume-control",
     stack: ["Python", "OpenCV", "MediaPipe"],
     link: "https://github.com/andrymldni/GestureVolumeControl",
     image: "/projects/gesture-volume.jpg",
@@ -153,6 +168,7 @@ export const projects: Project[] = [
   },
   {
     title: "Cek Kata Baku",
+    slug: "cek-kata-baku",
     stack: ["Python", "NLP"],
     link: "https://github.com/andrymldni/cek-kata-baku",
     image: "/projects/cek-kata-baku.jpg",

@@ -16,6 +16,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { projects, type Project } from "@/lib/data";
 import { EASE_OUT } from "@/components/ui/Reveal";
 import { useRandomEntrance } from "@/components/ui/RandomReveal";
@@ -120,6 +121,9 @@ function ProjectModal({
             {project.details ?? project.desc}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
+            <Link href={`/projects/${project.slug}`} className="btn-secondary">
+              Read case study
+            </Link>
             {project.demo && (
               <a
                 href={project.demo}
@@ -185,7 +189,9 @@ function ProjectCard({
             src={p.image}
             alt={screenshotAlt(p)}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes={p.featured
+              ? "(min-width: 1152px) 728px, (min-width: 1024px) calc(66.667vw - 40px), (min-width: 768px) calc(100vw - 48px), calc(100vw - 40px)"
+              : "(min-width: 1152px) 352px, (min-width: 1024px) calc(33.333vw - 32px), (min-width: 768px) calc(50vw - 36px), (min-width: 640px) calc(50vw - 32px), calc(100vw - 40px)"}
             className="object-cover"
             loading="lazy"
           />
@@ -259,6 +265,13 @@ function ProjectCard({
             {p.desc}
           </p>
         )}
+        <Link
+          href={`/projects/${p.slug}`}
+          aria-label={`Read case study: ${p.title}`}
+          className="relative z-10 mt-4 inline-flex text-sm font-medium text-brand transition-colors hover:text-ink"
+        >
+          Read case study
+        </Link>
       </div>
     </motion.article>
   );

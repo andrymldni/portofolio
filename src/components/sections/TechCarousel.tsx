@@ -1,4 +1,3 @@
-"use client";
 import type { CSSProperties } from "react";
 import { IconType } from "react-icons";
 import {

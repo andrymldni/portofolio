@@ -24,11 +24,11 @@ Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
 - 📂 **Section Lengkap**:
   - **About** – Profil singkat, kontak, dan CV.
   - **Resume** – Pengalaman kerja, organisasi, pendidikan, sertifikasi.
-  - **Projects** – Showcase proyek dengan gambar, stack, link.
-  - **Contact** – Membuka draft di aplikasi email melalui `mailto`, tanpa backend; isi pesan tetap tersimpan di form.
+  - **Projects** – Showcase proyek dengan gambar, stack, link, dan halaman studi kasus statis untuk setiap proyek.
+  - **Contact** – Membuka draft Gmail, dengan fallback `mailto` jika popup diblokir; tanpa backend dan isi pesan tetap tersimpan di form.
 - 🎨 **Tema terang & gelap** – Palet abu-abu dan biru (grafit, abu terang, satu aksen biru) tanpa gradien neon; mengikuti tema sistem.
 - 📜 **Scroll reveal** – Setiap bagian muncul saat masuk viewport (Framer Motion `whileInView`).
-- ♿ **Aksesibilitas** – Skip link, fokus keyboard, dan pengelolaan fokus modal; animasi mengikuti `prefers-reduced-motion`, dengan kontrol pause/play sertifikat.
+- ♿ **Aksesibilitas** – Skip link, fokus keyboard, dan pengelolaan fokus modal; gerakan berulang/otomatis, parallax, dan tilt mengikuti `prefers-reduced-motion`, dengan kontrol pause/play sertifikat. Animasi masuk tetap berjalan.
 
 ---
 
@@ -47,6 +47,7 @@ Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
 src/
  ├─ app/
  │   ├─ cv/             # Halaman CV (merender Resume inline)
+ │   ├─ projects/[slug]/ # Halaman studi kasus statis dari data proyek
  │   ├─ fonts/          # Poppins (self-hosted, woff2)
  │   ├─ layout.tsx      # Layout utama (Navbar, Footer, MotionProvider)
  │   ├─ page.tsx        # Halaman utama
@@ -103,8 +104,9 @@ NEXT_PUBLIC_CONTACT_EMAIL=youremail@example.com
 Jika tidak diisi atau kosong, alamat default di `src/lib/data.ts` digunakan.
 Variabel publik ini dibaca saat build dan dipakai bersama oleh form kontak,
 About, CV, dan JSON-LD; lakukan build/deploy ulang setelah mengubahnya.
-Form hanya membuka draft `mailto` dan tidak mengirim pesan otomatis; pengguna
-perlu aplikasi email yang terkonfigurasi dan mengirim draft sendiri.
+Form membuka draft Gmail dan memakai `mailto` jika popup diblokir; pesan tidak
+dikirim otomatis. Pengguna meninjau dan mengirim draft sendiri di Gmail atau
+aplikasi email yang terkonfigurasi.
 URL kanonis situs diatur di `src/lib/site.ts`.
 
 ---

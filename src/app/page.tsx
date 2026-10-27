@@ -1,18 +1,11 @@
-"use client";
-import dynamic from "next/dynamic";
 import { Reveal } from "@/components/ui/Reveal";
-
-const Hero = dynamic(() => import("@/components/sections/Hero"));
-const Section = dynamic(() => import("@/components/ui/Section"));
-const About = dynamic(() => import("@/components/sections/About"));
-const TechCarousel = dynamic(
-  () => import("@/components/sections/TechCarousel")
-);
-const CertificatesSlider = dynamic(
-  () => import("@/components/sections/CertificatesSlider")
-);
-const Projects = dynamic(() => import("@/components/sections/Projects"));
-const Contact = dynamic(() => import("@/components/sections/Contact"));
+import Hero from "@/components/sections/Hero";
+import Section from "@/components/ui/Section";
+import About from "@/components/sections/About";
+import TechCarousel from "@/components/sections/TechCarousel";
+import CertificatesSlider from "@/components/sections/CertificatesSlider";
+import Projects from "@/components/sections/Projects";
+import Contact from "@/components/sections/Contact";
 
 export default function HomePage() {
   return (

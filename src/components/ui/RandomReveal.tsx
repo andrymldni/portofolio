@@ -9,7 +9,6 @@ import {
   type TargetAndTransition,
 } from "framer-motion";
 import { EASE_OUT } from "@/components/ui/Reveal";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
  * An entrance that changes every time the element scrolls into view.
@@ -54,7 +53,6 @@ const PERSPECTIVE: CSSProperties & { transformPerspective: number } = {
 
 /** Spread the result onto any motion element: ref, initial, animate, style. */
 export function useRandomEntrance(seed: number, delay = 0) {
-  const reduce = usePrefersReducedMotion();
   const ref = useRef<HTMLElement | null>(null);
   const inView = useInView(ref, { amount: 0.15 });
   const controls = useAnimationControls();
@@ -65,11 +63,6 @@ export function useRandomEntrance(seed: number, delay = 0) {
   );
 
   useEffect(() => {
-    if (reduce) {
-      controls.stop();
-      controls.set(SHOWN);
-      return;
-    }
     if (inView) {
       entered.current = true;
       const { duration } = ENTRANCES[current.current];
@@ -86,7 +79,7 @@ export function useRandomEntrance(seed: number, delay = 0) {
       });
     }
     return () => controls.stop();
-  }, [reduce, inView, controls, delay]);
+  }, [inView, controls, delay]);
 
   return { ref, initial, animate: controls, style: PERSPECTIVE };
 }
