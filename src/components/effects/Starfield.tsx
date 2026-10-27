@@ -56,7 +56,7 @@ export default function Starfield() {
 
     let width = 0;
     let height = 0;
-    let dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, lowPower ? 1 : 2);
     let stars: Star[] = [];
     let shooters: Shooter[] = [];
     let raf = 0;
@@ -65,8 +65,8 @@ export default function Starfield() {
     let running = false;
 
     // Subtle parallax target — mouse position normalized to [-1, 1]
-    let parallax = { x: 0, y: 0 };
-    let parallaxTarget = { x: 0, y: 0 };
+    const parallax = { x: 0, y: 0 };
+    const parallaxTarget = { x: 0, y: 0 };
 
     const STAR_COUNT_BASE = lowPower ? 60 : 170;
     const MIN_STARS = lowPower ? 30 : 70;

@@ -58,7 +58,9 @@ export function useRandomEntrance(seed: number, delay = 0) {
   const controls = useAnimationControls();
   const current = useRef(Math.abs(seed) % ENTRANCES.length);
   const entered = useRef(false);
-  const [initial] = useState<Target>(() => ENTRANCES[current.current].hidden);
+  const [initial] = useState<Target>(
+    () => ENTRANCES[Math.abs(seed) % ENTRANCES.length].hidden
+  );
 
   useEffect(() => {
     if (inView) {
@@ -88,13 +90,13 @@ type Props = Omit<HTMLMotionProps<"div">, "initial" | "animate" | "style"> & {
 
 /** A div with a random entrance — for blocks that don't need a custom tag. */
 export function RandomReveal({ seed, delay = 0, children, ...rest }: Props) {
-  const entrance = useRandomEntrance(seed, delay);
+  const { ref, initial, animate, style } = useRandomEntrance(seed, delay);
   return (
     <motion.div
-      ref={entrance.ref as React.Ref<HTMLDivElement>}
-      initial={entrance.initial}
-      animate={entrance.animate}
-      style={entrance.style}
+      ref={ref as React.Ref<HTMLDivElement>}
+      initial={initial}
+      animate={animate}
+      style={style}
       {...rest}
     >
       {children}

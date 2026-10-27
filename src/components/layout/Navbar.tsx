@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -23,15 +23,16 @@ const navItems = [
   { hash: "#contact", label: "Contact" },
 ];
 
+const subscribeToMount = () => () => {};
+
 function ThemeToggle() {
-  const [mounted, setMounted] = useState(false);
+  // Keep the server and hydration output empty, then show the theme control.
+  const mounted = useSyncExternalStore(subscribeToMount, () => true, () => false);
   const theme =
     typeof document !== "undefined"
       ? document.documentElement.dataset.theme
       : "dark";
   const [curr, setCurr] = useState(theme || "dark");
-
-  useEffect(() => setMounted(true), []);
 
   const toggle = () => {
     const next =

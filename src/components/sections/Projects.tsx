@@ -167,13 +167,13 @@ function ProjectCard({
   onOpen: (p: Project) => void;
 }) {
   // Each card enters differently, and differently again on every scroll.
-  const entrance = useRandomEntrance(index, (index % 3) * 0.07);
+  const { ref, initial, animate, style } = useRandomEntrance(index, (index % 3) * 0.07);
   return (
     <motion.article
-      ref={entrance.ref}
-      initial={entrance.initial}
-      animate={entrance.animate}
-      style={entrance.style}
+      ref={ref}
+      initial={initial}
+      animate={animate}
+      style={style}
       whileHover={{ y: -3 }}
       className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
