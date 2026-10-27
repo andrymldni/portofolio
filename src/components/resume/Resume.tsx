@@ -8,6 +8,8 @@ import {
   Linkedin,
   Download,
 } from "lucide-react";
+import { certifications, CONTACT_EMAIL, socialLinks } from "@/lib/data";
+import { SITE_URL } from "@/lib/site";
 
 type Entry = {
   role: string;
@@ -99,15 +101,6 @@ const EDUCATION = [
     period: "Aug 2021 – Jul 2025",
     note: "GPA 3.71 / 4.00",
   },
-];
-
-const CERTIFICATIONS = [
-  "BNSP Junior Web Programmer",
-  "Google Data Analytics Professional Certificate",
-  "Google IT Automation with Python Professional Certificate",
-  "Machine Learning Operations (MLOps)",
-  "Alibaba Cloud - ACA Big Data Certification",
-  "Bangkit Academy 2024 - Machine Learning",
 ];
 
 const SKILLS = [
@@ -224,23 +217,23 @@ export default function Resume() {
                 +62 858-9581-2699
               </span>
               <a
-                href="mailto:andrymldni@gmail.com"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="flex items-center gap-1.5 hover:text-slate-900"
               >
                 <Mail size={14} className="shrink-0" />
-                andrymldni@gmail.com
+                {CONTACT_EMAIL}
               </a>
               <a
-                href="https://andrymldni.dev"
+                href={SITE_URL}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 hover:text-slate-900"
               >
                 <Globe size={14} className="shrink-0" />
-                andrymldni.dev
+                {new URL(SITE_URL).hostname}
               </a>
               <a
-                href="https://github.com/andrymldni"
+                href={socialLinks.github.href}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 hover:text-slate-900"
@@ -249,7 +242,7 @@ export default function Resume() {
                 andrymldni
               </a>
               <a
-                href="https://www.linkedin.com/in/andrymldni"
+                href={socialLinks.linkedin.href}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 hover:text-slate-900"
@@ -316,13 +309,13 @@ export default function Resume() {
               <section>
                 <SectionHeading>Certifications</SectionHeading>
                 <ul className="space-y-1.5">
-                  {CERTIFICATIONS.map((c) => (
+                  {[...certifications].sort((a, b) => a.resumeOrder - b.resumeOrder).map((c) => (
                     <li
-                      key={c}
+                      key={c.name}
                       className="flex gap-2 text-sm leading-relaxed text-slate-700"
                     >
                       <span className="mt-2 h-1 w-1 shrink-0 rounded-full bg-slate-400" />
-                      {c}
+                      {c.resumeName ?? c.name}
                     </li>
                   ))}
                 </ul>

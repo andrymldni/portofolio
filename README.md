@@ -5,14 +5,14 @@
 [![Framer Motion](https://img.shields.io/badge/Framer_Motion-Animation-EF4444?logo=framer)](https://www.framer.com/motion/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> Website portfolio responsif dengan palet hangat, animasi scroll yang halus, dan optimasi performa.
+> Website portfolio responsif dengan palet abu-abu dan biru, animasi scroll yang halus, dan optimasi performa.
 
 ---
 
 ## 📸 Preview
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5f361bfc-51db-492a-8991-a16163d1103d" />
 
-Live Demo: **[andrymldni.dev](https://portofolio-delta-liard.vercel.app/)**
+Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
 
 ---
 
@@ -25,10 +25,10 @@ Live Demo: **[andrymldni.dev](https://portofolio-delta-liard.vercel.app/)**
   - **About** – Profil singkat, kontak, dan CV.
   - **Resume** – Pengalaman kerja, organisasi, pendidikan, sertifikasi.
   - **Projects** – Showcase proyek dengan gambar, stack, link.
-  - **Contact** – Form pesan via Gmail/email klien.
+  - **Contact** – Membuka draft di aplikasi email melalui `mailto`, tanpa backend; isi pesan tetap tersimpan di form.
 - 🎨 **Tema terang & gelap** – Palet abu-abu dan biru (grafit, abu terang, satu aksen biru) tanpa gradien neon; mengikuti tema sistem.
 - 📜 **Scroll reveal** – Setiap bagian muncul saat masuk viewport (Framer Motion `whileInView`).
-- ♿ **Aksesibilitas** – Fokus keyboard terlihat di semua kontrol; parallax dan tilt foto mati saat prefers-reduced-motion aktif.
+- ♿ **Aksesibilitas** – Skip link, fokus keyboard, dan pengelolaan fokus modal; animasi mengikuti `prefers-reduced-motion`, dengan kontrol pause/play sertifikat.
 
 ---
 
@@ -51,11 +51,15 @@ src/
  │   ├─ layout.tsx      # Layout utama (Navbar, Footer, MotionProvider)
  │   ├─ page.tsx        # Halaman utama
  │   └─ globals.css     # Style global + custom class
- └─ components/
-     ├─ layout/         # Navbar, Footer, ScrollProgress, MotionProvider
-     ├─ sections/       # Hero, About, Projects, CertificatesSlider, TechCarousel, Contact
-     ├─ ui/             # Section, Reveal, BackToTop
-     └─ resume/         # Resume
+ ├─ components/
+ │   ├─ layout/         # Navbar, Footer, ScrollProgress, MotionProvider
+ │   ├─ sections/       # Hero, About, Projects, CertificatesSlider, TechCarousel, Contact
+ │   ├─ ui/             # Section, Reveal, BackToTop
+ │   └─ resume/         # Resume
+ ├─ hooks/              # Fokus dialog dan preferensi reduced motion
+ └─ lib/
+     ├─ data.ts         # Proyek, sertifikasi, email kontak, dan tautan sosial
+     └─ site.ts         # URL kanonis situs
 ```
 
 ---
@@ -78,6 +82,17 @@ npm run dev
 
 Buka di browser: [http://localhost:3000](http://localhost:3000)
 
+Validasi dan build produksi:
+
+```bash
+npm run lint
+npm run typecheck
+npm run build
+npm run start
+```
+
+`lint` menjalankan ESLint dan `typecheck` menjalankan TypeScript tanpa emit.
+
 ---
 
 ## 🔧 Konfigurasi Environment
@@ -85,7 +100,12 @@ Buat file `.env.local` di root proyek:
 ```env
 NEXT_PUBLIC_CONTACT_EMAIL=youremail@example.com
 ```
-Jika tidak diisi, default akan menggunakan `andrymldni@gmail.com`.
+Jika tidak diisi atau kosong, alamat default di `src/lib/data.ts` digunakan.
+Variabel publik ini dibaca saat build dan dipakai bersama oleh form kontak,
+About, CV, dan JSON-LD; lakukan build/deploy ulang setelah mengubahnya.
+Form hanya membuka draft `mailto` dan tidak mengirim pesan otomatis; pengguna
+perlu aplikasi email yang terkonfigurasi dan mengirim draft sendiri.
+URL kanonis situs diatur di `src/lib/site.ts`.
 
 ---
 

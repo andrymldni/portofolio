@@ -7,6 +7,8 @@ import ScrollProgress from "@/components/layout/ScrollProgress";
 import BackToTop from "@/components/ui/BackToTop";
 import MotionProvider from "@/components/layout/MotionProvider";
 import ScrollTrace from "@/components/effects/ScrollTrace";
+import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
+import { SITE_URL } from "@/lib/site";
 
 // Poppins is self-hosted from ./fonts so `next dev` and `next build` never
 // need to reach Google Fonts (a failed download breaks Turbopack builds).
@@ -31,7 +33,6 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-const SITE_URL = "https://andrymldni.dev";
 const SITE_TITLE = "Andry Syva Maldini – Data Scientist & BI Portfolio";
 const SITE_DESCRIPTION =
   "Portfolio of Andry Syva Maldini, a Data Scientist & Business Intelligence specialist from Jakarta, Indonesia — data pipelines, predictive modeling, and BI dashboards built with Python, SQL, Spark & Power BI.";
@@ -119,13 +120,8 @@ const personJsonLd = {
     addressLocality: "Jakarta",
     addressCountry: "ID",
   },
-  email: "mailto:andrymldni@gmail.com",
-  sameAs: [
-    "https://github.com/andrymldni",
-    "https://www.linkedin.com/in/andrymldni",
-    "https://www.instagram.com/andrymldni",
-    "https://twitter.com/andrymldni",
-  ],
+  email: `mailto:${CONTACT_EMAIL}`,
+  sameAs: Object.values(socialLinks).map((social) => social.href),
 };
 
 // Inisialisasi tema secepat mungkin (hindari FOUC)

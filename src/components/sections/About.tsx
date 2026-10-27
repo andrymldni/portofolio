@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { Reveal, RevealGroup, rise } from "@/components/ui/Reveal";
+import { CONTACT_EMAIL } from "@/lib/data";
 
 const FACTS: { label: string; value: string; href?: string }[] = [
   { label: "Based in", value: "Jakarta, Indonesia" },
@@ -11,8 +12,8 @@ const FACTS: { label: string; value: string; href?: string }[] = [
   },
   {
     label: "Email",
-    value: "andrymldni@gmail.com",
-    href: "mailto:andrymldni@gmail.com",
+    value: CONTACT_EMAIL,
+    href: `mailto:${CONTACT_EMAIL}`,
   },
 ];
 

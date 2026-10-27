@@ -7,7 +7,6 @@ import {
   Globe,
   X,
   Brain,
-  Cpu,
   Database,
   BarChart3,
   Workflow,
@@ -29,7 +28,6 @@ const screenshotAlt = (project: Project) =>
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
   "Data Engineering": { icon: Database, tint: "cover-blue" },
   "AI/ML": { icon: Brain, tint: "cover-graphite" },
-  ML: { icon: Cpu, tint: "cover-slate" },
   "Data Analytics": { icon: BarChart3, tint: "cover-mist" },
   MLOps: { icon: Workflow, tint: "cover-slate" },
   "Computer Vision": { icon: ScanEye, tint: "cover-graphite" },

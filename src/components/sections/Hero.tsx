@@ -9,37 +9,16 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import {
-  ArrowDown,
-  Github,
-  Instagram,
-  Linkedin,
-  Twitter,
-  type LucideIcon,
-} from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { socialLinks } from "@/lib/data";
 
 const ROLES = [
   "Data Analyst",
   "Business Intelligence",
   "Data Engineer",
   "Data Scientist",
-];
-
-const SOCIALS: { label: string; href: string; icon: LucideIcon }[] = [
-  { label: "GitHub", href: "https://github.com/andrymldni", icon: Github },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/andrymldni",
-    icon: Linkedin,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/andrymldni",
-    icon: Instagram,
-  },
-  { label: "Twitter", href: "https://twitter.com/andrymldni", icon: Twitter },
 ];
 
 export default function Hero() {
@@ -163,7 +142,7 @@ export default function Hero() {
               variants={rise}
               className="mt-8 flex items-center justify-center gap-5 md:justify-start"
             >
-              {SOCIALS.map((s) => (
+              {Object.values(socialLinks).map((s) => (
                 <a
                   key={s.label}
                   href={s.href}

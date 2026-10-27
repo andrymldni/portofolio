@@ -7,31 +7,13 @@ import {
   MapPin,
   Copy,
   Check,
-  Github,
-  Linkedin,
-  Instagram,
-  Twitter,
   type LucideIcon,
 } from "lucide-react";
 import { RandomReveal } from "@/components/ui/RandomReveal";
+import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
+import { SITE_URL } from "@/lib/site";
 
-const EMAIL = "andrymldni@gmail.com";
 const PHONE = "+62 858-9581-2699";
-
-const SOCIALS = [
-  { label: "GitHub", href: "https://github.com/andrymldni", icon: Github },
-  {
-    label: "LinkedIn",
-    href: "https://www.linkedin.com/in/andrymldni",
-    icon: Linkedin,
-  },
-  {
-    label: "Instagram",
-    href: "https://www.instagram.com/andrymldni",
-    icon: Instagram,
-  },
-  { label: "Twitter", href: "https://twitter.com/andrymldni", icon: Twitter },
-];
 
 function QuickContactCard({
   icon: Icon,
@@ -110,16 +92,12 @@ export default function Contact() {
     setSent("loading");
     const subject = encodeURIComponent(`[Portfolio] Message from ${name}`);
     const body = encodeURIComponent(
-      `From: ${name} <${fromEmail}>\n\nMessage:\n${message}\n\n— sent from andrymldni.dev`,
+      `From: ${name} <${fromEmail}>\n\nMessage:\n${message}\n\n— sent from ${new URL(SITE_URL).hostname}`,
     );
 
     try {
-      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${EMAIL}&su=${subject}&body=${body}`;
-      const opened = window.open(gmailUrl, "_blank", "noopener,noreferrer");
-      if (!opened)
-        window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
       setSent("ok");
-      (e.currentTarget as HTMLFormElement).reset();
       setTimeout(() => setSent(false), 5000);
     } catch {
       setSent("err");
@@ -144,7 +122,7 @@ export default function Contact() {
           <QuickContactCard
             icon={Mail}
             label="Email — click to copy"
-            value={EMAIL}
+            value={CONTACT_EMAIL}
             copyable
           />
           <QuickContactCard
@@ -162,7 +140,7 @@ export default function Contact() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-          {SOCIALS.map((s) => (
+          {Object.values(socialLinks).map((s) => (
             <a
               key={s.label}
               href={s.href}
@@ -235,12 +213,12 @@ export default function Contact() {
             type="submit"
           >
             <Send size={15} />
-            {sent === "loading" ? "Sending..." : "Send message"}
+            {sent === "loading" ? "Opening draft..." : "Open email draft"}
           </button>
 
           <p id="form-status" className="text-xs text-muted" aria-live="polite">
             {sent === "ok" &&
-              "Opened in Gmail or your email client — just hit send."}
+              "If your email app opened, review the draft and send it there."}
             {sent === "err" &&
               "Couldn't open your email client. Try again, or email me directly."}
           </p>

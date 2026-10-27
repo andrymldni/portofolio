@@ -1,3 +1,35 @@
+import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
+
+export const CONTACT_EMAIL =
+  process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "andrymldni@gmail.com";
+
+export const socialLinks = {
+  github: {
+    label: "GitHub",
+    href: "https://github.com/andrymldni",
+    icon: Github,
+    footerOrder: 0,
+  },
+  linkedin: {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/in/andrymldni",
+    icon: Linkedin,
+    footerOrder: 1,
+  },
+  instagram: {
+    label: "Instagram",
+    href: "https://www.instagram.com/andrymldni",
+    icon: Instagram,
+    footerOrder: 3,
+  },
+  twitter: {
+    label: "Twitter",
+    href: "https://twitter.com/andrymldni",
+    icon: Twitter,
+    footerOrder: 2,
+  },
+};
+
 export type Project = {
   title: string;
   stack?: string[];
@@ -64,7 +96,7 @@ export const projects: Project[] = [
     stack: ["Python", "Neural Network", "Streamlit"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%20-%20Andry.md",
     image: "/proyek3.jpeg",
-    category: "ML",
+    category: "AI/ML",
     desc: "Predict assessment outcomes with NN for consistency and efficiency.",
     details:
       "A lightweight neural network that predicts certification pass outcomes based on a participant's performance history, wrapped in a Streamlit interface so non-technical users can explore the predictions easily. The focus here was on consistent model evaluation and a more efficient assessment process.",
@@ -74,7 +106,7 @@ export const projects: Project[] = [
     stack: ["Python"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%202%20-%20Andry.md",
     image: "/proyek4.jpg",
-    category: "ML",
+    category: "AI/ML",
     desc: "Personalized book recommendations via ML.",
     details:
       "A book recommendation system combining content-based and collaborative filtering. The model was evaluated using precision@k and AUC to make sure recommendations stay relevant and genuinely personal for each user.",
@@ -94,7 +126,7 @@ export const projects: Project[] = [
     stack: ["Python", "Scikit-learn", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-Student-Status-Predictions",
     image: "/projects/student-dropout.jpg",
-    category: "ML",
+    category: "AI/ML",
     desc: "Early-warning model flagging students at risk of dropping out.",
     details:
       "A classification model built for an education institute that flags students likely to drop out before it happens, using academic and demographic features. The goal: give the institution enough lead time to step in with guidance and support before a student disengages.",
@@ -131,26 +163,11 @@ export const projects: Project[] = [
   },
 ];
 
-export const tools = [
-  "Python",
-  "SQL",
-  "Apache Spark",
-  "PostgreSQL",
-  "BigQuery",
-  "MySQL",
-  "Docker",
-  "Google Cloud",
-  "Linux",
-  "Grafana",
-  "TensorFlow",
-  "Scikit-learn",
-  "Power BI",
-  "Git",
-  "Metabase",
-] as const;
-
 export type Certification = {
   name: string;
+  /** Preserve the CV's compact labels and ordering from the same records. */
+  resumeName?: string;
+  resumeOrder: number;
   issuer: string;
   year: string;
   /** Path to a certificate image, e.g. "/certificates/gda.jpg" (put the file in /public/certificates) */
@@ -162,6 +179,7 @@ export type Certification = {
 export const certifications: Certification[] = [
   {
     name: "Google Data Analytics Professional Certificate",
+    resumeOrder: 1,
     issuer: "Coursera",
     year: "2024",
     image: "/certificates/Sertifikat1.jpg",
@@ -169,6 +187,8 @@ export const certifications: Certification[] = [
   },
   {
     name: "Google IT Automation with Python",
+    resumeName: "Google IT Automation with Python Professional Certificate",
+    resumeOrder: 2,
     issuer: "Coursera",
     year: "2024",
     image: "/certificates/Sertifikat2.jpg",
@@ -176,6 +196,7 @@ export const certifications: Certification[] = [
   },
   {
     name: "Machine Learning Operations (MLOps)",
+    resumeOrder: 3,
     issuer: "Dicoding",
     year: "2024",
     image: "/certificates/Sertifikat3.jpg",
@@ -183,6 +204,7 @@ export const certifications: Certification[] = [
   },
   {
     name: "Alibaba Cloud - ACA Big Data Certification",
+    resumeOrder: 4,
     issuer: "Alibaba Cloud",
     year: "2024",
     image: "/certificates/Sertifikat4.png",
@@ -190,6 +212,7 @@ export const certifications: Certification[] = [
   },
   {
     name: "Bangkit Academy 2024 - Machine Learning",
+    resumeOrder: 5,
     issuer: "Kampus Merdeka",
     year: "2024",
     image: "/certificates/Sertifikat5.jpg",
@@ -197,6 +220,8 @@ export const certifications: Certification[] = [
   },
   {
     name: "Junior Web Programmer",
+    resumeName: "BNSP Junior Web Programmer",
+    resumeOrder: 0,
     issuer: "Badan Nasional Sertifikasi Profesi (BNSP)",
     year: "2023",
     image: "/certificates/Sertifikat6.jpg",

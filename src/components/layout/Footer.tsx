@@ -1,7 +1,7 @@
 "use client";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Github, Linkedin, Twitter, Instagram } from "lucide-react";
+import { socialLinks } from "@/lib/data";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -51,42 +51,18 @@ export default function Footer() {
           </Link>
         </nav>
         <div className="flex items-center gap-4">
-          <a
-            href="https://github.com/andrymldni"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="GitHub"
-            className="transition-colors hover:text-ink"
-          >
-            <Github size={16} />
-          </a>
-          <a
-            href="https://www.linkedin.com/in/andrymldni"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="LinkedIn"
-            className="transition-colors hover:text-ink"
-          >
-            <Linkedin size={16} />
-          </a>
-          <a
-            href="https://twitter.com/andrymldni"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Twitter"
-            className="transition-colors hover:text-ink"
-          >
-            <Twitter size={16} />
-          </a>
-          <a
-            href="https://instagram.com/andrymldni"
-            target="_blank"
-            rel="noreferrer"
-            aria-label="Instagram"
-            className="transition-colors hover:text-ink"
-          >
-            <Instagram size={16} />
-          </a>
+          {Object.values(socialLinks).sort((a, b) => a.footerOrder - b.footerOrder).map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label={social.label}
+              className="transition-colors hover:text-ink"
+            >
+              <social.icon size={16} />
+            </a>
+          ))}
         </div>
       </div>
     </footer>

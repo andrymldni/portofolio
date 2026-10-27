@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { SITE_URL } from "@/lib/site";
 
 export const alt = "Andry Syva Maldini — Data Analyst, Jakarta";
 export const size = { width: 1200, height: 630 };
@@ -11,6 +12,8 @@ const MUTED = "#9aa3ad";
 const BLUE = "#6ea8ff";
 
 export default async function OpengraphImage() {
+  const hostname = new URL(SITE_URL).hostname;
+  const suffixStart = hostname.lastIndexOf(".");
   return new ImageResponse(
     (
       <div
@@ -80,7 +83,8 @@ export default async function OpengraphImage() {
           }}
         >
           <div style={{ display: "flex" }}>
-            andrymldni<span style={{ color: BLUE }}>.dev</span>
+            {hostname.slice(0, suffixStart)}
+            <span style={{ color: BLUE }}>{hostname.slice(suffixStart)}</span>
           </div>
           <div style={{ display: "flex" }}>
             Python · SQL · Airflow · Power BI · Docker

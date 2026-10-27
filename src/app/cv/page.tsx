@@ -3,10 +3,25 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import Resume from "@/components/resume/Resume";
 
+const TITLE = "CV — Andry Syva Maldini";
+const DESCRIPTION =
+  "Curriculum Vitae Andry Syva Maldini — Data Scientist, Business Intelligence, Data Analyst & Data Engineer.";
+
 export const metadata: Metadata = {
-  title: "CV — Andry Syva Maldini",
-  description:
-    "Curriculum Vitae Andry Syva Maldini — Data Scientist, Business Intelligence, Data Analyst & Data Engineer.",
+  title: TITLE,
+  description: DESCRIPTION,
+  alternates: { canonical: "/cv" },
+  openGraph: {
+    url: "/cv",
+    title: TITLE,
+    description: DESCRIPTION,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function CVPage() {

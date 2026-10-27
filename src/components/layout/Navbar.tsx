@@ -6,14 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
-  Github,
-  Linkedin,
-  Instagram,
-  Twitter,
   Sun,
   Moon,
   FileText,
 } from "lucide-react";
+import { socialLinks } from "@/lib/data";
 
 const navItems = [
   { hash: "#", label: "Home" },
@@ -257,42 +254,18 @@ export default function Navbar() {
                 </Link>
               </motion.li>
               <li className="flex gap-4 pt-2 text-muted">
-                <a
-                  href="https://github.com/andrymldni"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-ink"
-                  aria-label="GitHub"
-                >
-                  <Github size={18} />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/andrymldni"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-ink"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={18} />
-                </a>
-                <a
-                  href="https://www.instagram.com/andrymldni"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-ink"
-                  aria-label="Instagram"
-                >
-                  <Instagram size={18} />
-                </a>
-                <a
-                  href="https://twitter.com/andrymldni"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="transition-colors hover:text-ink"
-                  aria-label="Twitter"
-                >
-                  <Twitter size={18} />
-                </a>
+                {Object.values(socialLinks).map((social) => (
+                  <a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition-colors hover:text-ink"
+                    aria-label={social.label}
+                  >
+                    <social.icon size={18} />
+                  </a>
+                ))}
               </li>
             </ul>
           </motion.div>
