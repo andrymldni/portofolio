@@ -5,7 +5,7 @@ import { useMotionValueEvent, useScroll, useSpring } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
- * Background "trace": one subtle accent line that runs down the whole home
+ * Background "trace": one thin blue line that runs down the whole home
  * page, hugging alternate margins and crossing the page between sections,
  * and draws itself in as you scroll — like a pen following you down the
  * page — with a dot riding its tip. Faint full-width rules mark where each
@@ -104,7 +104,7 @@ export default function ScrollTrace() {
       ).filter((s) => s !== hero);
       if (!shell || !hero || sections.length === 0) return;
 
-      const w = document.documentElement.clientWidth;
+      const w = window.innerWidth;
       const h = shell.offsetHeight;
       svg.setAttribute("width", `${w}`);
       svg.setAttribute("height", `${h}`);
@@ -154,15 +154,12 @@ export default function ScrollTrace() {
       raf = requestAnimationFrame(build);
     };
     const shell = document.querySelector(".app-shell");
-    const ro = new ResizeObserver(schedule);
-    // Root content width changes when a scrollbar appears/disappears, even
-    // without a window resize (for example when a dialog locks scrolling).
-    ro.observe(document.documentElement);
-    if (shell) ro.observe(shell);
+    const ro = shell ? new ResizeObserver(schedule) : null;
+    if (shell && ro) ro.observe(shell);
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(raf);
-      ro.disconnect();
+      ro?.disconnect();
       window.removeEventListener("resize", schedule);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps

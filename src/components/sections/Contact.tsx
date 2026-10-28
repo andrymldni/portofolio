@@ -9,11 +9,9 @@ import {
   Check,
   type LucideIcon,
 } from "lucide-react";
-import { Reveal } from "@/components/ui/Reveal";
+import { RandomReveal } from "@/components/ui/RandomReveal";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
-import TerminalBar from "@/components/ui/TerminalBar";
-import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const PHONE = "+62 858-9581-2699";
 
@@ -46,7 +44,7 @@ function QuickContactCard({
         <Icon size={17} strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-xs text-muted">{label}</span>
+        <span className="block text-xs text-muted">{label}</span>
         <span className="block truncate text-sm font-medium text-ink">
           {value}
         </span>
@@ -126,7 +124,7 @@ export default function Contact() {
   return (
     <div className="grid gap-8 lg:grid-cols-5 lg:gap-12">
       {/* Left — headline + quick contact */}
-      <Reveal className="flex flex-col gap-6 lg:col-span-2">
+      <RandomReveal seed={2} className="flex flex-col gap-6 lg:col-span-2">
         <div>
           <h3 className="text-2xl font-semibold leading-tight tracking-tight text-ink sm:text-3xl">
             Let&apos;s talk, <span className="text-brand">shall we?</span>
@@ -166,87 +164,83 @@ export default function Contact() {
               target="_blank"
               rel="noreferrer"
               aria-label={s.label}
-              className="flex h-11 w-11 items-center justify-center rounded-md border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink/30 hover:bg-ink/[0.04]"
             >
               <s.icon size={17} strokeWidth={1.75} />
             </a>
           ))}
         </div>
-      </Reveal>
+      </RandomReveal>
 
       {/* Right — form */}
-      <Reveal delay={0.1} className="lg:col-span-3">
+      <RandomReveal seed={3} delay={0.1} className="lg:col-span-3">
         <form
-          {...panelSpotlight}
           onSubmit={handleSubmit}
-          className="panel-spotlight card overflow-hidden"
+          className="card grid gap-4 p-6 sm:p-8"
           aria-describedby="form-status"
         >
-          <TerminalBar prefix="~/contact/" title="~/contact/draft"><span className="text-brand">draft</span></TerminalBar>
-          <div className="grid gap-5 p-5 sm:p-7">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <label className="grid gap-2 font-mono text-sm">
-                <span className="font-medium text-ink">Name</span>
-                <input
-                  name="name"
-                  required
-                  type="text"
-                  className="field px-3"
-                  placeholder="Your name"
-                  autoComplete="name"
-                />
-              </label>
-              <label className="grid gap-2 font-mono text-sm">
-                <span className="font-medium text-ink">Email</span>
-                <input
-                  name="email"
-                  required
-                  type="email"
-                  className="field px-3"
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                />
-              </label>
-            </div>
-
-            <label className="grid gap-2 font-mono text-sm">
-              <span className="font-medium text-ink">Message</span>
-              <textarea
-                name="message"
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-1.5 text-sm">
+              <span className="font-medium text-ink">Name</span>
+              <input
+                name="name"
                 required
-                rows={5}
+                type="text"
                 className="field px-3"
-                placeholder="Hey, I'd love to collaborate on..."
+                placeholder="Your name"
+                autoComplete="name"
               />
             </label>
-
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              name="company"
-              className="hidden"
-              aria-hidden="true"
-            />
-
-            <button
-              disabled={sent === "loading"}
-              className="btn-primary w-fit"
-              type="submit"
-            >
-              <Send size={15} />
-              {sent === "loading" ? "Opening draft..." : "Open email draft"}
-            </button>
-
-            <p id="form-status" className="font-mono text-xs leading-relaxed text-muted" aria-live="polite">
-              {sent === "ok" &&
-                "If Gmail or your email app opened, review the draft and send it there."}
-              {sent === "err" &&
-                "Couldn't open your email client. Try again, or email me directly."}
-            </p>
+            <label className="grid gap-1.5 text-sm">
+              <span className="font-medium text-ink">Email</span>
+              <input
+                name="email"
+                required
+                type="email"
+                className="field px-3"
+                placeholder="you@example.com"
+                autoComplete="email"
+              />
+            </label>
           </div>
+
+          <label className="grid gap-1.5 text-sm">
+            <span className="font-medium text-ink">Message</span>
+            <textarea
+              name="message"
+              required
+              rows={5}
+              className="field px-3"
+              placeholder="Hey, I'd love to collaborate on..."
+            />
+          </label>
+
+          <input
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            name="company"
+            className="hidden"
+            aria-hidden="true"
+          />
+
+          <button
+            disabled={sent === "loading"}
+            className="btn-primary w-fit"
+            type="submit"
+          >
+            <Send size={15} />
+            {sent === "loading" ? "Opening draft..." : "Open email draft"}
+          </button>
+
+          <p id="form-status" className="text-xs text-muted" aria-live="polite">
+            {sent === "ok" &&
+              "If Gmail or your email app opened, review the draft and send it there."}
+            {sent === "err" &&
+              "Couldn't open your email client. Try again, or email me directly."}
+          </p>
         </form>
-      </Reveal>
+      </RandomReveal>
     </div>
   );
 }

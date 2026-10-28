@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
@@ -18,28 +18,12 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { projects, type Project } from "@/lib/data";
-import { EASE_OUT, useReveal } from "@/components/ui/Reveal";
+import { EASE_OUT } from "@/components/ui/Reveal";
+import { useRandomEntrance } from "@/components/ui/RandomReveal";
 import { useDialog } from "@/hooks/useDialog";
-import TerminalBar from "@/components/ui/TerminalBar";
-import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
-
-// Match the grid's sm/lg breakpoints without listening to every resize frame.
-function subscribeColumns(onChange: () => void) {
-  const queries = [640, 1024].map((width) => window.matchMedia(`(min-width: ${width}px)`));
-  queries.forEach((query) => query.addEventListener("change", onChange));
-  return () => queries.forEach((query) => query.removeEventListener("change", onChange));
-}
-
-function getColumns() {
-  return window.matchMedia("(min-width: 1024px)").matches
-    ? 3
-    : window.matchMedia("(min-width: 640px)").matches ? 2 : 1;
-}
-
-const getServerColumns = () => 1;
 
 /** Category → icon + muted tint, used as the cover when a project has no screenshot. */
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -97,17 +81,15 @@ function ProjectModal({
         onClick={(e) => e.stopPropagation()}
         className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.6)]"
       >
-        <TerminalBar prefix="~/projects/" title={`~/projects/${project.slug}`} className="sticky top-0 z-20" action={
+        <div className="sticky top-3 z-10 flex h-0 justify-end pr-3">
           <button
             onClick={onClose}
             aria-label="Close"
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line text-ink transition-colors hover:bg-steel"
+            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75"
           >
             <X size={16} />
           </button>
-        }>
-          <span className="text-brand">{project.slug}</span>
-        </TerminalBar>
+        </div>
 
         <div className="relative h-44 w-full sm:h-56">
           {project.image ? (
@@ -125,17 +107,17 @@ function ProjectModal({
 
         <div className="p-6">
           {project.category && (
-            <p className="font-mono text-xs text-muted">{project.category}</p>
+            <p className="text-xs font-medium text-muted">{project.category}</p>
           )}
           <h3 id={titleId} className="mt-2 text-xl font-semibold text-ink">
             {project.title}
           </h3>
           {project.stack && (
-            <p className="mt-3 font-mono text-xs leading-relaxed text-muted">
+            <p className="mt-1 text-sm text-muted">
               {project.stack.join(" · ")}
             </p>
           )}
-          <p className="mt-4 text-base leading-relaxed text-muted">
+          <p className="mt-4 text-sm leading-relaxed text-ink/85">
             {project.details ?? project.desc}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -177,32 +159,26 @@ function ProjectModal({
 
 function ProjectCard({
   project: p,
-  delay,
-  revealed,
-  onReveal,
+  index,
   onOpen,
 }: {
   project: Project;
-  delay: number;
-  revealed: boolean;
-  onReveal: (slug: string) => void;
+  index: number;
   onOpen: (p: Project) => void;
 }) {
-  // Preserve the initial decision while mounted; filters remember previously seen cards.
-  const [alreadyRevealed] = useState(revealed);
-  const reveal = useReveal(delay, alreadyRevealed);
+  // Each card enters differently, and differently again on every scroll.
+  const { ref, initial, animate, style } = useRandomEntrance(index, (index % 3) * 0.07);
   return (
     <motion.article
-      {...panelSpotlight}
-      {...reveal}
-      onViewportEnter={() => onReveal(p.slug)}
-      className={`panel-spotlight group card relative cursor-pointer overflow-hidden p-0 text-left ${
+      ref={ref}
+      initial={initial}
+      animate={animate}
+      style={style}
+      whileHover={{ y: -3 }}
+      className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
       }`}
     >
-      <TerminalBar prefix="~/projects/" title={`~/projects/${p.slug}`}>
-        <span className="text-brand">{p.slug}</span>
-      </TerminalBar>
       <div
         className={`relative w-full border-b border-line ${
           p.featured ? "h-52 sm:h-64" : "h-44"
@@ -223,11 +199,11 @@ function ProjectCard({
           <ProjectCover category={p.category} />
         )}
         {p.featured && (
-          <span className="pointer-events-none absolute left-3 top-3 rounded-md border border-line bg-canvas px-2 py-1 font-mono text-[11px] text-ink">
+          <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-semibold text-ink">
             Featured
           </span>
         )}
-        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas px-2 py-1 font-mono text-[11px] text-ink opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
           Click for details
         </span>
       </div>
@@ -248,6 +224,9 @@ function ProjectCard({
                 {p.title}
               </button>
             </h3>
+            {p.stack && (
+              <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
+            )}
           </div>
           <div className="flex shrink-0 items-center gap-3 pt-1">
             {p.demo && (
@@ -277,7 +256,7 @@ function ProjectCard({
           </div>
         </header>
         {p.category && (
-          <span className="mt-3 inline-block font-mono text-xs text-muted">
+          <span className="mt-3 inline-block rounded-md bg-ink/[0.06] px-2 py-0.5 text-xs font-medium text-muted">
             {p.category}
           </span>
         )}
@@ -286,15 +265,10 @@ function ProjectCard({
             {p.desc}
           </p>
         )}
-        {p.stack && (
-          <p className="mt-4 border-t border-line pt-3 font-mono text-xs leading-relaxed text-muted">
-            {p.stack.join(" · ")}
-          </p>
-        )}
         <Link
           href={`/projects/${p.slug}`}
           aria-label={`Read case study: ${p.title}`}
-          className="relative z-10 mt-4 inline-flex font-mono text-xs text-brand transition-colors hover:text-ink"
+          className="relative z-10 mt-4 inline-flex text-sm font-medium text-brand transition-colors hover:text-ink"
         >
           Read case study
         </Link>
@@ -329,22 +303,6 @@ export default function Projects({
   );
   const [active, setActive] = useState<Project | null>(null);
   const closeModal = useCallback(() => setActive(null), []);
-  const [revealed, setRevealed] = useState<ReadonlySet<string>>(() => new Set());
-  const markRevealed = useCallback((slug: string) => {
-    setRevealed((seen) => seen.has(slug) ? seen : new Set(seen).add(slug));
-  }, []);
-  const columns = useSyncExternalStore(subscribeColumns, getColumns, getServerColumns);
-  const delays = useMemo(() => {
-    let column = 0;
-    const result: number[] = [];
-    for (const project of list) {
-      const span = project.featured && columns > 1 ? 2 : 1;
-      if (column + span > columns) column = 0;
-      result.push(column * 0.06);
-      column = (column + span) % columns;
-    }
-    return result;
-  }, [list, columns]);
 
   return (
     <div>
@@ -356,9 +314,9 @@ export default function Projects({
               type="button"
               onClick={() => setActiveCategory(cat)}
               aria-pressed={activeCategory === cat}
-              className={`rounded-md border px-3.5 py-2 font-mono text-xs transition-colors sm:text-sm ${
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
                 activeCategory === cat
-                  ? "border-brand bg-surface text-brand"
+                  ? "border-ink bg-ink text-canvas"
                   : "border-line text-muted hover:border-ink/30 hover:text-ink"
               }`}
             >
@@ -368,14 +326,12 @@ export default function Projects({
         </div>
       )}
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((p, index) => (
           <ProjectCard
-            key={p.slug}
+            key={p.title}
             project={p}
-            delay={delays[index]}
-            revealed={revealed.has(p.slug)}
-            onReveal={markRevealed}
+            index={index}
             onOpen={setActive}
           />
         ))}

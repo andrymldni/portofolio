@@ -3,13 +3,21 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import {
+  Menu,
+  X,
+  Sun,
+  Moon,
+  FileText,
+} from "lucide-react";
 import { socialLinks } from "@/lib/data";
 
 const navItems = [
-  { hash: "#about", label: "./about" },
-  { hash: "#projects", label: "./projects" },
-  { hash: "#contact", label: "./contact" },
+  { hash: "#", label: "Home" },
+  { hash: "#about", label: "About" },
+  { hash: "#certifications", label: "Certifications" },
+  { hash: "#projects", label: "Projects" },
+  { hash: "#contact", label: "Contact" },
 ];
 
 const subscribeToMount = () => () => {};
@@ -61,7 +69,7 @@ export default function Navbar() {
     // active, and the last item takes over at the bottom of the page even
     // if it is shorter than the viewport.
     const PROBE_Y = 120;
-    const sectionIds = ["about", "projects", "contact"];
+    const sectionIds = ["about", "certifications", "projects", "contact"];
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -124,7 +132,7 @@ export default function Navbar() {
 
   return (
     <div
-      className={`sticky top-0 z-50 font-mono transition-[background-color,border-color,box-shadow] duration-300 ${
+      className={`sticky top-0 z-50 transition-[background-color,border-color,box-shadow] duration-300 ${
         barIsScrolled
           ? "border-b border-line bg-canvas/95 shadow-[0_12px_32px_-24px_rgba(0,0,0,0.45)]"
           : "border-b border-transparent bg-transparent"
@@ -138,7 +146,7 @@ export default function Navbar() {
           onClick={handleHomeClick}
           className="rounded font-semibold tracking-tight text-ink"
         >
-          <span className="text-brand">~/</span>andry
+          andrymldni<span className="text-brand">.dev</span>
         </Link>
 
         <ul className="hidden items-center gap-1 md:flex">
@@ -146,11 +154,10 @@ export default function Navbar() {
             <li key={n.hash}>
               <Link
                 href={hrefFor(n.hash)}
-                aria-current={isHome && active === n.hash ? "location" : undefined}
                 onClick={n.hash === "#" ? handleHomeClick : undefined}
                 className={`relative rounded-full px-3.5 py-2 text-sm transition-colors ${
                   isHome && active === n.hash
-                    ? "text-brand"
+                    ? "text-ink"
                     : "text-muted hover:text-ink"
                 }`}
               >
@@ -168,9 +175,14 @@ export default function Navbar() {
           <li className="pl-1">
             <Link
               href="/cv"
-              className="inline-flex items-center rounded-lg border border-brand px-3.5 py-1.5 text-sm font-semibold text-brand transition-colors hover:bg-brand/10"
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-3.5 py-1.5 text-sm font-semibold text-ink transition-colors ${
+                !isHome
+                  ? "border-ink/30 bg-ink/[0.06]"
+                  : "border-line hover:border-ink/30 hover:bg-ink/[0.04]"
+              }`}
             >
-              cv.pdf
+              <FileText size={14} />
+              View CV
             </Link>
           </li>
           <li className="pl-1">
@@ -213,14 +225,13 @@ export default function Navbar() {
                 >
                   <Link
                     href={hrefFor(n.hash)}
-                    aria-current={isHome && active === n.hash ? "location" : undefined}
                     onClick={(e) => {
                       if (n.hash === "#") handleHomeClick(e);
                       else setOpen(false);
                     }}
                     className={`block rounded-lg px-3 py-2 transition-colors ${
                       isHome && active === n.hash
-                        ? "bg-ink/[0.06] text-brand"
+                        ? "bg-ink/[0.06] text-ink"
                         : "text-muted hover:text-ink"
                     }`}
                   >
@@ -236,9 +247,10 @@ export default function Navbar() {
                 <Link
                   href="/cv"
                   onClick={() => setOpen(false)}
-                  className="inline-flex rounded-lg border border-brand px-3.5 py-1.5 text-sm text-brand hover:bg-brand/10"
+                  className="btn-primary px-3.5 py-1.5"
                 >
-                  cv.pdf
+                  <FileText size={14} />
+                  View CV
                 </Link>
               </motion.li>
               <li className="flex gap-4 pt-2 text-muted">
