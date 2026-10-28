@@ -8,7 +8,7 @@ import {
   Linkedin,
   Download,
 } from "lucide-react";
-import { certifications, CONTACT_EMAIL, socialLinks } from "@/lib/data";
+import { briAgentCountLabel, briInternshipCoverage, certifications, CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
 type Entry = {
@@ -33,9 +33,9 @@ const EXPERIENCE: Entry[] = [
     location: "Jakarta",
     period: "Nov 2025 – May 2026",
     bullets: [
-      "Extracted, reconciled, and analyzed transactional data covering 1.19M+ BRILink agents across 18 regional offices using Python and SQL, resolving cross-system discrepancies and turning findings into business narratives for leadership reviews.",
-      "Built interactive Power BI dashboards tracking 150 product features across all 18 regional offices, giving management granular, real-time KPI and performance views for each region.",
-      "Developed K-Means clustering models on 120 transaction features to uncover sales patterns across 586 regencies, shaping market-penetration strategies aimed at improving agent profitability.",
+      `Extracted, reconciled, and analyzed transactional data covering ${briAgentCountLabel} BRILink agents across ${briInternshipCoverage.regionalOffices} regional offices using Python and SQL, resolving cross-system discrepancies and turning findings into business narratives for leadership reviews.`,
+      `Built interactive Power BI dashboards tracking 150 product features across all ${briInternshipCoverage.regionalOffices} regional offices, giving management granular, real-time KPI and performance views for each region.`,
+      `Developed K-Means clustering models on 120 transaction features to uncover sales patterns across ${briInternshipCoverage.regencies} regencies, shaping market-penetration strategies aimed at improving agent profitability.`,
       "Engineered a data-driven Acquisition Scorecard by statistically profiling 4,631 high-tier agents across 5 financial dimensions, replacing subjective field recruitment with a prioritized pipeline of high-yield prospects.",
     ],
   },

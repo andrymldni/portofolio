@@ -3,6 +3,15 @@ import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
 export const CONTACT_EMAIL =
   process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "andrymldni@gmail.com";
 
+// Verified BRI internship coverage, shared by the resume and the homepage.
+export const briInternshipCoverage = {
+  agents: 1_190_000,
+  regionalOffices: 18,
+  regencies: 586,
+} as const;
+
+export const briAgentCountLabel = `${(briInternshipCoverage.agents / 1_000_000).toFixed(2)}M+`;
+
 export const socialLinks = {
   github: {
     label: "GitHub",
@@ -49,9 +58,7 @@ export type Project = {
   results?: string;
 };
 
-// Order matters on desktop (3 columns): each featured card spans 2 columns,
-// so a featured card is followed or preceded by exactly one regular card to
-// keep the grid free of holes.
+// Editorial order stays intact in the desktop bento and in filtered views.
 export const projects: Project[] = [
   {
     title: "BRILink Sentiment Intelligence",

@@ -4,14 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
-  useMotionValue,
   useScroll,
-  useSpring,
   useTransform,
 } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useDesktopMotion, usePointerSurface } from "@/hooks/usePointerSurface";
 import { socialLinks } from "@/lib/data";
 
 const ROLES = [
@@ -22,6 +21,7 @@ const ROLES = [
 
 export default function Hero() {
   const reduce = usePrefersReducedMotion();
+  const desktopMotion = useDesktopMotion();
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
@@ -35,44 +35,29 @@ export default function Hero() {
 
   // Scroll-linked hand-off: as the hero leaves, the copy drifts up and dims
   // while the photo rises a little faster, so About appears to slide in
-  // over it. Ranges collapse to zero under reduced motion.
+  // over it. Static on touch and under reduced motion.
   const sectionRef = useRef<HTMLElement | null>(null);
+  usePointerSurface(sectionRef);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const copyY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -48]);
+  const copyY = useTransform(scrollYProgress, [0, 1], [0, desktopMotion ? -48 : 0]);
   const copyOpacity = useTransform(
     scrollYProgress,
     [0, 0.75],
-    [1, reduce ? 1 : 0.15]
+    [1, desktopMotion ? 0.15 : 1]
   );
-  const photoY = useTransform(scrollYProgress, [0, 1], [0, reduce ? 0 : -110]);
+  const photoY = useTransform(scrollYProgress, [0, 1], [0, desktopMotion ? -110 : 0]);
 
   // Subtle 3D tilt on the portrait, desktop-with-mouse only.
   const photoRef = useRef<HTMLDivElement | null>(null);
-  const tiltX = useMotionValue(0);
-  const tiltY = useMotionValue(0);
-  const springX = useSpring(tiltX, { stiffness: 150, damping: 16 });
-  const springY = useSpring(tiltY, { stiffness: 150, damping: 16 });
-  const rotateX = useTransform(springY, [-0.5, 0.5], [6, -6]);
-  const rotateY = useTransform(springX, [-0.5, 0.5], [-6, 6]);
-
-  const handlePhotoMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (reduce || e.pointerType !== "mouse" || !photoRef.current) return;
-    const rect = photoRef.current.getBoundingClientRect();
-    tiltX.set((e.clientX - rect.left) / rect.width - 0.5);
-    tiltY.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
-  const resetTilt = () => {
-    tiltX.set(0);
-    tiltY.set(0);
-  };
+  usePointerSurface(photoRef, 8);
 
   return (
     <section
       ref={sectionRef}
-      className="relative grid min-h-[calc(100svh-4rem)] items-center pb-20 pt-10 md:pb-24 md:pt-12"
+      className="hero-surface pointer-surface relative isolate grid min-h-[calc(100svh-4rem)] items-center pb-20 pt-10 md:pb-24 md:pt-12"
     >
       <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr] md:gap-10 lg:gap-16">
         {/* Copy */}
@@ -91,14 +76,17 @@ export default function Hero() {
               Data Analyst at Bank Rakyat Indonesia · Jakarta
             </motion.p>
 
-            <motion.h1
-              variants={rise}
+            <h1
               className="mt-4 text-[2.75rem] font-bold leading-[1.02] tracking-[-0.02em] sm:text-6xl lg:text-[4.5rem]"
             >
-              Andry Syva
-              <br />
-              Maldini
-            </motion.h1>
+              <span className="sr-only">Andry Syva Maldini</span>
+              <span aria-hidden="true" className="name-mask block overflow-hidden pb-[0.08em]">
+                <span className="name-line block">Andry Syva</span>
+              </span>
+              <span aria-hidden="true" className="name-mask -mt-[0.08em] block overflow-hidden pb-[0.08em]">
+                <span className="name-line name-line-last block">Maldini</span>
+              </span>
+            </h1>
 
             <motion.div
               variants={rise}
@@ -171,13 +159,11 @@ export default function Hero() {
             initial="hidden"
             animate="show"
             custom={0.35}
+            className="[perspective:900px]"
           >
-            <motion.div
+            <div
               ref={photoRef}
-              onPointerMove={handlePhotoMove}
-              onPointerLeave={resetTilt}
-              style={{ rotateX: reduce ? 0 : rotateX, rotateY: reduce ? 0 : rotateY, transformPerspective: 800 }}
-              className="relative aspect-[4/5]"
+              className="pointer-surface pointer-tilt relative aspect-[4/5]"
             >
               {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}
               <div
@@ -193,8 +179,9 @@ export default function Hero() {
                   sizes="(max-width: 640px) 14rem, (max-width: 768px) 16rem, (max-width: 1024px) 19rem, 22rem"
                   className="object-cover"
                 />
+                <span aria-hidden="true" className="portrait-highlight pointer-events-none absolute inset-0" />
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       </div>

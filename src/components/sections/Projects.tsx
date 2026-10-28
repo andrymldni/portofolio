@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
@@ -21,6 +21,7 @@ import Link from "next/link";
 import { projects, type Project } from "@/lib/data";
 import { EASE_OUT, useReveal } from "@/components/ui/Reveal";
 import { useDialog } from "@/hooks/useDialog";
+import { usePointerSurface } from "@/hooks/usePointerSurface";
 
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
@@ -39,6 +40,26 @@ function getColumns() {
 }
 
 const getServerColumns = () => 1;
+
+// Pack each desktop row in DOM order, expanding its last card to fill spare
+// columns. Filtering cannot leave holes or reorder keyboard navigation.
+function desktopCells(list: Project[]) {
+  let column = 0;
+  const cells: { span: number; delay: number }[] = [];
+  for (const project of list) {
+    const span = project.featured ? 2 : 1;
+    if (column + span > 3) {
+      cells[cells.length - 1].span += 3 - column;
+      column = 0;
+    }
+    cells.push({ span, delay: column * 0.06 });
+    column = (column + span) % 3;
+  }
+  if (column && cells.length) cells[cells.length - 1].span += 3 - column;
+  return cells;
+}
+
+const spanClasses = ["", "lg:col-span-1", "lg:col-span-2", "lg:col-span-3"];
 
 /** Category → icon + muted tint, used as the cover when a project has no screenshot. */
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -175,12 +196,14 @@ function ProjectModal({
 function ProjectCard({
   project: p,
   delay,
+  span,
   revealed,
   onReveal,
   onOpen,
 }: {
   project: Project;
   delay: number;
+  span: number;
   revealed: boolean;
   onReveal: (slug: string) => void;
   onOpen: (p: Project) => void;
@@ -188,108 +211,108 @@ function ProjectCard({
   // Preserve the initial decision while mounted; filters remember previously seen cards.
   const [alreadyRevealed] = useState(revealed);
   const reveal = useReveal(delay, alreadyRevealed);
+  const tiltRef = useRef<HTMLDivElement | null>(null);
+  usePointerSurface(tiltRef, 4);
   return (
     <motion.article
       {...reveal}
       onViewportEnter={() => onReveal(p.slug)}
-      className={`group card interactive-card project-card relative cursor-pointer overflow-hidden p-0 text-left ${
-        p.featured ? "sm:col-span-2" : ""
-      }`}
+      className={`min-w-0 [perspective:1000px] ${spanClasses[span]}`}
     >
-      <div
-        className={`relative w-full overflow-hidden border-b border-line ${
-          p.featured ? "h-52 sm:h-64" : "h-44"
-        }`}
-      >
-        {p.image ? (
-          <Image
-            src={p.image}
-            alt={screenshotAlt(p)}
-            fill
-            sizes={p.featured
-              ? "(min-width: 1152px) 728px, (min-width: 1024px) calc(66.667vw - 40px), (min-width: 768px) calc(100vw - 48px), calc(100vw - 40px)"
-              : "(min-width: 1152px) 352px, (min-width: 1024px) calc(33.333vw - 32px), (min-width: 768px) calc(50vw - 36px), (min-width: 640px) calc(50vw - 32px), calc(100vw - 40px)"}
-            className="project-image object-cover"
-            loading="lazy"
-          />
-        ) : (
-          <ProjectCover category={p.category} />
-        )}
-        {p.featured && (
-          <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-semibold text-ink">
-            Featured
-          </span>
-        )}
-        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
-          Click for details
-        </span>
-      </div>
-      <div className="p-5">
-        <header className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h3 className="text-lg font-semibold leading-snug md:text-xl">
-              <button
-                type="button"
-                aria-haspopup="dialog"
-                aria-label={`Open details for ${p.title}`}
-                className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
-                onClick={(e) => {
-                  e.currentTarget.focus();
-                  onOpen(p);
-                }}
-              >
-                {p.title}
-              </button>
-            </h3>
-            {p.stack && (
-              <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
-            )}
-          </div>
-          <div className="flex shrink-0 items-center gap-3 pt-1">
-            {p.demo && (
-              <a
-                href={p.demo}
-                target="_blank"
-                rel="noreferrer"
-                className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
-                aria-label={`Open live demo for ${p.title}`}
-                title="Live demo"
-              >
-                <Globe size={17} />
-              </a>
-            )}
-            {p.link && (
-              <a
-                href={p.link}
-                target="_blank"
-                rel="noreferrer"
-                className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
-                aria-label={`Visit project ${p.title}`}
-                title="Open link"
-              >
-                <ExternalLink size={17} />
-              </a>
-            )}
-          </div>
-        </header>
-        {p.category && (
-          <span className="mt-3 inline-block rounded-md bg-ink/[0.06] px-2 py-0.5 text-xs font-medium text-muted">
-            {p.category}
-          </span>
-        )}
-        {p.desc && (
-          <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
-            {p.desc}
-          </p>
-        )}
-        <Link
-          href={`/projects/${p.slug}`}
-          aria-label={`Read case study: ${p.title}`}
-          className="link-nudge relative z-10 mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand transition-colors hover:text-ink"
+      <div ref={tiltRef} className="pointer-surface pointer-tilt group card interactive-card project-card relative flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left">
+        <div
+          className={`relative w-full shrink-0 overflow-hidden border-b border-line ${
+            p.featured ? "h-44 sm:h-48 lg:h-72" : "h-44 sm:h-48"
+          }`}
         >
-          Read case study
-          <ArrowUpRight size={15} aria-hidden="true" />
-        </Link>
+          {p.image ? (
+            <Image
+              src={p.image}
+              alt={screenshotAlt(p)}
+              fill
+              sizes={`(min-width: 1152px) ${span * 376 - 24}px, (min-width: 1024px) calc(${span * 100 / 3}vw - ${8 * span + 24}px), (min-width: 768px) calc(50vw - 36px), (min-width: 640px) calc(50vw - 32px), calc(100vw - 40px)`}
+              className="project-image object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <ProjectCover category={p.category} />
+          )}
+          {p.featured && (
+            <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-semibold text-ink">
+              Featured
+            </span>
+          )}
+          <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
+            Click for details
+          </span>
+        </div>
+        <div className="flex flex-1 flex-col p-5">
+          <header className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <h3 className="text-lg font-semibold leading-snug md:text-xl">
+                <button
+                  type="button"
+                  aria-haspopup="dialog"
+                  aria-label={`Open details for ${p.title}`}
+                  className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                  onClick={(e) => {
+                    e.currentTarget.focus();
+                    onOpen(p);
+                  }}
+                >
+                  {p.title}
+                </button>
+              </h3>
+              {p.stack && (
+                <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-3 pt-1">
+              {p.demo && (
+                <a
+                  href={p.demo}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
+                  aria-label={`Open live demo for ${p.title}`}
+                  title="Live demo"
+                >
+                  <Globe size={17} />
+                </a>
+              )}
+              {p.link && (
+                <a
+                  href={p.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
+                  aria-label={`Visit project ${p.title}`}
+                  title="Open link"
+                >
+                  <ExternalLink size={17} />
+                </a>
+              )}
+            </div>
+          </header>
+          {p.category && (
+            <span className="mt-3 inline-block self-start rounded-md bg-ink/[0.06] px-2 py-0.5 text-xs font-medium text-muted">
+              {p.category}
+            </span>
+          )}
+          {p.desc && (
+            <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
+              {p.desc}
+            </p>
+          )}
+          <Link
+            href={`/projects/${p.slug}`}
+            aria-label={`Read case study: ${p.title}`}
+            className="link-nudge relative z-10 mt-auto inline-flex w-fit items-center gap-1.5 pt-4 text-sm font-medium text-brand transition-colors hover:text-ink"
+          >
+            Read case study
+            <ArrowUpRight size={15} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </motion.article>
   );
@@ -326,17 +349,7 @@ export default function Projects({
     setRevealed((seen) => seen.has(slug) ? seen : new Set(seen).add(slug));
   }, []);
   const columns = useSyncExternalStore(subscribeColumns, getColumns, getServerColumns);
-  const delays = useMemo(() => {
-    let column = 0;
-    const result: number[] = [];
-    for (const project of list) {
-      const span = project.featured && columns > 1 ? 2 : 1;
-      if (column + span > columns) column = 0;
-      result.push(column * 0.06);
-      column = (column + span) % columns;
-    }
-    return result;
-  }, [list, columns]);
+  const cells = useMemo(() => desktopCells(list), [list]);
 
   return (
     <div>
@@ -365,7 +378,8 @@ export default function Projects({
           <ProjectCard
             key={p.slug}
             project={p}
-            delay={delays[index]}
+            delay={columns === 3 ? cells[index].delay : (index % columns) * 0.06}
+            span={cells[index].span}
             revealed={revealed.has(p.slug)}
             onReveal={markRevealed}
             onOpen={setActive}

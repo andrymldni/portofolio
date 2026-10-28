@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: Props) {
         Back to Projects
       </Link>
 
-      <article className="mx-auto mt-8 max-w-4xl">
+      <article key={project.slug} className="case-study-enter mx-auto mt-8 max-w-4xl">
         <header>
           {project.category && (
             <p className="text-sm font-medium text-brand">{project.category}</p>

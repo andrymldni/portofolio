@@ -2,6 +2,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import Hero from "@/components/sections/Hero";
 import Section from "@/components/ui/Section";
 import About from "@/components/sections/About";
+import ImpactStats from "@/components/sections/ImpactStats";
 import TechCarousel from "@/components/sections/TechCarousel";
 import CertificatesSlider from "@/components/sections/CertificatesSlider";
 import Projects from "@/components/sections/Projects";
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Hero />
 
       <Section id="about" title="About">
+        <ImpactStats />
         <About />
       </Section>
 
