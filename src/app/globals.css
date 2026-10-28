@@ -271,19 +271,68 @@ html {
   from { transform: translateY(110%); }
   to { transform: translateY(0); }
 }
+@keyframes calm-enter {
+  from { opacity: 0; transform: translateY(var(--reveal-y, 0px)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes rule-draw {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@keyframes fade-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Default markup is readable. These attributes are added locally only after
+   hydration, before paint or while the element is outside the viewport. */
+[data-calm-reveal][data-entrance-ready]:not([data-entrance-entered]) {
+  opacity: 0;
+}
+[data-calm-reveal][data-entrance-entered] {
+  animation: calm-enter 500ms cubic-bezier(0.16, 1, 0.3, 1) var(--reveal-delay, 0s) both;
+}
+.hero-surface[data-entrance-ready] [data-hero-rise] {
+  animation: calm-enter 700ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+}
+.hero-surface[data-entrance-ready] [data-hero-rise]:nth-child(2) { animation-delay: 200ms; }
+.hero-surface[data-entrance-ready] [data-hero-rise]:nth-child(4) { animation-delay: 300ms; }
+.hero-surface[data-entrance-ready] [data-hero-rise]:nth-child(5) { animation-delay: 400ms; }
+.hero-surface[data-entrance-ready] [data-hero-rise]:nth-child(6) { animation-delay: 500ms; }
+.hero-surface[data-entrance-ready] [data-hero-rise]:nth-child(7) { animation-delay: 600ms; }
+.hero-surface[data-entrance-ready] .hero-portrait-enter {
+  animation: calm-enter 700ms cubic-bezier(0.16, 1, 0.3, 1) 350ms both;
+}
+.hero-surface[data-entrance-ready] .hero-scroll-cue {
+  animation: fade-enter 600ms ease 1100ms both;
+}
 @keyframes case-study-enter {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .section-title-line {
+  [data-calm-reveal] { --reveal-y: 16px; }
+  .hero-surface { --reveal-y: 22px; }
+  .section-heading[data-entrance-ready]:not([data-entrance-entered]) .section-title-line {
     transform: translateY(110%);
   }
-  .section-title-line.is-visible {
+  .section-heading[data-entrance-ready]:not([data-entrance-entered]) .section-rule {
+    transform: scaleX(0);
+  }
+  .section-heading[data-entrance-ready]:not([data-entrance-entered]) .section-subtitle {
+    opacity: 0;
+  }
+  .section-heading[data-entrance-entered] .section-title-line {
     animation: masked-rise 650ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
   }
+  .section-heading[data-entrance-entered] .section-rule {
+    animation: rule-draw 900ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .section-heading[data-entrance-entered] .section-subtitle {
+    --reveal-y: 22px;
+    animation: calm-enter 700ms cubic-bezier(0.16, 1, 0.3, 1) 100ms both;
+  }
   /* Native Next links retain history, hash, focus and scroll behavior. */
-  .case-study-enter {
+  .case-study-enter[data-entrance-ready] {
     animation: case-study-enter 350ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
@@ -293,10 +342,10 @@ html {
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .name-line {
+  .hero-surface[data-entrance-ready] .name-line {
     animation: masked-rise 800ms cubic-bezier(0.16, 1, 0.3, 1) 150ms both;
   }
-  .name-line-last {
+  .hero-surface[data-entrance-ready] .name-line-last {
     animation-delay: 270ms;
   }
   .hero-surface::before {

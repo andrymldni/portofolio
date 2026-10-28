@@ -164,7 +164,7 @@ export default function CertificatesSlider() {
             if (abs > 2) return null;
 
             const isActive = offset === 0;
-            const x = offset * 78; // % of card width, via translate below
+            const x = offset * 78; // % of card width, relative to CSS centering
             const scale = isActive ? 1 : abs === 1 ? 0.82 : 0.66;
             const opacity = isActive ? 1 : abs === 1 ? 0.55 : 0.22;
             const z = 10 - abs;
@@ -173,10 +173,12 @@ export default function CertificatesSlider() {
               <motion.div
                 key={cert.name}
                 className="absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
-                style={{ zIndex: z }}
+                // CSS owns centering; initial=false serializes the resting pose
+                // so cards never stack at the stage's centre before hydration.
+                style={{ zIndex: z, translate: "-50% -50%" }}
+                initial={false}
                 animate={{
-                  x: `calc(-50% + ${x}%)`,
-                  y: "-50%",
+                  x: `${x}%`,
                   scale,
                   opacity,
                 }}

@@ -1,6 +1,7 @@
 "use client";
 import { motion, type HTMLMotionProps, type Variants } from "framer-motion";
-import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import { useRef, type CSSProperties } from "react";
+import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
 
 export const EASE_OUT = [0.16, 1, 0.3, 1] as const;
 
@@ -24,27 +25,17 @@ export const VIEWPORT = { once: true, margin: "0px 0px -72px 0px" } as const;
 
 type RevealProps = HTMLMotionProps<"div"> & { delay?: number };
 
-const calmRise: Variants = {
-  hidden: { opacity: 0, y: 0 },
-  show: ({ delay, reduced }: { delay: number; reduced: boolean }) => ({
-    opacity: 1,
-    // Start the offset only when revealing, so reduced motion never inherits it.
-    y: reduced ? 0 : [16, 0],
-    transition: { duration: 0.5, ease: EASE_OUT, delay },
-  }),
-};
-
 /** A small, one-shot entrance, also usable on semantic motion elements. */
 export function useReveal(delay = 0, alreadyRevealed = false) {
-  const reduced = usePrefersReducedMotion();
+  const ref = useRef<HTMLDivElement | null>(null);
+  useProgressiveEntrance(ref, false, !alreadyRevealed);
   return {
-    initial: alreadyRevealed ? false as const : "hidden",
-    animate: alreadyRevealed ? { opacity: 1, y: 0 } : undefined,
-    whileInView: alreadyRevealed ? undefined : "show",
-    // No inset: cards visible on load or restored Back navigation reveal immediately.
+    ref,
+    initial: false as const,
+    "data-calm-reveal": true,
+    style: { "--reveal-delay": `${delay}s` } as CSSProperties,
+    // Retain viewport callbacks used to remember revealed project cards.
     viewport: { once: true, amount: 0 } as const,
-    variants: calmRise,
-    custom: { delay, reduced },
   };
 }
 
@@ -59,6 +50,13 @@ export function Reveal({ delay = 0, children, ...rest }: RevealProps) {
       {children}
     </motion.div>
   );
+}
+
+/** Keep case-study navigation native; enhance its static article after hydration. */
+export function PageEntrance({ children, ...rest }: HTMLMotionProps<"article">) {
+  const ref = useRef<HTMLElement | null>(null);
+  useProgressiveEntrance(ref, true);
+  return <motion.article ref={ref} initial={false} {...rest}>{children}</motion.article>;
 }
 
 type RevealGroupProps = HTMLMotionProps<"div"> & { delay?: number; gap?: number };

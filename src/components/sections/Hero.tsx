@@ -11,6 +11,7 @@ import { ArrowDown } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useDesktopMotion, usePointerSurface } from "@/hooks/usePointerSurface";
+import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
 import { socialLinks } from "@/lib/data";
 
 const ROLES = [
@@ -38,6 +39,7 @@ export default function Hero() {
   // over it. Static on touch and under reduced motion.
   const sectionRef = useRef<HTMLElement | null>(null);
   usePointerSurface(sectionRef);
+  useProgressiveEntrance(sectionRef, true);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
@@ -64,15 +66,15 @@ export default function Hero() {
         <motion.div style={{ y: copyY, opacity: copyOpacity }}>
           <motion.div
             variants={stagger(0.1, 0.1)}
-            initial="hidden"
+            initial={false}
             animate="show"
             className="text-center md:text-left"
           >
-            <motion.p variants={rise} className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink">
+            <motion.p variants={rise} data-hero-rise className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink">
               <span aria-hidden="true" className="status-dot h-1.5 w-1.5 shrink-0 rounded-full bg-ok" />
               Open to data collaborations
             </motion.p>
-            <motion.p variants={rise} className="text-sm font-medium text-muted">
+            <motion.p variants={rise} data-hero-rise className="text-sm font-medium text-muted">
               Data Analyst at Bank Rakyat Indonesia · Jakarta
             </motion.p>
 
@@ -90,10 +92,11 @@ export default function Hero() {
 
             <motion.div
               variants={rise}
+              data-hero-rise
               className="mt-5 flex min-h-[1.6em] items-center justify-center text-xl font-semibold sm:text-2xl md:justify-start"
             >
               <span className="sr-only">{ROLES.join(", ")}</span>
-              <AnimatePresence mode="wait">
+              <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   aria-hidden="true"
                   key={idx}
@@ -110,6 +113,7 @@ export default function Hero() {
 
             <motion.p
               variants={rise}
+              data-hero-rise
               className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted sm:text-lg md:mx-0"
             >
               I turn raw data into decisions — ETL pipelines, predictive
@@ -119,6 +123,7 @@ export default function Hero() {
 
             <motion.div
               variants={rise}
+              data-hero-rise
               className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
             >
               <a href="#contact" className="btn-primary hero-action">
@@ -131,6 +136,7 @@ export default function Hero() {
 
             <motion.div
               variants={rise}
+              data-hero-rise
               className="mt-8 flex items-center justify-center gap-5 md:justify-start"
             >
               {Object.values(socialLinks).map((s) => (
@@ -156,10 +162,10 @@ export default function Hero() {
         >
           <motion.div
             variants={rise}
-            initial="hidden"
+            initial={false}
             animate="show"
             custom={0.35}
-            className="[perspective:900px]"
+            className="hero-portrait-enter [perspective:900px]"
           >
             <div
               ref={photoRef}
@@ -189,10 +195,10 @@ export default function Hero() {
       <motion.a
         href="#about"
         aria-label="Scroll to the About section"
-        initial={{ opacity: 0 }}
+        initial={false}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.1, duration: 0.6 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-muted transition-colors hover:text-ink"
+        className="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 text-muted transition-colors hover:text-ink"
       >
         <ArrowDown size={20} strokeWidth={1.75} />
       </motion.a>

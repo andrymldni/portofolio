@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ExternalLink, Globe } from "lucide-react";
 import { projects } from "@/lib/data";
+import { PageEntrance } from "@/components/ui/Reveal";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -60,7 +61,7 @@ export default async function ProjectPage({ params }: Props) {
         Back to Projects
       </Link>
 
-      <article key={project.slug} className="case-study-enter mx-auto mt-8 max-w-4xl">
+      <PageEntrance key={project.slug} className="case-study-enter mx-auto mt-8 max-w-4xl">
         <header>
           {project.category && (
             <p className="text-sm font-medium text-brand">{project.category}</p>
@@ -122,7 +123,7 @@ export default async function ProjectPage({ params }: Props) {
             </section>
           ))}
         </div>
-      </article>
+      </PageEntrance>
     </main>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { briAgentCountLabel, briInternshipCoverage, projects, certifications } from "@/lib/data";
+import { canEnhanceEntrance } from "@/hooks/useProgressiveEntrance";
 
 const stats = [
   { label: "BRILink agents analyzed", value: briInternshipCoverage.agents, final: briAgentCountLabel, millions: true },
@@ -30,6 +31,11 @@ export default function ImpactStats() {
       observer?.disconnect();
       restore();
       if (!media.matches || played.current) return;
+      if (!canEnhanceEntrance(element)) {
+        played.current = true;
+        return;
+      }
+      if (typeof IntersectionObserver === "undefined") return;
       observer = new IntersectionObserver(([entry]) => {
         if (!entry.isIntersecting) return;
         observer?.disconnect();
