@@ -16,7 +16,6 @@ import { socialLinks } from "@/lib/data";
 
 const ROLES = [
   "Data Analyst",
-  "Business Intelligence",
   "Data Engineer",
   "Data Scientist",
 ];
