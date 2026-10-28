@@ -20,23 +20,6 @@ type Geometry = {
   ys: Float32Array; // y of the path at k/SAMPLES of its length
 };
 
-function catmullRomToBezier(pts: [number, number][]) {
-  if (pts.length < 2) return "";
-  let d = `M ${pts[0][0]} ${pts[0][1]}`;
-  for (let i = 0; i < pts.length - 1; i++) {
-    const p0 = pts[Math.max(i - 1, 0)];
-    const p1 = pts[i];
-    const p2 = pts[i + 1];
-    const p3 = pts[Math.min(i + 2, pts.length - 1)];
-    const c1x = p1[0] + (p2[0] - p0[0]) / 6;
-    const c1y = p1[1] + (p2[1] - p0[1]) / 6;
-    const c2x = p2[0] - (p3[0] - p1[0]) / 6;
-    const c2y = p2[1] - (p3[1] - p1[1]) / 6;
-    d += ` C ${c1x} ${c1y}, ${c2x} ${c2y}, ${p2[0]} ${p2[1]}`;
-  }
-  return d;
-}
-
 export default function ScrollTrace() {
   const reduce = usePrefersReducedMotion();
   const pathname = usePathname();
@@ -98,34 +81,50 @@ export default function ScrollTrace() {
 
     const build = () => {
       const shell = document.querySelector<HTMLElement>(".app-shell");
+      const main = document.querySelector<HTMLElement>("main");
       const hero = document.querySelector<HTMLElement>("main > section");
       const sections = Array.from(
         document.querySelectorAll<HTMLElement>("main > section[id]")
       ).filter((s) => s !== hero);
-      if (!shell || !hero || sections.length === 0) return;
+      if (!shell || !main || !hero || sections.length === 0) return;
 
       const w = document.documentElement.clientWidth;
+      const bounds = main.getBoundingClientRect();
+      // Keep the entire trace (including its halo) outside the content and
+      // the carousels' negative margins. Narrow layouts have no trace.
+      const gutter = Math.min(bounds.left, w - bounds.right);
+      if (gutter < 48) {
+        svg.style.display = "none";
+        geom.current = null;
+        return;
+      }
+      svg.style.display = "";
       const h = shell.offsetHeight;
       svg.setAttribute("width", `${w}`);
       svg.setAttribute("height", `${h}`);
       svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
 
       const top = (el: HTMLElement) => el.getBoundingClientRect().top + window.scrollY;
-      const margin = Math.max(24, Math.min(w * 0.055, 84));
-      // Start at the hero's scroll cue, drop straight through the gap, then
-      // swing out to the first margin over the (empty) right half of the
-      // About header; after that, alternate margins section by section.
-      const pts: [number, number][] = [[w / 2, top(hero) + hero.offsetHeight - 36]];
-      sections.forEach((s, i) => {
+      const margin = gutter / 2;
+      let previousX = w / 2;
+      let previousY = top(hero) + hero.offsetHeight;
+      let d = `M ${previousX} ${previousY}`;
+      // Each crossing is a bounded Bezier within the adjacent sections'
+      // padding. Straight vertical segments cannot drift over section text.
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const styles = getComputedStyle(section);
+        const y = top(section);
         const x = i % 2 === 0 ? w - margin : margin;
-        const y = top(s);
-        const sh = s.offsetHeight;
-        if (i === 0) pts.push([w / 2, y + sh * 0.08], [x, y + sh * 0.3]);
-        else pts.push([x, y + sh * 0.22]);
-        pts.push([x, y + sh * 0.78]);
-      });
-      pts.push([w / 2, h - 40]);
-      path.setAttribute("d", catmullRomToBezier(pts));
+        const entry = y + parseFloat(styles.paddingTop) - 16;
+        const exit = y + section.offsetHeight - parseFloat(styles.paddingBottom) + 16;
+        const middle = (previousY + entry) / 2;
+        d += ` C ${previousX} ${middle}, ${x} ${middle}, ${x} ${entry}`;
+        d += ` L ${x} ${exit}`;
+        previousX = x;
+        previousY = exit;
+      }
+      path.setAttribute("d", d);
 
       // Section rules: a hairline where each section starts.
       rules.innerHTML = sections

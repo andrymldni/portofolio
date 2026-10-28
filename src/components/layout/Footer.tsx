@@ -11,9 +11,9 @@ export default function Footer() {
   const hrefFor = (hash: string) => (isHome ? hash : `/${hash}`);
 
   return (
-    <footer className="relative mt-16 border-t border-line">
-      <div className="container flex flex-col items-center justify-between gap-6 py-8 text-xs text-muted md:flex-row">
-        <div className="text-center md:text-left">
+    <footer className="relative border-t border-line">
+      <div className="container flex flex-col items-center justify-between gap-6 py-8 text-xs text-muted lg:flex-row lg:flex-wrap">
+        <div className="text-center lg:text-left">
           <p className="text-sm font-medium text-ink">
             © {year} Andry Syva Maldini
           </p>
@@ -23,7 +23,7 @@ export default function Footer() {
         </div>
         <nav
           aria-label="Footer Navigation"
-          className="flex flex-wrap justify-center gap-6 text-sm text-muted"
+          className="flex flex-wrap justify-center gap-x-4 gap-y-2 text-sm text-muted"
         >
           <Link href="/" className="transition-colors hover:text-ink">
             Home
@@ -36,6 +36,12 @@ export default function Footer() {
           </Link>
           <Link href="/cv" className="transition-colors hover:text-ink">
             CV
+          </Link>
+          <Link
+            href={hrefFor("#certifications")}
+            className="transition-colors hover:text-ink"
+          >
+            Certifications
           </Link>
           <Link
             href={hrefFor("#projects")}
@@ -58,7 +64,7 @@ export default function Footer() {
               target="_blank"
               rel="noreferrer"
               aria-label={social.label}
-              className="transition-colors hover:text-ink"
+              className="link-nudge transition-colors hover:text-ink"
             >
               <social.icon size={16} />
             </a>

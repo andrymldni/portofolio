@@ -83,6 +83,10 @@ export default function Hero() {
             animate="show"
             className="text-center md:text-left"
           >
+            <motion.p variants={rise} className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink">
+              <span aria-hidden="true" className="status-dot h-1.5 w-1.5 shrink-0 rounded-full bg-ok" />
+              Open to data collaborations
+            </motion.p>
             <motion.p variants={rise} className="text-sm font-medium text-muted">
               Data Analyst at Bank Rakyat Indonesia · Jakarta
             </motion.p>
@@ -129,10 +133,10 @@ export default function Hero() {
               variants={rise}
               className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
             >
-              <a href="#contact" className="btn-primary">
+              <a href="#contact" className="btn-primary hero-action">
                 Say hello
               </a>
-              <a href="#projects" className="btn-secondary">
+              <a href="#projects" className="btn-secondary hero-action">
                 View projects
               </a>
             </motion.div>
@@ -148,7 +152,7 @@ export default function Hero() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={s.label}
-                  className="text-muted transition-colors hover:text-ink"
+                  className="link-nudge text-muted transition-colors hover:text-ink"
                 >
                   <s.icon size={20} strokeWidth={1.75} />
                 </a>
@@ -178,7 +182,7 @@ export default function Hero() {
               {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.75rem] bg-steel"
+                className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.75rem] border border-brand/25 bg-steel"
               />
               <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] border border-line bg-surface">
                 <Image

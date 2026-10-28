@@ -84,7 +84,7 @@ function CertModal({
               href={cert.link}
               target="_blank"
               rel="noreferrer"
-              className="btn-primary mt-5"
+              className="btn-primary link-nudge mt-5"
             >
               <ExternalLink size={15} />
               View certificate
@@ -183,7 +183,7 @@ export default function CertificatesSlider() {
                 transition={{ type: "spring", stiffness: 260, damping: 28 }}
               >
                 <div
-                  className={`card group relative block w-full overflow-hidden p-0 text-left transition-shadow ${
+                  className={`card interactive-card group relative block w-full overflow-hidden p-0 text-left ${
                     isActive ? "shadow-[0_24px_48px_-24px_rgba(0,0,0,0.55)]" : ""
                   }`}
                 >

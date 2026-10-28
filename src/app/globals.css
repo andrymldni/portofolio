@@ -122,7 +122,7 @@ html {
 }
 .scroll-trace-line {
   stroke: rgb(var(--brand));
-  opacity: 0.42;
+  opacity: 0.3;
 }
 .scroll-trace-rules line {
   stroke: rgb(var(--ink) / 0.09);
@@ -135,7 +135,7 @@ html {
   opacity: 0.18;
 }
 :root[data-theme="light"] .scroll-trace-line {
-  opacity: 0.34;
+  opacity: 0.24;
 }
 
 .container {
@@ -145,13 +145,14 @@ html {
 /* =============================================================================
    Components
 ============================================================================= */
-/* Solid surface with a hairline. Cards stay flat; elevation is reserved for
-   the CV paper, the active certificate and modals. */
+/* Solid surfaces with hairlines; interactive cards move without extra shadows. */
 .card {
   @apply rounded-xl border border-line bg-surface transition-colors;
 }
-.card:hover {
-  border-color: rgb(var(--ink) / 0.24);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover {
+    border-color: rgb(var(--ink) / 0.24);
+  }
 }
 
 .btn-primary {
@@ -172,6 +173,88 @@ html {
 .btn-secondary:hover {
   border-color: rgb(var(--ink) / 0.3);
   background: rgb(var(--ink) / 0.04);
+}
+
+.hero-action {
+  transition: translate 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+.hero-action.btn-secondary:focus-visible {
+  border-color: rgb(var(--brand));
+}
+.interactive-card:focus-within {
+  border-color: rgb(var(--brand));
+}
+.nav-frame {
+  width: 100%;
+  margin-inline: auto;
+  border: 1px solid transparent;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.nav-frame--scrolled {
+  width: calc(100% - 1.5rem);
+  max-width: 72rem;
+  border-color: rgb(var(--ink) / 0.12);
+  border-radius: 2rem;
+  background: rgb(var(--surface));
+  translate: 0 8px;
+  overflow: clip;
+}
+.nav-frame--scrolled .container {
+  padding-inline: 1rem;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nav-frame--scrolled {
+    background: rgb(var(--surface) / 0.94);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .interactive-card {
+    transition: translate 200ms ease, border-color 200ms ease;
+  }
+  .interactive-card:hover {
+    border-color: rgb(var(--brand) / 0.65);
+  }
+  .interactive-card:focus-within {
+    border-color: rgb(var(--brand));
+  }
+  .hero-action.btn-secondary:hover {
+    border-color: rgb(var(--brand));
+    background: rgb(var(--ink) / 0.06);
+  }
+}
+@keyframes status-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .status-dot {
+    animation: status-pulse 2.8s ease-in-out infinite;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Individual translate composes with Framer's one-shot entrance transform. */
+  .interactive-card:hover {
+    translate: 0 -3px;
+  }
+  .project-image {
+    transition: transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .project-card:hover .project-image {
+    transform: scale(1.04);
+  }
+  .link-nudge > svg {
+    transition: transform 180ms ease;
+  }
+  .link-nudge:hover > svg,
+  .link-nudge:focus-visible > svg {
+    transform: translateX(2px);
+  }
+  .hero-action:hover {
+    translate: 0 -2px;
+  }
+  .hero-action:active {
+    translate: 0 0;
+  }
 }
 
 .field {

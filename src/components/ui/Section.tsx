@@ -25,7 +25,7 @@ export default function Section({
   return (
     <section
       id={id || title.toLowerCase().replace(/\s+/g, "-")}
-      className={`py-16 md:py-24 ${className ?? ""}`}
+      className={`py-12 md:py-16 ${className ?? ""}`}
     >
       <motion.header
         initial="hidden"

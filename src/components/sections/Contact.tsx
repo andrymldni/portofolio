@@ -62,7 +62,7 @@ function QuickContactCard({
   );
 
   const className =
-    "card group flex w-full items-center gap-3 p-4 text-left hover:bg-ink/[0.03]";
+    "card interactive-card group flex w-full items-center gap-3 p-4 text-left";
 
   return copyable ? (
     <button type="button" onClick={handleCopy} className={className}>
@@ -164,7 +164,7 @@ export default function Contact() {
               target="_blank"
               rel="noreferrer"
               aria-label={s.label}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink/30 hover:bg-ink/[0.04]"
+              className="link-nudge flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink/30 hover:bg-ink/[0.04]"
             >
               <s.icon size={17} strokeWidth={1.75} />
             </a>

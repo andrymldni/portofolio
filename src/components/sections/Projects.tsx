@@ -3,6 +3,7 @@ import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
+  ArrowUpRight,
   Github,
   Globe,
   X,
@@ -143,7 +144,7 @@ function ProjectModal({
                 href={project.demo}
                 target="_blank"
                 rel="noreferrer"
-                className="btn-primary"
+                className="btn-primary link-nudge"
               >
                 <Globe size={15} />
                 Live demo
@@ -154,7 +155,7 @@ function ProjectModal({
                 href={project.link}
                 target="_blank"
                 rel="noreferrer"
-                className={project.demo ? "btn-secondary" : "btn-primary"}
+                className={`link-nudge ${project.demo ? "btn-secondary" : "btn-primary"}`}
               >
                 {project.demo ? (
                   <Github size={15} />
@@ -191,12 +192,12 @@ function ProjectCard({
     <motion.article
       {...reveal}
       onViewportEnter={() => onReveal(p.slug)}
-      className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
+      className={`group card interactive-card project-card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
       }`}
     >
       <div
-        className={`relative w-full border-b border-line ${
+        className={`relative w-full overflow-hidden border-b border-line ${
           p.featured ? "h-52 sm:h-64" : "h-44"
         }`}
       >
@@ -208,7 +209,7 @@ function ProjectCard({
             sizes={p.featured
               ? "(min-width: 1152px) 728px, (min-width: 1024px) calc(66.667vw - 40px), (min-width: 768px) calc(100vw - 48px), calc(100vw - 40px)"
               : "(min-width: 1152px) 352px, (min-width: 1024px) calc(33.333vw - 32px), (min-width: 768px) calc(50vw - 36px), (min-width: 640px) calc(50vw - 32px), calc(100vw - 40px)"}
-            className="object-cover"
+            className="project-image object-cover"
             loading="lazy"
           />
         ) : (
@@ -250,7 +251,7 @@ function ProjectCard({
                 href={p.demo}
                 target="_blank"
                 rel="noreferrer"
-                className="relative z-10 text-muted transition-colors hover:text-ink"
+                className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
                 aria-label={`Open live demo for ${p.title}`}
                 title="Live demo"
               >
@@ -262,7 +263,7 @@ function ProjectCard({
                 href={p.link}
                 target="_blank"
                 rel="noreferrer"
-                className="relative z-10 text-muted transition-colors hover:text-ink"
+                className="link-nudge relative z-10 text-muted transition-colors hover:text-ink"
                 aria-label={`Visit project ${p.title}`}
                 title="Open link"
               >
@@ -284,9 +285,10 @@ function ProjectCard({
         <Link
           href={`/projects/${p.slug}`}
           aria-label={`Read case study: ${p.title}`}
-          className="relative z-10 mt-4 inline-flex text-sm font-medium text-brand transition-colors hover:text-ink"
+          className="link-nudge relative z-10 mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand transition-colors hover:text-ink"
         >
           Read case study
+          <ArrowUpRight size={15} aria-hidden="true" />
         </Link>
       </div>
     </motion.article>
