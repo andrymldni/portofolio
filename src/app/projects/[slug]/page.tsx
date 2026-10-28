@@ -44,10 +44,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectPage({ params }: Props) {
   const project = getProject((await params).slug);
-  const sections = [
+  const sections: { title: string; body?: string; items?: string[] }[] = [
     { title: "Problem", body: project.problem },
     { title: "Role", body: project.role },
-    { title: "Approach", body: project.approach },
+    { title: "Approach", items: project.approach },
     { title: "Results", body: project.results },
   ];
 
@@ -116,10 +116,32 @@ export default async function ProjectPage({ params }: Props) {
               <p className="mt-3 leading-relaxed text-muted">{project.details}</p>
             </section>
           )}
-          {sections.filter((section) => section.body).map((section) => (
+          {project.highlights && project.highlights.length > 0 && (
+            <section className="card p-6 sm:p-8">
+              <h2 className="text-xl font-semibold text-ink">Highlights</h2>
+              <dl className="mt-4 grid gap-4 sm:grid-cols-3">
+                {project.highlights.map((highlight) => (
+                  <div key={`${highlight.value}-${highlight.label}`}>
+                    <dt className="text-2xl font-semibold text-ink">{highlight.value}</dt>
+                    <dd className="mt-1 text-sm text-muted">{highlight.label}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          )}
+          {sections.filter((section) => section.body || section.items).map((section) => (
             <section key={section.title} className="card p-6 sm:p-8">
               <h2 className="text-xl font-semibold text-ink">{section.title}</h2>
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-muted">{section.body}</p>
+              {section.body && (
+                <p className="mt-3 whitespace-pre-line leading-relaxed text-muted">{section.body}</p>
+              )}
+              {section.items && (
+                <ol className="mt-3 list-decimal space-y-2 pl-5 leading-relaxed text-muted">
+                  {section.items.map((item) => (
+                    <li key={item}>{item}</li>
+                  ))}
+                </ol>
+              )}
             </section>
           ))}
         </div>
