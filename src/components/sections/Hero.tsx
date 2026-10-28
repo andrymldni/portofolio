@@ -38,7 +38,6 @@ export default function Hero() {
   // while the photo rises a little faster, so About appears to slide in
   // over it. Static on touch and under reduced motion.
   const sectionRef = useRef<HTMLElement | null>(null);
-  usePointerSurface(sectionRef);
   useProgressiveEntrance(sectionRef, true);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -59,7 +58,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="hero-surface pointer-surface relative isolate grid min-h-[calc(100svh-4rem)] items-center pb-20 pt-10 md:pb-24 md:pt-12"
+      className="hero-surface relative isolate grid min-h-[calc(100svh-4rem)] items-center pb-20 pt-10 md:pb-24 md:pt-12"
     >
       <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr] md:gap-10 lg:gap-16">
         {/* Copy */}
@@ -71,7 +70,7 @@ export default function Hero() {
             className="text-center md:text-left"
           >
             <motion.p variants={rise} data-hero-rise className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface px-3 py-1.5 text-xs font-medium text-ink">
-              <span aria-hidden="true" className="status-dot h-1.5 w-1.5 shrink-0 rounded-full bg-ok" />
+              <span aria-hidden="true" className="status-dot h-2 w-2 shrink-0 rounded-full bg-ok" />
               Open to data collaborations
             </motion.p>
             <motion.p variants={rise} data-hero-rise className="text-sm font-medium text-muted">
@@ -185,7 +184,6 @@ export default function Hero() {
                   sizes="(max-width: 640px) 14rem, (max-width: 768px) 16rem, (max-width: 1024px) 19rem, 22rem"
                   className="object-cover"
                 />
-                <span aria-hidden="true" className="portrait-highlight pointer-events-none absolute inset-0" />
               </div>
             </div>
           </motion.div>

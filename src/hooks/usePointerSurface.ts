@@ -12,7 +12,7 @@ export function useDesktopMotion() {
   return useSyncExternalStore(subscribe, () => window.matchMedia(QUERY).matches, () => false);
 }
 
-/** Pointer effects write only CSS variables, at most once per animation frame. */
+/** Pointer tilt writes only CSS variables, at most once per animation frame. */
 export function usePointerSurface<T extends HTMLElement>(ref: RefObject<T | null>, maxTilt = 0) {
   useEffect(() => {
     const element = ref.current;
@@ -24,7 +24,6 @@ export function usePointerSurface<T extends HTMLElement>(ref: RefObject<T | null
     const reset = () => {
       cancelAnimationFrame(frame);
       frame = 0;
-      element.style.setProperty("--pointer-active", "0");
       element.style.setProperty("--tilt-angle", "0deg");
     };
     const paint = () => {
@@ -36,9 +35,6 @@ export function usePointerSurface<T extends HTMLElement>(ref: RefObject<T | null
       const axisX = 1 - y * 2;
       const axisY = x * 2 - 1;
       const magnitude = Math.hypot(axisX, axisY);
-      element.style.setProperty("--pointer-x", `${x * 100}%`);
-      element.style.setProperty("--pointer-y", `${y * 100}%`);
-      element.style.setProperty("--pointer-active", "1");
       element.style.setProperty("--tilt-axis-x", `${magnitude ? axisX / magnitude : 1}`);
       element.style.setProperty("--tilt-axis-y", `${magnitude ? axisY / magnitude : 0}`);
       element.style.setProperty("--tilt-angle", `${Math.min(1, magnitude) * maxTilt}deg`);

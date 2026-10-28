@@ -224,11 +224,25 @@ html {
 }
 @keyframes status-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.55; }
+  50% { opacity: 0.2; }
+}
+.status-dot {
+  position: relative;
+  animation: status-pulse 1.2s ease-in-out infinite;
+}
+@keyframes status-ping {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.4); opacity: 0; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .status-dot {
-    animation: status-pulse 2.8s ease-in-out infinite;
+  .status-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: rgb(var(--ok));
+    pointer-events: none;
+    animation: status-ping 1.2s ease-in-out infinite;
   }
 }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
@@ -257,15 +271,11 @@ html {
   }
 }
 
-/* Cinematic accents stay inside their surfaces; no extra canvas or blur layers. */
+/* Pointer tilt uses independent rotation to preserve entrance transforms. */
 .pointer-surface {
-  --pointer-active: 0;
   --tilt-axis-x: 1;
   --tilt-axis-y: 0;
   --tilt-angle: 0deg;
-}
-.portrait-highlight {
-  display: none;
 }
 @keyframes masked-rise {
   from { transform: translateY(110%); }
@@ -348,25 +358,9 @@ html {
   .hero-surface[data-entrance-ready] .name-line-last {
     animation-delay: 270ms;
   }
-  .hero-surface::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    pointer-events: none;
-    background: radial-gradient(360px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgb(var(--brand) / 0.065), transparent 75%);
-    opacity: var(--pointer-active);
-    transition: opacity 250ms ease;
-  }
   .pointer-tilt {
     rotate: var(--tilt-axis-x) var(--tilt-axis-y) 0 var(--tilt-angle);
     transition: rotate 220ms ease-out, translate 200ms ease, border-color 200ms ease;
-  }
-  .portrait-highlight {
-    display: block;
-    background: radial-gradient(240px circle at var(--pointer-x, 50%) var(--pointer-y, 50%), rgb(var(--brand) / 0.16), transparent 75%);
-    opacity: var(--pointer-active);
-    transition: opacity 250ms ease;
   }
 }
 
