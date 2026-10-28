@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Award,
@@ -27,7 +28,9 @@ function CertModal({
 }) {
   const { dialogRef, titleId } = useDialog(onClose);
 
-  return (
+  // This component mounts only after a client interaction. Escape both the
+  // coverflow and the section's persistent reveal transform for viewport layout.
+  return createPortal(
     <motion.div
       className="modal-backdrop flex items-center justify-center p-4"
       initial={{ opacity: 0 }}
@@ -92,7 +95,8 @@ function CertModal({
           )}
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
 }
 
@@ -115,6 +119,7 @@ export default function CertificatesSlider() {
   const [active, setActive] = useState<Certification | null>(null);
   const closeModal = useCallback(() => setActive(null), []);
   const wrapRef = useRef<HTMLDivElement | null>(null);
+  const didDrag = useRef(false);
 
   const next = useCallback(() => setIndex((i) => (i + 1) % n), [n]);
   const prev = useCallback(() => setIndex((i) => (i - 1 + n) % n), [n]);
@@ -155,12 +160,19 @@ export default function CertificatesSlider() {
     >
       <div className="certificate-stage -mx-5 md:-mx-6">
         <motion.div
-          className="certificate-coverflow relative h-[320px] cursor-grab touch-pan-y px-5 sm:h-[300px] active:cursor-grabbing md:px-6"
+          // Let the card faces receive hits even behind the stage's Z=0 plane.
+          // Their pointer events still bubble here to drive the shared drag.
+          className="certificate-coverflow pointer-events-none relative h-[320px] cursor-grab touch-pan-y px-5 sm:h-[300px] active:cursor-grabbing md:px-6"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={reduce ? 0 : 0.2}
           dragMomentum={false}
-          onDragStart={() => setDragging(true)}
+          onPointerDownCapture={() => { didDrag.current = false; }}
+          onPointerCancelCapture={() => { didDrag.current = true; }}
+          onDragStart={() => {
+            didDrag.current = true;
+            setDragging(true);
+          }}
           onDragEnd={(_, info) => {
             const SWIPE_THRESHOLD = 45;
             if (info.offset.x < -SWIPE_THRESHOLD) next();
@@ -183,7 +195,7 @@ export default function CertificatesSlider() {
             return (
               <motion.div
                 key={cert.name}
-                className="certificate-pose absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
+                className="certificate-pose pointer-events-auto absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
                 // CSS owns centering; initial=false serializes the resting pose
                 // so cards never stack at the stage's centre before hydration.
                 style={{ zIndex: 10 - abs, translate: "-50% -50%" }}
@@ -202,6 +214,23 @@ export default function CertificatesSlider() {
                     isActive ? "shadow-[0_24px_48px_-24px_rgba(0,0,0,0.55)]" : ""
                   }`}
                 >
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      // A drag can end with a native click. Keep its guard until
+                      // the next pointer press; keyboard activation has detail=0.
+                      if (event.detail > 0 && didDrag.current) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        return;
+                      }
+                      event.currentTarget.focus({ preventScroll: true });
+                      handleCardClick(i, cert);
+                    }}
+                    aria-haspopup={isActive ? "dialog" : undefined}
+                    aria-label={isActive ? `Open ${cert.name}` : `Show ${cert.name}`}
+                    className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand"
+                  />
                   {cert.image ? (
                     <div className="relative h-36 w-full">
                       <Image
@@ -224,18 +253,7 @@ export default function CertificatesSlider() {
                   )}
                   <div className="flex flex-col gap-1 p-5">
                     <h3 className="text-sm font-semibold leading-snug text-ink">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.currentTarget.focus();
-                          handleCardClick(i, cert);
-                        }}
-                        aria-haspopup={isActive ? "dialog" : undefined}
-                        aria-label={isActive ? `Open ${cert.name}` : `Show ${cert.name}`}
-                        className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
-                      >
-                        {cert.name}
-                      </button>
+                      {cert.name}
                     </h3>
                     <p className="text-xs text-muted">{cert.issuer}</p>
                     <span className="mt-2 text-xs font-medium text-muted/80">
