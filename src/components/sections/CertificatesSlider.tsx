@@ -136,20 +136,30 @@ export default function CertificatesSlider() {
   return (
     <div
       ref={wrapRef}
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Certifications"
+      onKeyDown={(event) => {
+        if (active || (event.key !== "ArrowLeft" && event.key !== "ArrowRight")) return;
+        event.preventDefault();
+        if (event.key === "ArrowLeft") prev();
+        else next();
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setFocused(true)}
       onBlur={(e) => {
         if (!e.currentTarget.contains(e.relatedTarget)) setFocused(false);
       }}
-      className="relative"
+      className="certificate-carousel relative"
     >
       <div className="certificate-stage -mx-5 md:-mx-6">
         <motion.div
-          className="relative h-[320px] cursor-grab touch-pan-y px-5 sm:h-[300px] active:cursor-grabbing md:px-6"
+          className="certificate-coverflow relative h-[320px] cursor-grab touch-pan-y px-5 sm:h-[300px] active:cursor-grabbing md:px-6"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
+          dragElastic={reduce ? 0 : 0.2}
+          dragMomentum={false}
           onDragStart={() => setDragging(true)}
           onDragEnd={(_, info) => {
             const SWIPE_THRESHOLD = 45;
@@ -164,25 +174,28 @@ export default function CertificatesSlider() {
             if (abs > 2) return null;
 
             const isActive = offset === 0;
-            const x = offset * 78; // % of card width, relative to CSS centering
-            const scale = isActive ? 1 : abs === 1 ? 0.82 : 0.66;
-            const opacity = isActive ? 1 : abs === 1 ? 0.55 : 0.22;
-            const z = 10 - abs;
+            const x = offset * 68; // % of card width, relative to CSS centering
+            const scale = isActive ? 1 : abs === 1 ? 0.94 : 0.88;
+            const opacity = isActive ? 1 : abs === 1 ? 0.7 : 0.4;
+            const depth = -abs * 110;
+            const rotateY = isActive ? 0 : -Math.sign(offset) * 38;
 
             return (
               <motion.div
                 key={cert.name}
-                className="absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
+                className="certificate-pose absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
                 // CSS owns centering; initial=false serializes the resting pose
                 // so cards never stack at the stage's centre before hydration.
-                style={{ zIndex: z, translate: "-50% -50%" }}
+                style={{ zIndex: 10 - abs, translate: "-50% -50%" }}
                 initial={false}
                 animate={{
                   x: `${x}%`,
+                  z: depth,
+                  rotateY,
                   scale,
                   opacity,
                 }}
-                transition={{ type: "spring", stiffness: 260, damping: 28 }}
+                transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
               >
                 <div
                   className={`card interactive-card group relative block w-full overflow-hidden p-0 text-left ${

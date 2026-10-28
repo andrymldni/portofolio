@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useRef } from "react";
 import { briAgentCountLabel, briInternshipCoverage, projects, certifications } from "@/lib/data";
-import { canEnhanceEntrance } from "@/hooks/useProgressiveEntrance";
+import { canEnhanceEntrance, useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const stats = [
   { label: "BRILink agents analyzed", value: briInternshipCoverage.agents, final: briAgentCountLabel, millions: true },
@@ -14,6 +15,8 @@ const stats = [
 export default function ImpactStats() {
   const ref = useRef<HTMLDListElement | null>(null);
   const played = useRef(false);
+  const reduce = usePrefersReducedMotion();
+  useProgressiveEntrance(ref, false, !reduce);
 
   useEffect(() => {
     const element = ref.current;
@@ -68,13 +71,17 @@ export default function ImpactStats() {
   }, []);
 
   return (
-    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-line py-6 sm:grid-cols-3 lg:grid-cols-5">
+    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-line py-6 sm:grid-cols-3 lg:grid-cols-5">
       {stats.map((stat) => (
         <div key={stat.label} className="min-w-0 last:col-span-2 sm:last:col-span-1">
           <dt className="text-xs leading-relaxed text-muted">{stat.label}</dt>
           <dd className="mt-2 text-2xl font-semibold tabular-nums tracking-tight text-ink sm:text-3xl">
             <span className="sr-only">{stat.final ?? stat.value}</span>
             <span aria-hidden="true" data-count>{stat.final ?? stat.value}</span>
+            {/* The same unlabeled rising flourish for every count, not a data series. */}
+            <svg aria-hidden="true" focusable="false" viewBox="0 0 80 24" className="mt-2 h-6 w-20 text-brand/60">
+              <path className="stat-sparkline" d="M2 21 C18 21 22 17 32 16 S48 14 56 10 S68 5 78 3" pathLength={1} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" />
+            </svg>
           </dd>
         </div>
       ))}

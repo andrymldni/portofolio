@@ -14,6 +14,16 @@ import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
 const PHONE = "+62 858-9581-2699";
+type ContactField = "name" | "email" | "message";
+type ContactErrors = Partial<Record<ContactField, string>>;
+
+function fieldError(field: ContactField, control: HTMLInputElement | HTMLTextAreaElement) {
+  if (!control.value.trim()) {
+    return { name: "Please enter your name.", email: "Please enter your email.", message: "Please enter a message." }[field];
+  }
+  if (field === "email" && !control.validity.valid) return "Please enter a valid email address.";
+  return "";
+}
 
 function QuickContactCard({
   icon: Icon,
@@ -77,12 +87,40 @@ function QuickContactCard({
 
 export default function Contact() {
   const [sent, setSent] = useState<false | "loading" | "ok" | "err">(false);
+  const [errors, setErrors] = useState<ContactErrors>({});
+
+  const validateField = (field: ContactField, control: HTMLInputElement | HTMLTextAreaElement) => {
+    const error = fieldError(field, control);
+    setErrors((current) => ({ ...current, [field]: error }));
+  };
+
+  const handleChange = (field: ContactField, control: HTMLInputElement | HTMLTextAreaElement) => {
+    if (errors[field]) validateField(field, control);
+    setSent(false);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = new FormData(e.currentTarget);
     const honey = (form.get("company") as string) || "";
     if (honey) return;
+
+    const nextErrors: ContactErrors = {};
+    let firstInvalid: HTMLInputElement | HTMLTextAreaElement | undefined;
+    for (const field of ["name", "email", "message"] as const) {
+      const control = e.currentTarget.elements.namedItem(field) as HTMLInputElement | HTMLTextAreaElement;
+      const error = fieldError(field, control);
+      if (error) {
+        nextErrors[field] = error;
+        firstInvalid ??= control;
+      }
+    }
+    setErrors(nextErrors);
+    if (firstInvalid) {
+      setSent(false);
+      firstInvalid.focus();
+      return;
+    }
 
     const name = (form.get("name") as string)?.trim();
     const fromEmail = (form.get("email") as string)?.trim();
@@ -176,44 +214,69 @@ export default function Contact() {
       <Reveal delay={0.1} className="lg:col-span-3">
         <form
           onSubmit={handleSubmit}
+          noValidate
           className="card grid gap-4 p-6 sm:p-8"
           aria-describedby="form-status"
         >
           <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-sm">
-              <span className="font-medium text-ink">Name</span>
-              <input
-                name="name"
-                required
-                type="text"
-                className="field px-3"
-                placeholder="Your name"
-                autoComplete="name"
-              />
-            </label>
-            <label className="grid gap-1.5 text-sm">
-              <span className="font-medium text-ink">Email</span>
-              <input
-                name="email"
-                required
-                type="email"
-                className="field px-3"
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-            </label>
+            <div className="min-w-0">
+              <div className="contact-field">
+                <input
+                  id="contact-name"
+                  name="name"
+                  required
+                  type="text"
+                  className="field px-3"
+                  placeholder="Your name"
+                  autoComplete="name"
+                  aria-invalid={Boolean(errors.name)}
+                  aria-describedby={errors.name ? "contact-name-error" : undefined}
+                  onBlur={(event) => validateField("name", event.currentTarget)}
+                  onChange={(event) => handleChange("name", event.currentTarget)}
+                />
+                <label htmlFor="contact-name">Name</label>
+              </div>
+              <p id="contact-name-error" className="contact-error" aria-live="polite">{errors.name}</p>
+            </div>
+            <div className="min-w-0">
+              <div className="contact-field">
+                <input
+                  id="contact-email"
+                  name="email"
+                  required
+                  type="email"
+                  className="field px-3"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                  aria-invalid={Boolean(errors.email)}
+                  aria-describedby={errors.email ? "contact-email-error" : undefined}
+                  onBlur={(event) => validateField("email", event.currentTarget)}
+                  onChange={(event) => handleChange("email", event.currentTarget)}
+                />
+                <label htmlFor="contact-email">Email</label>
+              </div>
+              <p id="contact-email-error" className="contact-error" aria-live="polite">{errors.email}</p>
+            </div>
           </div>
 
-          <label className="grid gap-1.5 text-sm">
-            <span className="font-medium text-ink">Message</span>
-            <textarea
-              name="message"
-              required
-              rows={5}
-              className="field px-3"
-              placeholder="Hey, I'd love to collaborate on..."
-            />
-          </label>
+          <div className="min-w-0">
+            <div className="contact-field">
+              <textarea
+                id="contact-message"
+                name="message"
+                required
+                rows={5}
+                className="field px-3"
+                placeholder="Hey, I'd love to collaborate on..."
+                aria-invalid={Boolean(errors.message)}
+                aria-describedby={errors.message ? "contact-message-error" : undefined}
+                onBlur={(event) => validateField("message", event.currentTarget)}
+                onChange={(event) => handleChange("message", event.currentTarget)}
+              />
+              <label htmlFor="contact-message">Message</label>
+            </div>
+            <p id="contact-message-error" className="contact-error" aria-live="polite">{errors.message}</p>
+          </div>
 
           <input
             type="text"
@@ -234,6 +297,11 @@ export default function Contact() {
           </button>
 
           <p id="form-status" className="text-xs text-muted" aria-live="polite">
+            {sent === "ok" && (
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="contact-success-mark mr-1.5 inline-block align-middle text-brand">
+                <path d="m5 12 4 4L19 6" pathLength={1} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            )}
             {sent === "ok" &&
               "If Gmail or your email app opened, review the draft and send it there."}
             {sent === "err" &&

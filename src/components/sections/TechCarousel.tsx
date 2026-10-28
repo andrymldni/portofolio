@@ -39,14 +39,13 @@ const TOOLS: Tool[] = [
   { name: "Metabase", icon: SiMetabase, brandColor: "#509EE3" },
 ];
 
-// Duplicated once for a seamless infinite loop (see .marquee-track keyframes)
-const LOOP = [...TOOLS, ...TOOLS];
+const ROWS = [TOOLS.slice(0, 8), TOOLS.slice(8)];
 
 function ToolCard({ tool, duplicate }: { tool: Tool; duplicate: boolean }) {
   const Icon = tool.icon;
   return (
     <div
-      className={`card interactive-card group flex w-32 shrink-0 flex-col items-center gap-3 px-4 py-5 sm:w-36 ${duplicate ? "motion-reduce:hidden" : ""}`}
+      className="card interactive-card group tool-card flex w-32 shrink-0 flex-col items-center gap-3 px-4 py-5 sm:w-36"
       aria-hidden={duplicate || undefined}
       style={{ "--tool-color": tool.brandColor } as CSSProperties}
     >
@@ -60,12 +59,22 @@ function ToolCard({ tool, duplicate }: { tool: Tool; duplicate: boolean }) {
 
 export default function TechCarousel() {
   return (
-    <div className="marquee-mask -mx-5 -my-1 overflow-hidden px-5 py-1 md:-mx-6 md:px-6">
-      <div className="marquee-track flex w-max gap-4">
-        {LOOP.map((tool, i) => (
-          <ToolCard key={`${tool.name}-${i}`} tool={tool} duplicate={i >= TOOLS.length} />
-        ))}
-      </div>
+    <div
+      className="tools-marquee marquee-mask -mx-5 -my-1 space-y-4 overflow-hidden rounded-lg px-5 py-1 md:-mx-6 md:px-6"
+      tabIndex={0}
+      role="group"
+      aria-label="Tools and technologies. Focus or hover to pause scrolling."
+    >
+      {ROWS.map((row, rowIndex) => (
+        <div key={rowIndex} className={`marquee-track flex w-max ${rowIndex === 1 ? "tools-track-reverse" : ""}`}>
+          {/* Equal-width halves include their trailing gap for a seamless loop. */}
+          {[false, true].map((duplicate) => (
+            <div key={String(duplicate)} className="tools-marquee-group flex gap-4 pr-4" aria-hidden={duplicate || undefined}>
+              {row.map((tool) => <ToolCard key={tool.name} tool={tool} duplicate={duplicate} />)}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
