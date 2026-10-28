@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
@@ -18,12 +18,26 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import { projects, type Project } from "@/lib/data";
-import { EASE_OUT } from "@/components/ui/Reveal";
-import { useRandomEntrance } from "@/components/ui/RandomReveal";
+import { EASE_OUT, useReveal } from "@/components/ui/Reveal";
 import { useDialog } from "@/hooks/useDialog";
 
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
+
+// Match the grid's sm/lg breakpoints without listening to every resize frame.
+function subscribeColumns(onChange: () => void) {
+  const queries = [640, 1024].map((width) => window.matchMedia(`(min-width: ${width}px)`));
+  queries.forEach((query) => query.addEventListener("change", onChange));
+  return () => queries.forEach((query) => query.removeEventListener("change", onChange));
+}
+
+function getColumns() {
+  return window.matchMedia("(min-width: 1024px)").matches
+    ? 3
+    : window.matchMedia("(min-width: 640px)").matches ? 2 : 1;
+}
+
+const getServerColumns = () => 1;
 
 /** Category → icon + muted tint, used as the cover when a project has no screenshot. */
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -159,22 +173,24 @@ function ProjectModal({
 
 function ProjectCard({
   project: p,
-  index,
+  delay,
+  revealed,
+  onReveal,
   onOpen,
 }: {
   project: Project;
-  index: number;
+  delay: number;
+  revealed: boolean;
+  onReveal: (slug: string) => void;
   onOpen: (p: Project) => void;
 }) {
-  // Each card enters differently, and differently again on every scroll.
-  const { ref, initial, animate, style } = useRandomEntrance(index, (index % 3) * 0.07);
+  // Preserve the initial decision while mounted; filters remember previously seen cards.
+  const [alreadyRevealed] = useState(revealed);
+  const reveal = useReveal(delay, alreadyRevealed);
   return (
     <motion.article
-      ref={ref}
-      initial={initial}
-      animate={animate}
-      style={style}
-      whileHover={{ y: -3 }}
+      {...reveal}
+      onViewportEnter={() => onReveal(p.slug)}
       className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
       }`}
@@ -303,6 +319,22 @@ export default function Projects({
   );
   const [active, setActive] = useState<Project | null>(null);
   const closeModal = useCallback(() => setActive(null), []);
+  const [revealed, setRevealed] = useState<ReadonlySet<string>>(() => new Set());
+  const markRevealed = useCallback((slug: string) => {
+    setRevealed((seen) => seen.has(slug) ? seen : new Set(seen).add(slug));
+  }, []);
+  const columns = useSyncExternalStore(subscribeColumns, getColumns, getServerColumns);
+  const delays = useMemo(() => {
+    let column = 0;
+    const result: number[] = [];
+    for (const project of list) {
+      const span = project.featured && columns > 1 ? 2 : 1;
+      if (column + span > columns) column = 0;
+      result.push(column * 0.06);
+      column = (column + span) % columns;
+    }
+    return result;
+  }, [list, columns]);
 
   return (
     <div>
@@ -329,9 +361,11 @@ export default function Projects({
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((p, index) => (
           <ProjectCard
-            key={p.title}
+            key={p.slug}
             project={p}
-            index={index}
+            delay={delays[index]}
+            revealed={revealed.has(p.slug)}
+            onReveal={markRevealed}
             onOpen={setActive}
           />
         ))}

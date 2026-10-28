@@ -104,7 +104,7 @@ export default function ScrollTrace() {
       ).filter((s) => s !== hero);
       if (!shell || !hero || sections.length === 0) return;
 
-      const w = window.innerWidth;
+      const w = document.documentElement.clientWidth;
       const h = shell.offsetHeight;
       svg.setAttribute("width", `${w}`);
       svg.setAttribute("height", `${h}`);
@@ -154,12 +154,15 @@ export default function ScrollTrace() {
       raf = requestAnimationFrame(build);
     };
     const shell = document.querySelector(".app-shell");
-    const ro = shell ? new ResizeObserver(schedule) : null;
-    if (shell && ro) ro.observe(shell);
+    const ro = new ResizeObserver(schedule);
+    // Root content width changes when a scrollbar appears/disappears, even
+    // without a window resize (for example when a dialog locks scrolling).
+    ro.observe(document.documentElement);
+    if (shell) ro.observe(shell);
     window.addEventListener("resize", schedule);
     return () => {
       cancelAnimationFrame(raf);
-      ro?.disconnect();
+      ro.disconnect();
       window.removeEventListener("resize", schedule);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
