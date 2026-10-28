@@ -9,6 +9,8 @@ import {
 } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
+import HeroChart from "@/components/effects/HeroChart";
+import MagneticLink from "@/components/ui/MagneticLink";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useDesktopMotion, usePointerSurface } from "@/hooks/usePointerSurface";
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
@@ -62,7 +64,8 @@ export default function Hero() {
     >
       <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr] md:gap-10 lg:gap-16">
         {/* Copy */}
-        <motion.div style={{ y: copyY, opacity: copyOpacity }}>
+        <motion.div style={{ y: copyY, opacity: copyOpacity }} className="relative">
+          <HeroChart />
           <motion.div
             variants={stagger(0.1, 0.1)}
             initial={false}
@@ -125,12 +128,12 @@ export default function Hero() {
               data-hero-rise
               className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
             >
-              <a href="#contact" className="btn-primary hero-action">
+              <MagneticLink href="#contact" className="btn-primary hero-action magnetic-link">
                 Say hello
-              </a>
-              <a href="#projects" className="btn-secondary hero-action">
+              </MagneticLink>
+              <MagneticLink href="#projects" className="btn-secondary hero-action magnetic-link">
                 View projects
-              </a>
+              </MagneticLink>
             </motion.div>
 
             <motion.div

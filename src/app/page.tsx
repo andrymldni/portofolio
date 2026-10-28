@@ -1,4 +1,5 @@
 import { Reveal } from "@/components/ui/Reveal";
+import PageDataMotifs from "@/components/effects/PageDataMotifs";
 import Hero from "@/components/sections/Hero";
 import Section from "@/components/ui/Section";
 import About from "@/components/sections/About";
@@ -10,7 +11,8 @@ import Contact from "@/components/sections/Contact";
 
 export default function HomePage() {
   return (
-    <main id="main" tabIndex={-1} className="container">
+    <main id="main" tabIndex={-1} className="container relative">
+      <PageDataMotifs />
       {/* Hero isn't wrapped in a Section so it doesn't get a "Home" heading */}
       <Hero />
 

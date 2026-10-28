@@ -1,7 +1,14 @@
 "use client";
-import { motion } from "framer-motion";
+import { Fragment, useEffect, useRef, type CSSProperties } from "react";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Reveal, RevealGroup, rise } from "@/components/ui/Reveal";
+import { useDesktopMotion } from "@/hooks/usePointerSurface";
 import { CONTACT_EMAIL } from "@/lib/data";
+
+const INTRO =
+  "Data Analyst at Bank Rakyat Indonesia and a Data Science graduate with a background in data-pipeline architecture, predictive modeling, and business intelligence, built on hands-on work at a state-owned bank and a national social-security agency. Analytical, detail-oriented, and comfortable in collaborative, fast-paced teams.";
+const INTRO_WORDS = INTRO.split(" ");
+const FACT_STARTS = [0.66, 0.73, 0.8, 0.87];
 
 const FACTS: { label: string; value: string; href?: string }[] = [
   { label: "Based in", value: "Jakarta, Indonesia" },
@@ -33,37 +40,80 @@ const FOCUS = [
 ];
 
 export default function About() {
+  const copyRef = useRef<HTMLDivElement | null>(null);
+  const desktopMotion = useDesktopMotion();
+  const { scrollYProgress } = useScroll({
+    target: copyRef,
+    offset: ["start 0.9", "end 0.55"],
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    if (!desktopMotion) return;
+    copyRef.current?.style.setProperty("--about-progress", value.toFixed(4));
+  });
+
+  useEffect(() => {
+    const copy = copyRef.current;
+    if (!copy) return;
+    copy.style.setProperty(
+      "--about-progress",
+      desktopMotion ? String(scrollYProgress.get()) : "1",
+    );
+  }, [desktopMotion, scrollYProgress]);
+
   return (
     <div className="grid gap-12 md:grid-cols-[1fr_1.1fr] md:gap-16">
       <Reveal>
-        <p className="text-base leading-relaxed text-ink/85 sm:text-lg">
-          Data Analyst at Bank Rakyat Indonesia and a Data Science graduate
-          with a background in data-pipeline architecture, predictive
-          modeling, and business intelligence, built on hands-on work at a
-          state-owned bank and a national social-security agency. Analytical,
-          detail-oriented, and comfortable in collaborative, fast-paced
-          teams.
-        </p>
+        <div
+          ref={copyRef}
+          className="about-copy"
+          data-scrollytelling={desktopMotion ? "" : undefined}
+        >
+          <p className="text-base leading-relaxed sm:text-lg">
+            {INTRO_WORDS.map((word, index) => (
+              <Fragment key={`${word}-${index}`}>
+                <span
+                  className="about-word"
+                  style={
+                    {
+                      "--word-start":
+                        INTRO_WORDS.length > 1
+                          ? (index / (INTRO_WORDS.length - 1)) * 0.55
+                          : 0,
+                    } as CSSProperties
+                  }
+                >
+                  {word}
+                  <span aria-hidden="true" className="about-word-ink">
+                    {word}
+                  </span>
+                </span>
+                {index < INTRO_WORDS.length - 1 ? " " : null}
+              </Fragment>
+            ))}
+          </p>
 
-        <dl className="mt-8 border-t border-line">
-          {FACTS.map((f) => (
-            <div
-              key={f.label}
-              className="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-line py-3 text-sm"
-            >
-              <dt className="text-muted">{f.label}</dt>
-              <dd className="font-medium text-ink">
-                {f.href ? (
-                  <a href={f.href} className="hover:underline">
-                    {f.value}
-                  </a>
-                ) : (
-                  f.value
-                )}
-              </dd>
-            </div>
-          ))}
-        </dl>
+          <dl className="mt-8 border-t border-line">
+            {FACTS.map((f, index) => (
+              <div
+                key={f.label}
+                className="about-fact grid grid-cols-[6.5rem_1fr] gap-4 border-b border-line py-3 text-sm"
+                style={{ "--fact-start": FACT_STARTS[index] } as CSSProperties}
+              >
+                <dt className="text-muted">{f.label}</dt>
+                <dd className="font-medium text-ink">
+                  {f.href ? (
+                    <a href={f.href} className="hover:underline">
+                      {f.value}
+                    </a>
+                  ) : (
+                    f.value
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </Reveal>
 
       <RevealGroup delay={0.1} gap={0.12}>

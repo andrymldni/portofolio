@@ -571,3 +571,108 @@ html {
     background: rgba(17, 20, 24, 0.82);
   }
 }
+
+/* =============================================================================
+   Task D additions: hero chart, page data motifs, About scrollytelling and
+   magnetic hero CTAs. Kept in one block so parallel section work can merge
+   around it without hunting for individual rules.
+============================================================================= */
+.hero-chart {
+  color: rgb(var(--brand));
+  opacity: 0.2;
+}
+.hero-chart-axes {
+  opacity: 0.4;
+}
+.hero-chart-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.hero-chart-points {
+  opacity: 1;
+}
+@keyframes hero-chart-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes hero-chart-points-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero-chart[data-chart-ready] .hero-chart-line {
+    stroke-dashoffset: 1;
+    animation: hero-chart-draw 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+  }
+  .hero-chart[data-chart-ready] .hero-chart-points {
+    opacity: 0;
+    animation: hero-chart-points-in 0.5s ease 1.55s forwards;
+  }
+}
+
+.page-motifs {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: none;
+  pointer-events: none;
+}
+@media (min-width: 1360px) {
+  .page-motifs {
+    display: block;
+  }
+}
+.page-motif {
+  position: absolute;
+  width: 2.75rem;
+  height: auto;
+  color: rgb(var(--brand));
+  opacity: 0.05;
+}
+.page-motif--left {
+  left: calc(-1 * ((100vw - 72rem) / 2) + 0.5rem);
+}
+.page-motif--right {
+  right: calc(-1 * ((100vw - 72rem) / 2) + 0.5rem);
+}
+.page-motif--1 { top: 24%; }
+.page-motif--2 { top: 41%; }
+.page-motif--3 { top: 62%; }
+.page-motif--4 { top: 81%; }
+
+.about-copy {
+  --about-progress: 1;
+}
+.about-word {
+  position: relative;
+  display: inline-block;
+  color: rgb(var(--muted));
+}
+.about-word-ink {
+  position: absolute;
+  inset: 0;
+  color: rgb(var(--ink));
+  opacity: 1;
+  pointer-events: none;
+}
+.about-copy[data-scrollytelling] .about-word-ink {
+  opacity: clamp(0, calc((var(--about-progress) - var(--word-start, 0)) * 10), 1);
+}
+.about-fact {
+  --fact-lit: 1;
+  opacity: var(--fact-lit);
+  transform: translateY(calc((1 - var(--fact-lit)) * 8px));
+}
+.about-copy[data-scrollytelling] .about-fact {
+  --fact-lit: clamp(0, calc((var(--about-progress) - var(--fact-start, 0)) * 10), 1);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .magnetic-link {
+    will-change: translate;
+    transition:
+      translate 220ms cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 180ms ease,
+      border-color 180ms ease;
+  }
+}
