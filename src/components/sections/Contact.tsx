@@ -9,7 +9,7 @@ import {
   Check,
   type LucideIcon,
 } from "lucide-react";
-import { RandomReveal } from "@/components/ui/RandomReveal";
+import { Reveal } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 import TerminalBar from "@/components/ui/TerminalBar";
@@ -126,7 +126,7 @@ export default function Contact() {
   return (
     <div className="grid gap-8 lg:grid-cols-5 lg:gap-12">
       {/* Left — headline + quick contact */}
-      <RandomReveal seed={2} className="flex flex-col gap-6 lg:col-span-2">
+      <Reveal className="flex flex-col gap-6 lg:col-span-2">
         <div>
           <h3 className="text-2xl font-semibold leading-tight tracking-tight text-ink sm:text-3xl">
             Let&apos;s talk, <span className="text-brand">shall we?</span>
@@ -172,10 +172,10 @@ export default function Contact() {
             </a>
           ))}
         </div>
-      </RandomReveal>
+      </Reveal>
 
       {/* Right — form */}
-      <RandomReveal seed={3} delay={0.1} className="lg:col-span-3">
+      <Reveal delay={0.1} className="lg:col-span-3">
         <form
           {...panelSpotlight}
           onSubmit={handleSubmit}
@@ -246,7 +246,7 @@ export default function Contact() {
             </p>
           </div>
         </form>
-      </RandomReveal>
+      </Reveal>
     </div>
   );
 }
