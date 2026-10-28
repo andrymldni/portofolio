@@ -16,6 +16,7 @@ import { EASE_OUT } from "@/components/ui/Reveal";
 import { useDialog } from "@/hooks/useDialog";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import TerminalBar from "@/components/ui/TerminalBar";
+import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const AUTOPLAY_MS = 4200;
 
@@ -147,92 +148,95 @@ export default function CertificatesSlider() {
       }}
       className="relative"
     >
-      <motion.div
-        className="relative -mx-5 h-[400px] cursor-grab touch-pan-y overflow-hidden px-5 sm:h-[380px] active:cursor-grabbing md:-mx-6 md:px-6"
-        drag="x"
-        dragConstraints={{ left: 0, right: 0 }}
-        dragElastic={0.2}
-        onDragStart={() => setDragging(true)}
-        onDragEnd={(_, info) => {
-          const SWIPE_THRESHOLD = 45;
-          if (info.offset.x < -SWIPE_THRESHOLD) next();
-          else if (info.offset.x > SWIPE_THRESHOLD) prev();
-          setDragging(false);
-        }}
-      >
-        {certifications.map((cert, i) => {
-          const offset = ringOffset(i, index, n);
-          const abs = Math.abs(offset);
-          if (abs > 2) return null;
+      <div className="certificate-stage -mx-5 md:-mx-6">
+        <motion.div
+          className="relative h-[400px] cursor-grab touch-pan-y px-5 sm:h-[380px] active:cursor-grabbing md:px-6"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={(_, info) => {
+            const SWIPE_THRESHOLD = 45;
+            if (info.offset.x < -SWIPE_THRESHOLD) next();
+            else if (info.offset.x > SWIPE_THRESHOLD) prev();
+            setDragging(false);
+          }}
+        >
+          {certifications.map((cert, i) => {
+            const offset = ringOffset(i, index, n);
+            const abs = Math.abs(offset);
+            if (abs > 2) return null;
 
-          const isActive = offset === 0;
-          const x = offset * 78; // % of card width, via translate below
-          const scale = isActive ? 1 : abs === 1 ? 0.82 : 0.66;
-          const z = 10 - abs;
+            const isActive = offset === 0;
+            const x = offset * 78; // % of card width, via translate below
+            const scale = isActive ? 1 : abs === 1 ? 0.82 : 0.66;
+            const z = 10 - abs;
 
-          return (
-            <motion.div
-              key={cert.name}
-              className="absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
-              style={{ zIndex: z }}
-              animate={{
-                x: `calc(-50% + ${x}%)`,
-                y: "-50%",
-                scale,
-              }}
-              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
-            >
-              <div
-                className={`card group relative block w-full overflow-hidden p-0 text-left ${
-                  isActive ? "ring-1 ring-brand" : ""
-                }`}
+            return (
+              <motion.div
+                key={cert.name}
+                className="absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
+                style={{ zIndex: z }}
+                animate={{
+                  x: `calc(-50% + ${x}%)`,
+                  y: "-50%",
+                  scale,
+                }}
+                transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
               >
-                <TerminalBar>~/credentials/{cert.year}</TerminalBar>
-                {cert.image ? (
-                  <div className="relative h-36 w-full">
-                    <Image
-                      src={cert.image}
-                      alt={cert.name}
-                      fill
-                      sizes="(max-width: 640px) 240px, 280px"
-                      className="object-cover"
-                    />
-                    {isActive && (
-                      <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas px-2 py-1 font-mono text-[11px] text-ink opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
-                        View certificate
-                      </span>
-                    )}
+                <div
+                  {...panelSpotlight}
+                  className={`panel-spotlight card group relative block w-full overflow-hidden p-0 text-left ${
+                    isActive ? "ring-1 ring-brand" : ""
+                  }`}
+                >
+                  <TerminalBar>~/credentials/{cert.year}</TerminalBar>
+                  {cert.image ? (
+                    <div className="relative h-36 w-full">
+                      <Image
+                        src={cert.image}
+                        alt={cert.name}
+                        fill
+                        sizes="(max-width: 640px) 240px, 280px"
+                        className="object-cover"
+                      />
+                      {isActive && (
+                        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas px-2 py-1 font-mono text-[11px] text-ink opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+                          View certificate
+                        </span>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="m-5 mb-0 flex h-11 w-11 items-center justify-center rounded-lg bg-steel text-ink">
+                      <Award size={20} strokeWidth={1.75} />
+                    </div>
+                  )}
+                  <div className="flex flex-col gap-1 p-5">
+                    <h3 className="text-sm font-semibold leading-snug text-ink">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.currentTarget.focus();
+                          handleCardClick(i, cert);
+                        }}
+                        aria-haspopup={isActive ? "dialog" : undefined}
+                        aria-label={isActive ? `Open ${cert.name}` : `Show ${cert.name}`}
+                        className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
+                      >
+                        {cert.name}
+                      </button>
+                    </h3>
+                    <p className="mt-2 font-mono text-xs leading-relaxed text-muted">{cert.issuer}</p>
+                    <span className="mt-2 font-mono text-xs text-muted">
+                      {cert.year}
+                    </span>
                   </div>
-                ) : (
-                  <div className="m-5 mb-0 flex h-11 w-11 items-center justify-center rounded-lg bg-steel text-ink">
-                    <Award size={20} strokeWidth={1.75} />
-                  </div>
-                )}
-                <div className="flex flex-col gap-1 p-5">
-                  <h3 className="text-sm font-semibold leading-snug text-ink">
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.currentTarget.focus();
-                        handleCardClick(i, cert);
-                      }}
-                      aria-haspopup={isActive ? "dialog" : undefined}
-                      aria-label={isActive ? `Open ${cert.name}` : `Show ${cert.name}`}
-                      className="text-left after:absolute after:inset-0 focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-brand"
-                    >
-                      {cert.name}
-                    </button>
-                  </h3>
-                  <p className="mt-2 font-mono text-xs leading-relaxed text-muted">{cert.issuer}</p>
-                  <span className="mt-2 font-mono text-xs text-muted">
-                    {cert.year}
-                  </span>
                 </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </motion.div>
+              </motion.div>
+            );
+          })}
+        </motion.div>
+      </div>
 
       {/* Controls */}
       <div className="mt-4 flex justify-center">

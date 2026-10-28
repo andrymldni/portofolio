@@ -32,6 +32,8 @@
 html,
 body {
   height: 100%;
+  /* Clip stray horizontal paint without creating a scroll container. */
+  overflow-x: clip;
 }
 body {
   @apply bg-canvas text-ink antialiased;
@@ -148,6 +150,82 @@ html {
 }
 .card:hover {
   border-color: rgb(var(--ink) / 0.24);
+}
+
+/* Clip the stationary stage, not the draggable track. Vertical overflow
+   stays visible so the active card's shadow and focus ring are preserved. */
+.certificate-stage {
+  overflow-x: clip;
+  overflow-y: visible;
+}
+
+.panel-spotlight {
+  position: relative;
+  isolation: isolate;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .panel-spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(280px circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%), rgb(var(--brand) / 0.035), transparent);
+  }
+  .panel-spotlight[data-spotlight="active"]::before {
+    opacity: 1;
+  }
+  .panel-spotlight:hover {
+    border-color: rgb(var(--brand) / 0.4);
+  }
+}
+
+/* Keep the complete command in the DOM and reserve its width throughout. */
+.section-command {
+  display: inline-block;
+  position: relative;
+  width: calc(var(--command-width) + 1ch);
+  max-width: 100%;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.command-text {
+  display: inline-block;
+  width: var(--command-width);
+  max-width: 100%;
+  vertical-align: bottom;
+}
+.command-caret { display: none; }
+@keyframes command-type {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0); }
+}
+@keyframes command-caret-advance {
+  from { left: 0; }
+  to { left: var(--command-width); }
+}
+@keyframes command-caret-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .section-command[data-typed="false"] .command-text {
+    clip-path: inset(0 100% 0 0);
+  }
+  .section-command[data-typed="true"] .command-text {
+    animation: command-type 1.1s steps(var(--command-steps), end) both;
+  }
+  .section-command[data-typed="true"] .command-caret {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: var(--command-width);
+    animation:
+      command-caret-advance 1.1s steps(var(--command-steps), end) both,
+      command-caret-blink 0.5s step-end 6 forwards;
+  }
 }
 
 .btn-primary {

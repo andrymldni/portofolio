@@ -1,6 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
-import { PropsWithChildren } from "react";
+import { motion, useInView } from "framer-motion";
+import { useRef, type CSSProperties, type PropsWithChildren } from "react";
 import { VIEWPORT, rise, stagger } from "@/components/ui/Reveal";
 
 const commands: Record<string, string> = {
@@ -23,6 +23,10 @@ export default function Section({
   subtitle?: string;
   className?: string;
 }>) {
+  const command = commands[id ?? ""] ?? `$ ls ${title.toLowerCase().replace(/\s+/g, "-")}/`;
+  const eyebrowRef = useRef<HTMLParagraphElement>(null);
+  const typed = useInView(eyebrowRef, VIEWPORT);
+
   return (
     <section
       id={id || title.toLowerCase().replace(/\s+/g, "-")}
@@ -35,8 +39,15 @@ export default function Section({
         variants={stagger(0, 0.1)}
         className="mb-10 max-w-2xl md:mb-12"
       >
-        <motion.p variants={rise} className="mb-3 font-mono text-xs text-muted sm:text-sm">
-          {commands[id ?? ""] ?? `$ ls ${title.toLowerCase().replace(/\s+/g, "-")}/`}
+        <motion.p ref={eyebrowRef} variants={rise} className="mb-3 font-mono text-xs text-muted sm:text-sm">
+          <span
+            className="section-command"
+            data-typed={typed}
+            style={{ "--command-width": `${command.length}ch`, "--command-steps": command.length } as CSSProperties}
+          >
+            <span className="command-text">{command}</span>
+            <span aria-hidden="true" className="command-caret">▍</span>
+          </span>
         </motion.p>
         <motion.h2
           variants={rise}

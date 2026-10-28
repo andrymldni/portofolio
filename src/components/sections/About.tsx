@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Reveal, RevealGroup, rise } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/data";
 import TerminalBar from "@/components/ui/TerminalBar";
+import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const FACTS: { label: string; value: string; href?: string }[] = [
   { label: "Based in", value: "Jakarta, Indonesia" },
@@ -36,7 +37,7 @@ const FOCUS = [
 export default function About() {
   return (
     <div className="grid items-start gap-6 md:grid-cols-[1fr_1.1fr]">
-      <Reveal className="card min-w-0 overflow-hidden">
+      <Reveal {...panelSpotlight} className="panel-spotlight card min-w-0 overflow-hidden">
         <TerminalBar>~/about.md</TerminalBar>
         <div className="p-5 sm:p-7">
           <p className="text-base leading-relaxed text-ink sm:text-lg">
@@ -70,7 +71,7 @@ export default function About() {
         </div>
       </Reveal>
 
-      <RevealGroup delay={0.1} gap={0.12} className="card min-w-0 overflow-hidden">
+      <RevealGroup {...panelSpotlight} delay={0.1} gap={0.12} className="panel-spotlight card min-w-0 overflow-hidden">
         <TerminalBar>~/focus.md</TerminalBar>
         <p className="px-5 pt-6 font-mono text-xs text-muted sm:px-7">What I work on</p>
         <ol className="px-5 pb-2 sm:px-7">

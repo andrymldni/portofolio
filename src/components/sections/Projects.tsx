@@ -22,6 +22,7 @@ import { EASE_OUT } from "@/components/ui/Reveal";
 import { useRandomEntrance } from "@/components/ui/RandomReveal";
 import { useDialog } from "@/hooks/useDialog";
 import TerminalBar from "@/components/ui/TerminalBar";
+import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
@@ -173,12 +174,13 @@ function ProjectCard({
   const { ref, initial, animate, style } = useRandomEntrance(index, (index % 3) * 0.07);
   return (
     <motion.article
+      {...panelSpotlight}
       ref={ref}
       initial={initial}
       animate={animate}
       style={style}
       whileHover={{ y: -3 }}
-      className={`group card relative cursor-pointer overflow-hidden p-0 text-left ${
+      className={`panel-spotlight group card relative cursor-pointer overflow-hidden p-0 text-left ${
         p.featured ? "sm:col-span-2" : ""
       }`}
     >

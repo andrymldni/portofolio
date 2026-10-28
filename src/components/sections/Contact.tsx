@@ -13,6 +13,7 @@ import { RandomReveal } from "@/components/ui/RandomReveal";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 import TerminalBar from "@/components/ui/TerminalBar";
+import { panelSpotlight } from "@/lib/panelSpotlight";
 
 const PHONE = "+62 858-9581-2699";
 
@@ -176,8 +177,9 @@ export default function Contact() {
       {/* Right — form */}
       <RandomReveal seed={3} delay={0.1} className="lg:col-span-3">
         <form
+          {...panelSpotlight}
           onSubmit={handleSubmit}
-          className="card overflow-hidden"
+          className="panel-spotlight card overflow-hidden"
           aria-describedby="form-status"
         >
           <TerminalBar>~/contact/<span className="text-brand">draft</span></TerminalBar>

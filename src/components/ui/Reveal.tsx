@@ -23,6 +23,20 @@ export const VIEWPORT = { once: true, margin: "0px 0px -72px 0px" } as const;
 
 type RevealProps = HTMLMotionProps<"div"> & { delay?: number };
 
+/** Short page-load entrance; like other panel entrances it always plays. */
+export function PageReveal({ delay = 0, children, ...rest }: RevealProps) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: EASE_OUT, delay }}
+      {...rest}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 /** A block that fades and rises the first time it scrolls into view. */
 export function Reveal({ delay = 0, children, ...rest }: RevealProps) {
   return (
