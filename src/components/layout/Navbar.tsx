@@ -1,16 +1,16 @@
 "use client";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Menu,
   X,
-  Sun,
-  Moon,
   FileText,
 } from "lucide-react";
 import { socialLinks } from "@/lib/data";
+import CommandPalette from "@/components/layout/CommandPalette";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 
 const navItems = [
   { hash: "#", label: "Home" },
@@ -19,39 +19,6 @@ const navItems = [
   { hash: "#projects", label: "Projects" },
   { hash: "#contact", label: "Contact" },
 ];
-
-const subscribeToMount = () => () => {};
-
-function ThemeToggle() {
-  // Keep the server and hydration output empty, then show the theme control.
-  const mounted = useSyncExternalStore(subscribeToMount, () => true, () => false);
-  const theme =
-    typeof document !== "undefined"
-      ? document.documentElement.dataset.theme
-      : "dark";
-  const [curr, setCurr] = useState(theme || "dark");
-
-  const toggle = () => {
-    const next =
-      document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem("theme", next);
-    } catch {}
-    setCurr(next);
-  };
-
-  if (!mounted) return null;
-  return (
-    <button
-      aria-label={`Switch to ${curr === "dark" ? "light" : "dark"} mode`}
-      onClick={toggle}
-      className="rounded-lg p-2 text-ink transition-colors hover:bg-ink/5"
-    >
-      {curr === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-    </button>
-  );
-}
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -181,6 +148,9 @@ export default function Navbar() {
                 <FileText size={14} />
                 View CV
               </Link>
+            </li>
+            <li className="pl-1">
+              <CommandPalette />
             </li>
             <li className="pl-1">
               <ThemeToggle />
