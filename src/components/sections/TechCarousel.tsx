@@ -1,69 +1,24 @@
-import type { CSSProperties } from "react";
-import { IconType } from "react-icons";
-import {
-  SiPython,
-  SiApacheairflow,
-  SiApachespark,
-  SiPostgresql,
-  SiGooglebigquery,
-  SiMysql,
-  SiDocker,
-  SiGooglecloud,
-  SiLinux,
-  SiGrafana,
-  SiTensorflow,
-  SiScikitlearn,
-  SiGit,
-  SiMetabase,
-} from "react-icons/si";
-import { Database, BarChart3 } from "lucide-react";
+﻿import { projects } from "@/lib/data";
 
-type Tool = { name: string; icon: IconType | typeof Database; brandColor: string };
-
-const TOOLS: Tool[] = [
-  { name: "Python", icon: SiPython, brandColor: "#3776AB" },
-  { name: "SQL", icon: Database, brandColor: "#38bdf8" },
-  { name: "Apache Spark", icon: SiApachespark, brandColor: "#E25A1C" },
-  { name: "Airflow", icon: SiApacheairflow, brandColor: "#017CEE" },
-  { name: "PostgreSQL", icon: SiPostgresql, brandColor: "#4169E1" },
-  { name: "BigQuery", icon: SiGooglebigquery, brandColor: "#4285F4" },
-  { name: "MySQL", icon: SiMysql, brandColor: "#4479A1" },
-  { name: "Docker", icon: SiDocker, brandColor: "#2496ED" },
-  { name: "Google Cloud", icon: SiGooglecloud, brandColor: "#4285F4" },
-  { name: "Linux", icon: SiLinux, brandColor: "#FCC624" },
-  { name: "Grafana", icon: SiGrafana, brandColor: "#F46800" },
-  { name: "TensorFlow", icon: SiTensorflow, brandColor: "#FF6F00" },
-  { name: "Scikit-learn", icon: SiScikitlearn, brandColor: "#F7931E" },
-  { name: "Power BI", icon: BarChart3, brandColor: "#F2C811" },
-  { name: "Git", icon: SiGit, brandColor: "#F05032" },
-  { name: "Metabase", icon: SiMetabase, brandColor: "#509EE3" },
-];
-
-// Duplicated once for a seamless infinite loop (see .marquee-track keyframes)
-const LOOP = [...TOOLS, ...TOOLS];
-
-function ToolCard({ tool, duplicate }: { tool: Tool; duplicate: boolean }) {
-  const Icon = tool.icon;
-  return (
-    <div
-      className={`card group flex w-32 shrink-0 flex-col items-center gap-3 px-4 py-5 sm:w-36 ${duplicate ? "motion-reduce:hidden" : ""}`}
-      aria-hidden={duplicate || undefined}
-      style={{ "--tool-color": tool.brandColor } as CSSProperties}
-    >
-      <Icon size={28} className="tool-icon" aria-hidden />
-      <span className="text-center text-xs font-medium text-ink/80 sm:text-sm">
-        {tool.name}
-      </span>
-    </div>
-  );
-}
+// Keep the ticker grounded in the actual project stacks, in their source order.
+const tools = [...new Set(projects.flatMap((project) => project.stack ?? []))];
 
 export default function TechCarousel() {
   return (
-    <div className="marquee-mask -mx-5 overflow-hidden px-5 md:-mx-6 md:px-6">
-      <div className="marquee-track flex w-max gap-4">
-        {LOOP.map((tool, i) => (
-          <ToolCard key={`${tool.name}-${i}`} tool={tool} duplicate={i >= TOOLS.length} />
+    <div className="overflow-hidden border-y border-line py-4 font-mono text-sm text-muted">
+      <div className="marquee-track flex w-max">
+        {[false, true].map((duplicate) => (
+          <div
+            key={String(duplicate)}
+            aria-hidden={duplicate || undefined}
+            className={duplicate
+              ? "flex shrink-0 gap-6 pr-6 motion-reduce:hidden"
+              : "flex shrink-0 gap-6 pr-6 motion-reduce:shrink motion-reduce:flex-wrap motion-reduce:justify-center motion-reduce:pr-0"}
+          >
+            {tools.map((tool) => (
+              <span key={tool} className="whitespace-nowrap">[{tool.toLowerCase()}]</span>
+            ))}
+          </div>
         ))}
       </div>
     </div>

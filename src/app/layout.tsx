@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -10,25 +10,21 @@ import ScrollTrace from "@/components/effects/ScrollTrace";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
-// Poppins is self-hosted from ./fonts so `next dev` and `next build` never
-// need to reach Google Fonts (a failed download breaks Turbopack builds).
-const poppins = localFont({
-  src: [
-    { path: "./fonts/poppins-latin-400-normal.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/poppins-latin-400-italic.woff2", weight: "400", style: "italic" },
-    { path: "./fonts/poppins-latin-500-normal.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/poppins-latin-600-normal.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/poppins-latin-700-normal.woff2", weight: "700", style: "normal" },
-    { path: "./fonts/poppins-latin-800-normal.woff2", weight: "800", style: "normal" },
-  ],
-  variable: "--font-poppins",
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-space-grotesk",
+  display: "swap",
+});
+const jetBrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f3f5f8" },
-    { media: "(prefers-color-scheme: dark)", color: "#111418" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0b0d" },
   ],
   colorScheme: "light dark",
 };
@@ -129,8 +125,7 @@ const themeInit = `(() => {
   try {
     const key = 'theme';
     const saved = localStorage.getItem(key);
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-    const theme = saved || (mql.matches ? 'dark' : 'light');
+    const theme = saved === 'light' ? 'light' : 'dark';
     document.documentElement.dataset.theme = theme;
   } catch {}
 })();`;
@@ -149,7 +144,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
-      <body className={`${poppins.className} ${poppins.variable}`}>
+      <body className={`${spaceGrotesk.className} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-canvas focus:px-4 focus:py-3 focus:text-ink focus:ring-2 focus:ring-brand"
@@ -157,7 +152,7 @@ export default function RootLayout({
           Skip to main content
         </a>
         <MotionProvider>
-          <div className="grain" aria-hidden="true" />
+          <div className="light-sweep" aria-hidden="true" />
           <ScrollTrace />
           <ScrollProgress />
           <div className="app-shell">

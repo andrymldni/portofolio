@@ -3,35 +3,50 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
-  AnimatePresence,
   useMotionValue,
   useScroll,
   useSpring,
   useTransform,
 } from "framer-motion";
 import { ArrowDown } from "lucide-react";
-import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
+import { rise, stagger } from "@/components/ui/Reveal";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { socialLinks } from "@/lib/data";
 
 const ROLES = [
+  "Data Engineer",
   "Data Analyst",
   "Business Intelligence",
-  "Data Engineer",
   "Data Scientist",
 ];
 
 export default function Hero() {
   const reduce = usePrefersReducedMotion();
-  const [idx, setIdx] = useState(0);
+  const [typedRole, setTypedRole] = useState(ROLES[0]);
 
   useEffect(() => {
     if (reduce) return;
-    const t = setInterval(
-      () => setIdx((i) => (i + 1) % ROLES.length),
-      3200
-    );
-    return () => clearInterval(t);
+    let role = 0;
+    let length = ROLES[0].length;
+    let erasing = true;
+    let timer: ReturnType<typeof setTimeout>;
+    const tick = () => {
+      length += erasing ? -1 : 1;
+      setTypedRole(ROLES[role].slice(0, length));
+      let delay = erasing ? 45 : 85;
+      if (length === 0) {
+        role = (role + 1) % ROLES.length;
+        erasing = false;
+        delay = 350;
+      } else if (length === ROLES[role].length) {
+        erasing = true;
+        delay = 2200;
+      }
+      timer = setTimeout(tick, delay);
+    };
+    // Start with a readable role, then type and erase the complete cycle.
+    timer = setTimeout(tick, 2200);
+    return () => clearTimeout(timer);
   }, [reduce]);
 
   // Scroll-linked hand-off: as the hero leaves, the copy drifts up and dims
@@ -84,13 +99,13 @@ export default function Hero() {
             animate="show"
             className="text-center md:text-left"
           >
-            <motion.p variants={rise} className="text-sm font-medium text-muted">
-              Data Analyst at Bank Rakyat Indonesia · Jakarta
+            <motion.p variants={rise} className="font-mono text-sm text-muted">
+              $ whoami
             </motion.p>
 
             <motion.h1
               variants={rise}
-              className="mt-4 text-[2.75rem] font-bold leading-[1.02] tracking-[-0.02em] sm:text-6xl lg:text-[4.5rem]"
+              className="mt-4 text-[clamp(3rem,7.5vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.04em]"
             >
               Andry Syva
               <br />
@@ -99,28 +114,20 @@ export default function Hero() {
 
             <motion.div
               variants={rise}
-              className="mt-5 flex min-h-[1.6em] items-center justify-center text-xl font-semibold sm:text-2xl md:justify-start"
+              className="mt-6 flex min-h-[1.6em] items-center justify-center font-mono text-[clamp(0.875rem,3.8vw,1.375rem)] text-brand md:justify-start"
             >
               <span className="sr-only">{ROLES.join(", ")}</span>
-              <AnimatePresence mode="wait">
-                <motion.span
-                  aria-hidden="true"
-                  key={idx}
-                  initial={{ y: 12, opacity: 0 }}
-                  animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -12, opacity: 0 }}
-                  transition={{ duration: 0.35, ease: EASE_OUT }}
-                  className="inline-block text-brand"
-                >
-                  {ROLES[idx]}
-                </motion.span>
-              </AnimatePresence>
+              <span aria-hidden="true" className="whitespace-nowrap">
+                {"> "}{reduce ? ROLES[0] : typedRole}
+                <span className="role-caret">▍</span>
+              </span>
             </motion.div>
 
             <motion.p
               variants={rise}
               className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted sm:text-lg md:mx-0"
             >
+              <span className="mb-3 block">Data Analyst at Bank Rakyat Indonesia · Jakarta</span>
               I turn raw data into decisions — ETL pipelines, predictive
               models, and BI dashboards that support real operations. Always
               up for data collaborations.
@@ -130,11 +137,11 @@ export default function Hero() {
               variants={rise}
               className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
             >
-              <a href="#contact" className="btn-primary">
-                Say hello
+              <a href="#contact" className="btn-primary font-mono">
+                ./say-hello
               </a>
-              <a href="#projects" className="btn-secondary">
-                View projects
+              <a href="#projects" className="btn-secondary font-mono">
+                ls projects/
               </a>
             </motion.div>
 
@@ -174,14 +181,15 @@ export default function Hero() {
               onPointerMove={handlePhotoMove}
               onPointerLeave={resetTilt}
               style={{ rotateX: reduce ? 0 : rotateX, rotateY: reduce ? 0 : rotateY, transformPerspective: 800 }}
-              className="relative aspect-[4/5]"
+              className="overflow-hidden rounded-xl border border-line bg-surface"
             >
-              {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.75rem] bg-steel"
-              />
-              <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] border border-line bg-surface">
+              <div className="flex items-center gap-2 border-b border-line px-4 py-3 font-mono text-xs text-muted">
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-muted/40" />
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-muted/40" />
+                <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-muted/40" />
+                <span className="ml-2">profile.jpeg</span>
+              </div>
+              <div className="relative aspect-[4/5] bg-steel">
                 <Image
                   src="/profile.jpeg"
                   alt="Portrait of Andry Syva Maldini"

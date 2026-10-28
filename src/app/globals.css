@@ -2,23 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* =============================================================================
-   Theme tokens
-   Two themes, one accent. Graphite + light grey in the dark, cool paper + ink
-   in the light, and one blue reserved for the primary action, the role line,
-   section rules and active states. Values are RGB triplets so Tailwind can
-   add opacity (bg-ink/5). The dark set is the fallback before the theme
-   script in layout.tsx runs.
-============================================================================= */
+/* RGB triplets preserve Tailwind opacity modifiers in both themes.
+   Lime on charcoal; olive on cool paper for accessible accent text. */
 :root {
-  --canvas: 17 20 24;
-  --surface: 25 29 35;
-  --steel: 36 42 50;
-  --ink: 230 233 238;
-  --muted: 154 163 173;
-  --brand: 110 168 255; /* lighter blue so it holds 4.5:1+ on graphite */
-  --brand-strong: 90 151 240;
-  --brand-ink: 15 18 22; /* text on a blue fill */
+  --canvas: 10 11 13;
+  --surface: 18 20 24;
+  --steel: 26 29 34;
+  --ink: 232 234 237;
+  --muted: 169 175 183;
+  --brand: 197 248 42;
+  --brand-strong: 179 226 35;
+  --brand-ink: 10 11 13; /* text on lime */
   --ok: 127 207 152;
   /* Fixed blue for the always-white CV paper, whatever the theme. */
   --paper-accent: 29 95 194;
@@ -28,9 +22,9 @@
   --surface: 251 252 253;
   --steel: 225 230 236;
   --ink: 23 27 33;
-  --muted: 95 105 117;
-  --brand: 29 95 194;
-  --brand-strong: 23 79 163;
+  --muted: 70 79 91;
+  --brand: 76 99 12;
+  --brand-strong: 62 82 8;
   --brand-ink: 255 255 255;
   --ok: 47 138 79;
 }
@@ -41,6 +35,8 @@ body {
 }
 body {
   @apply bg-canvas text-ink antialiased;
+  background-image: radial-gradient(rgb(var(--ink) / 0.13) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 html {
@@ -76,30 +72,42 @@ html {
   background: transparent;
 }
 
-/* =============================================================================
-   Layers
-   .grain is a fixed sheet of SVG noise under everything: it makes the canvas
-   read as paper / matte card instead of a flat hex. Content sits above it.
-============================================================================= */
-.grain {
+/* Static dots need no fixed texture layer or SVG filter.
+   Only mouse devices animate the small, unblurred light sweep. */
+.light-sweep {
+  display: none;
   position: fixed;
-  inset: 0;
+  inset: 0 0 auto;
+  height: 120px;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.07;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
-  background-size: 160px 160px;
+  background: linear-gradient(180deg, transparent, rgb(var(--brand) / 0.04), transparent);
 }
-:root[data-theme="light"] .grain {
-  opacity: 0.05;
+@keyframes light-sweep {
+  from { transform: translateY(-120px); }
+  to { transform: translateY(100vh); }
 }
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  .light-sweep {
+    display: block;
+    animation: light-sweep 12s linear infinite;
+  }
+}
+@media (any-pointer: coarse) {
+  .light-sweep { display: none; animation: none; }
+}
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+.role-caret { animation: caret-blink 1s steps(1) infinite; }
+
 .app-shell {
   position: relative;
   z-index: 1;
 }
 
 /* Scroll trace (components/effects/ScrollTrace.tsx): sits between the
-   grain and the content, sized to the document by the component. */
+   dot grid and the content, sized to the document by the component. */
 .scroll-trace {
   position: absolute;
   top: 0;
@@ -110,7 +118,7 @@ html {
 }
 .scroll-trace-line {
   stroke: rgb(var(--brand));
-  opacity: 0.42;
+  opacity: 0.22;
 }
 .scroll-trace-rules line {
   stroke: rgb(var(--ink) / 0.09);
@@ -120,10 +128,10 @@ html {
   fill: rgb(var(--brand));
 }
 .scroll-trace-dot-halo {
-  opacity: 0.18;
+  opacity: 0.12;
 }
 :root[data-theme="light"] .scroll-trace-line {
-  opacity: 0.34;
+  opacity: 0.18;
 }
 
 .container {
@@ -163,7 +171,7 @@ html {
 }
 
 .field {
-  @apply w-full rounded-lg border border-line bg-canvas py-2.5 text-sm text-ink transition-colors placeholder:text-muted/70;
+  @apply w-full rounded-lg border border-line bg-canvas py-2.5 text-sm text-ink transition-colors placeholder:text-muted;
 }
 .field:hover {
   border-color: rgb(var(--ink) / 0.24);
@@ -227,8 +235,7 @@ html {
 
 /* =============================================================================
    Tech carousel (marquee)
-   Icons sit in ink and take their brand color only on hover, so sixteen
-   logos scroll past as one quiet strip instead of a colour wall.
+   Two identical groups keep the terminal ticker seamless.
 ============================================================================= */
 @keyframes marquee-scroll {
   from {
@@ -245,30 +252,6 @@ html {
 .marquee-track:hover {
   animation-play-state: paused;
 }
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 8%,
-    #000 92%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    90deg,
-    transparent 0,
-    #000 8%,
-    #000 92%,
-    transparent 100%
-  );
-}
-.tool-icon {
-  color: rgb(var(--ink) / 0.72);
-  transition: color 0.2s ease;
-}
-.group:hover .tool-icon {
-  color: var(--tool-color);
-}
-
 /* =============================================================================
    Modal backdrop — the single blurred surface on the site.
 ============================================================================= */
@@ -299,23 +282,11 @@ html {
     flex-wrap: wrap;
     justify-content: center;
   }
-  .marquee-mask {
-    mask-image: none;
-  }
+  .role-caret { animation: none; }
 }
 
-/* Touch devices: live SVG filters and the scroll trace cost real paint time
-   on mobile GPUs and made scrolling stutter, so phones get cheap stand-ins
-   that look the same:
-   - grain: a pre-rendered noise tile instead of the feTurbulence filter;
-   - section rules: static CSS hairlines in place of the trace's SVG rules
-     (ScrollTrace.tsx is off under the same query);
-   - modal scrim: a touch darker instead of backdrop-filter. */
+/* Preserve inexpensive section rules and the unblurred scrim on touch. */
 @media (pointer: coarse) {
-  .grain {
-    background-image: url("/grain.png");
-    background-size: 128px 128px;
-  }
   main > section[id] {
     position: relative;
   }

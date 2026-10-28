@@ -5,7 +5,7 @@ import { useMotionValueEvent, useScroll, useSpring } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 /**
- * Background "trace": one thin blue line that runs down the whole home
+ * Background "trace": one subtle accent line that runs down the whole home
  * page, hugging alternate margins and crossing the page between sections,
  * and draws itself in as you scroll — like a pen following you down the
  * page — with a dot riding its tip. Faint full-width rules mark where each

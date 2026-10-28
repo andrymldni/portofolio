@@ -48,7 +48,6 @@ src/
  ├─ app/
  │   ├─ cv/             # Halaman CV (merender Resume inline)
  │   ├─ projects/[slug]/ # Halaman studi kasus statis dari data proyek
- │   ├─ fonts/          # Poppins (self-hosted, woff2)
  │   ├─ layout.tsx      # Layout utama (Navbar, Footer, MotionProvider)
  │   ├─ page.tsx        # Halaman utama
  │   └─ globals.css     # Style global + custom class
