@@ -16,7 +16,7 @@ export default function HomePage() {
       {/* Hero isn't wrapped in a Section so it doesn't get a "Home" heading */}
       <Hero />
 
-      <Section id="about" title="About">
+      <Section id="about" title="About" motif="scatter">
         <ImpactStats />
         <About />
       </Section>
@@ -24,6 +24,7 @@ export default function HomePage() {
       <Section
         id="tools"
         title="Tools & Technologies"
+        motif="bars"
         subtitle="The stack I reach for day-to-day — from data pipelines and analysis to deployment."
       >
         <Reveal>
@@ -34,6 +35,8 @@ export default function HomePage() {
       <Section
         id="certifications"
         title="Certifications"
+        motif="sparkline"
+        motifAfter="donut"
         subtitle="Credentials backing up my work in data, analytics, and cloud."
       >
         <Reveal>
@@ -44,12 +47,13 @@ export default function HomePage() {
       <Section
         id="projects"
         title="Projects"
+        motif="ticks"
         subtitle="Selected work — from production data pipelines to applied machine learning."
       >
         <Projects />
       </Section>
 
-      <Section id="contact" title="Contact">
+      <Section id="contact" title="Contact" motif="donut" motifAfter="band">
         <Contact />
       </Section>
     </main>

@@ -676,3 +676,50 @@ html {
       border-color 180ms ease;
   }
 }
+
+/* Section motifs: placed in the empty space beside headings and below content. */
+.section-motif {
+  position: absolute;
+  display: none;
+  pointer-events: none;
+  color: rgb(var(--brand));
+  opacity: 0.1;
+}
+:root[data-theme="light"] .section-motif {
+  opacity: 0.1;
+}
+.section-motif--heading {
+  top: 0.25rem;
+  right: 0;
+  width: 3rem;
+  height: 2rem;
+}
+.section-motif--foot {
+  right: 0;
+  bottom: 0.5rem;
+  width: 18rem;
+  height: 3rem;
+}
+.section-motif--donut.section-motif--foot {
+  left: 50%;
+  right: auto;
+  bottom: 0.25rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  translate: -50% 0;
+}
+@media (min-width: 640px) {
+  .section-motif--heading {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .section-motif--heading {
+    top: 0;
+    width: 8.5rem;
+    height: 5.5rem;
+  }
+  .section-motif--foot {
+    display: block;
+  }
+}
