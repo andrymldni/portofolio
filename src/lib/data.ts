@@ -74,7 +74,7 @@ export const projects: Project[] = [
       "An end-to-end data engineering pipeline that monitors public perception of BRILink, BRI's 1.18M-agent banking network. Eleven connectors pull news, app-store reviews, and social conversations into PostgreSQL, gated by Great Expectations data-quality checks. An IndoBERT-based ensemble scores each document with a confidence level and aspect-level sentiment across 8 business aspects, dbt models the warehouse into 9 marts backed by 79 tests, and Airflow orchestrates the whole flow. Results land in an auto-provisioned 22-card Metabase dashboard, with low-confidence documents routed to a human review queue. Runs on Docker Compose with a 5-job GitHub Actions CI. Independent portfolio project, not affiliated with BRI.",
     problem:
       "BRILink agents are the face of BRI's branchless banking network, but public perception is scattered across news, app reviews, and social media. Without a unified view, negative signals and service failures are hard to spot early.",
-    role: "Built the project independently as a portfolio piece; its README states it is not affiliated with BRI.",
+    role: "Built the project independently as a portfolio piece; it is not affiliated with BRI.",
     approach: [
       "Ingest news, app-store reviews, forum threads, search trends, and social comments through 11 connectors into a PostgreSQL raw layer.",
       "Validate incoming data with 10 Great Expectations checks and keep connector state in Redis.",
@@ -111,7 +111,7 @@ export const projects: Project[] = [
       "Load the cleaned data into PostgreSQL/Supabase and build a Metabase dashboard with a Dockerfile.",
     ],
     results:
-      "The project delivers a trained logistic regression model, a prediction script, and a Metabase dashboard that highlights attrition patterns by department, role, marital status, and education. The README reports an attrition rate above 10% but does not publish model accuracy.",
+      "The project delivers a trained logistic regression model, a prediction script, and a Metabase dashboard that highlights attrition patterns by department, role, marital status, and education. The analysis starts from an attrition rate above 10%.",
     highlights: [
       { value: "1,471", label: "employees in the dataset" },
       { value: "35", label: "dataset columns" },
@@ -139,7 +139,7 @@ export const projects: Project[] = [
       "Evaluate the exported model and record metrics for the binary stress classification task.",
     ],
     results:
-      "The model reached an AUC of 83% and BinaryAccuracy of 74% on 575 evaluation examples, with a loss of 1.456. The README notes 86 false negatives and 62 false positives, and flags accuracy below 80% as room for improvement.",
+      "The model reached an AUC of 83% and BinaryAccuracy of 74% on 575 evaluation examples, with a loss of 1.456. There are 86 false negatives and 62 false positives, and accuracy remains below 80%.",
     highlights: [
       { value: "83%", label: "AUC" },
       { value: "74%", label: "BinaryAccuracy" },
@@ -169,7 +169,7 @@ export const projects: Project[] = [
       "Map the class to one of five categories (Bacterial, Fungal, Hama, Healthy, Virus) and show symptoms and treatment guidance in a popup.",
     ],
     results:
-      "The app runs entirely client-side: an uploaded image is classified in the browser and the predicted category opens a popup with symptoms and treatment steps. The sources do not report a validation accuracy or test-set metric.",
+      "The app runs entirely client-side: an uploaded image is classified in the browser and the predicted category opens a popup with symptoms and treatment steps.",
     highlights: [],
   },
   {
@@ -181,7 +181,7 @@ export const projects: Project[] = [
     category: "AI/ML",
     desc: "Predict assessment outcomes with NN for consistency and efficiency.",
     details:
-      "A neural network that predicts certification pass outcomes from a participant's learning history, compared against a K-Nearest Neighbors baseline. The report focuses on consistent model evaluation and a more efficient assessment process.",
+      "A neural network that predicts certification pass outcomes from a participant's learning history, compared against a K-Nearest Neighbors baseline. The work focuses on consistent model evaluation and a more efficient assessment process.",
     problem:
       "Assessors evaluating professional certification candidates can produce inconsistent or subjective scores when participant volume grows. The project asks whether a model trained on learning history can make assessment predictions more consistent.",
     role: "Individual Dicoding machine-learning submission, covering preprocessing, model comparison, and evaluation.",
@@ -193,7 +193,7 @@ export const projects: Project[] = [
       "Recommend the better model for certification assessment support.",
     ],
     results:
-      "The neural network reached 0.9535 accuracy, ahead of K-Nearest Neighbors at 0.9340. The report recommends the neural network as the better model for predicting certification assessment outcomes.",
+      "The neural network reached 0.9535 accuracy, ahead of K-Nearest Neighbors at 0.9340. The neural network is the better model for predicting certification assessment outcomes.",
     highlights: [
       { value: "0.9535", label: "neural network accuracy" },
       { value: "0.9340", label: "KNN accuracy" },
@@ -221,7 +221,7 @@ export const projects: Project[] = [
       "Evaluate content-based recommendations with precision, recall, and F1, and collaborative filtering with RMSE.",
     ],
     results:
-      "The content-based model returned five similar titles for a sample book, with precision, recall, and F1 close to 1.0 according to the report. The collaborative model reached RMSE 0.2415 on training data and 0.2903 on validation data and produced top-10 recommendations for a user.",
+      "The content-based model returned five similar titles for a sample book, with precision, recall, and F1 close to 1.0. The collaborative model reached RMSE 0.2415 on training data and 0.2903 on validation data and produced top-10 recommendations for a user.",
     highlights: [
       { value: "0.2415", label: "training RMSE" },
       { value: "0.2903", label: "validation RMSE" },
@@ -249,7 +249,7 @@ export const projects: Project[] = [
       "Export cleaned day/hour CSVs and serve them through a Streamlit dashboard.",
     ],
     results:
-      "The submission includes a Jupyter notebook with the full analysis, cleaned day/hour datasets, and a Streamlit dashboard deployed at bikes-sharing-andrymldni.streamlit.app. The README does not report model metrics because the project is descriptive analytics rather than predictive modeling.",
+      "The submission includes a Jupyter notebook with the full analysis, cleaned day/hour datasets, and a Streamlit dashboard deployed at bikes-sharing-andrymldni.streamlit.app. The deliverable is an interactive dashboard for descriptive analytics rather than a predictive model.",
     highlights: [],
   },
   {
@@ -273,7 +273,7 @@ export const projects: Project[] = [
       "Publish a dashboard that summarizes dropout distribution and risk factors.",
     ],
     results:
-      "The dashboard covers 4,424 students, including 1,421 dropouts, 2,209 graduates, and 794 enrolled students. The repository ships the Streamlit app, notebook, dashboard, and serialized model artifacts; the README does not publish model accuracy.",
+      "The dashboard covers 4,424 students, including 1,421 dropouts, 2,209 graduates, and 794 enrolled students. The repository ships the Streamlit app, notebook, dashboard, and serialized model artifacts.",
     highlights: [
       { value: "4,424", label: "students in the dataset" },
       { value: "1,421", label: "dropouts" },
@@ -301,7 +301,7 @@ export const projects: Project[] = [
       "Serve the pushed model through a Railway endpoint and monitor incoming requests with Prometheus in Docker.",
     ],
     results:
-      "Training accuracy reached 90.03% and validation accuracy 84.42%. The report flags overfitting because validation loss (0.3634) is higher than training loss (0.1766), and the model is deployed with Prometheus request monitoring.",
+      "Training accuracy reached 90.03% and validation accuracy 84.42%. Validation loss (0.3634) is higher than training loss (0.1766), indicating overfitting, and the model is deployed with Prometheus request monitoring.",
     highlights: [
       { value: "90.03%", label: "training accuracy" },
       { value: "84.42%", label: "validation accuracy" },
@@ -329,7 +329,7 @@ export const projects: Project[] = [
       "Apply exponential smoothing to reduce jitter and draw a live volume bar and FPS counter.",
     ],
     results:
-      "The app controls system volume in real time from a webcam feed, mutes when the fingers close below the threshold, and shows the current volume percentage on screen. The sources do not report accuracy or latency metrics.",
+      "The app controls system volume in real time from a webcam feed, mutes when the fingers close below the threshold, and shows the current volume percentage on screen.",
     highlights: [
       { value: "21", label: "hand landmarks" },
       { value: "50-300 px", label: "volume mapping range" },
@@ -357,7 +357,7 @@ export const projects: Project[] = [
       "Show a suggested correction when a candidate passes the cutoff, or link to KBBI when none does.",
     ],
     results:
-      "The app provides a Tkinter desktop interface with Home and About tabs, a local dictionary check, similarity-based suggestions, and a KBBI lookup link for unknown words. The sources do not include accuracy or test metrics.",
+      "The app provides a Tkinter desktop interface with Home and About tabs, a local dictionary check, similarity-based suggestions, and a KBBI lookup link for unknown words.",
     highlights: [],
   },
 ];
