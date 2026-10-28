@@ -7,7 +7,7 @@ import { MotionConfig } from "framer-motion";
  * and rarely means the person wants a static site; honouring it globally
  * made the portfolio look broken. Continuous and automatic motion still
  * honours the preference: certificate autoplay, the tools marquee, hero
- * role rotation, ScrollTrace, and hero scroll parallax and pointer tilt.
+ * role rotation, and hero scroll parallax and pointer tilt.
  * Components always render motion elements — never a plain tag swapped
  * in on the client — so server and client markup match.
  */

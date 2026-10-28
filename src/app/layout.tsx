@@ -6,7 +6,6 @@ import Footer from "@/components/layout/Footer";
 import ScrollProgress from "@/components/layout/ScrollProgress";
 import BackToTop from "@/components/ui/BackToTop";
 import MotionProvider from "@/components/layout/MotionProvider";
-import ScrollTrace from "@/components/effects/ScrollTrace";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
@@ -156,7 +155,6 @@ export default function RootLayout({
         </a>
         <MotionProvider>
           <div className="grain" aria-hidden="true" />
-          <ScrollTrace />
           <ScrollProgress />
           <div className="app-shell">
             <Navbar />

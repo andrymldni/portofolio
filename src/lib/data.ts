@@ -1,4 +1,5 @@
-import { Github, Instagram, Linkedin, Twitter } from "lucide-react";
+import { Github, Instagram, Linkedin } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 
 export const CONTACT_EMAIL =
   process.env.NEXT_PUBLIC_CONTACT_EMAIL?.trim() || "andrymldni@gmail.com";
@@ -32,9 +33,9 @@ export const socialLinks = {
     footerOrder: 3,
   },
   twitter: {
-    label: "Twitter",
-    href: "https://twitter.com/andrymldni",
-    icon: Twitter,
+    label: "X",
+    href: "https://x.com/andrymldni",
+    icon: FaXTwitter,
     footerOrder: 2,
   },
 };

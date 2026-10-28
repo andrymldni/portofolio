@@ -110,32 +110,19 @@ html {
   overflow-y: visible;
 }
 
-/* Scroll trace (components/effects/ScrollTrace.tsx): sits between the
-   grain and the content, sized to the document by the component. */
-.scroll-trace {
+/* Faint full-width hairline at the start of each section, on every device. */
+main > section[id] {
+  position: relative;
+}
+main > section[id]::before {
+  content: "";
   position: absolute;
   top: 0;
-  left: 0;
-  z-index: 0;
+  left: calc(50% - 50vw);
+  width: 100vw;
+  height: 1px;
+  background: rgb(var(--ink) / 0.09);
   pointer-events: none;
-  overflow: visible;
-}
-.scroll-trace-line {
-  stroke: rgb(var(--brand));
-  opacity: 0.3;
-}
-.scroll-trace-rules line {
-  stroke: rgb(var(--ink) / 0.09);
-  stroke-width: 1;
-}
-.scroll-trace-dot circle {
-  fill: rgb(var(--brand));
-}
-.scroll-trace-dot-halo {
-  opacity: 0.18;
-}
-:root[data-theme="light"] .scroll-trace-line {
-  opacity: 0.24;
 }
 
 .container {
@@ -540,30 +527,14 @@ html {
   }
 }
 
-/* Touch devices: live SVG filters and the scroll trace cost real paint time
-   on mobile GPUs and made scrolling stutter, so phones get cheap stand-ins
-   that look the same:
+/* Touch devices: live SVG filters cost real paint time on mobile GPUs and
+   made scrolling stutter, so phones get cheap stand-ins that look the same:
    - grain: a pre-rendered noise tile instead of the feTurbulence filter;
-   - section rules: static CSS hairlines in place of the trace's SVG rules
-     (ScrollTrace.tsx is off under the same query);
    - modal scrim: a touch darker instead of backdrop-filter. */
 @media (pointer: coarse) {
   .grain {
     background-image: url("/grain.png");
     background-size: 128px 128px;
-  }
-  main > section[id] {
-    position: relative;
-  }
-  main > section[id]::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: calc(50% - 50vw);
-    width: 100vw;
-    height: 1px;
-    background: rgb(var(--ink) / 0.09);
-    pointer-events: none;
   }
   .modal-backdrop {
     -webkit-backdrop-filter: none;
