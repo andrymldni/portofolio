@@ -97,7 +97,7 @@ function ProjectModal({
         onClick={(e) => e.stopPropagation()}
         className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.6)]"
       >
-        <TerminalBar className="sticky top-0 z-20" action={
+        <TerminalBar prefix="~/projects/" title={`~/projects/${project.slug}`} className="sticky top-0 z-20" action={
           <button
             onClick={onClose}
             aria-label="Close"
@@ -106,7 +106,7 @@ function ProjectModal({
             <X size={16} />
           </button>
         }>
-          ~/projects/<span className="text-brand">{project.slug}</span>
+          <span className="text-brand">{project.slug}</span>
         </TerminalBar>
 
         <div className="relative h-44 w-full sm:h-56">
@@ -200,8 +200,8 @@ function ProjectCard({
         p.featured ? "sm:col-span-2" : ""
       }`}
     >
-      <TerminalBar>
-        ~/projects/<span className="text-brand">{p.slug}</span>
+      <TerminalBar prefix="~/projects/" title={`~/projects/${p.slug}`}>
+        <span className="text-brand">{p.slug}</span>
       </TerminalBar>
       <div
         className={`relative w-full border-b border-line ${

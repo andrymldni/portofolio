@@ -182,7 +182,7 @@ export default function Contact() {
           className="panel-spotlight card overflow-hidden"
           aria-describedby="form-status"
         >
-          <TerminalBar>~/contact/<span className="text-brand">draft</span></TerminalBar>
+          <TerminalBar prefix="~/contact/" title="~/contact/draft"><span className="text-brand">draft</span></TerminalBar>
           <div className="grid gap-5 p-5 sm:p-7">
             <div className="grid gap-4 sm:grid-cols-2">
               <label className="grid gap-2 font-mono text-sm">

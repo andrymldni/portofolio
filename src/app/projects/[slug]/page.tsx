@@ -65,7 +65,7 @@ export default async function ProjectPage({ params }: Props) {
       <article className="mx-auto mt-8 max-w-4xl">
         <PageReveal>
           <header className="card overflow-hidden">
-            <TerminalBar>~/projects/<span className="text-brand">{project.slug}</span></TerminalBar>
+            <TerminalBar prefix="~/projects/" title={`~/projects/${project.slug}`}><span className="text-brand">{project.slug}</span></TerminalBar>
             <div className="p-5 sm:p-8">
               {project.category && (
                 <p className="font-mono text-xs text-muted">{project.category}</p>
@@ -105,7 +105,7 @@ export default async function ProjectPage({ params }: Props) {
 
         {project.image && (
           <PageReveal delay={0.08} className="card mt-6 overflow-hidden">
-            <TerminalBar>~/projects/{project.slug}/preview</TerminalBar>
+            <TerminalBar prefix="~/projects/">{`${project.slug}/preview`}</TerminalBar>
             <div className="relative aspect-video bg-steel">
               <Image
                 src={project.image}
@@ -133,7 +133,7 @@ export default async function ProjectPage({ params }: Props) {
           {sections.filter((section) => section.body).map((section, index) => (
             <PageReveal key={section.title} delay={0.24 + index * 0.06}>
               <section className="card overflow-hidden">
-                <TerminalBar>$ cat {section.title.toLowerCase()}.md</TerminalBar>
+                <TerminalBar>{`$ cat ${section.title.toLowerCase()}.md`}</TerminalBar>
                 <div className="p-5 sm:p-8">
                   <h2 className="text-2xl font-bold tracking-tight text-ink">{section.title.toLowerCase()}<span aria-hidden="true" className="text-brand">/</span></h2>
                   <p className="mt-4 whitespace-pre-line leading-relaxed text-muted">{section.body}</p>

@@ -50,7 +50,7 @@ function CertModal({
         onClick={(e) => e.stopPropagation()}
         className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.6)]"
       >
-        <TerminalBar className="sticky top-0 z-20" action={
+        <TerminalBar prefix="~/credentials/" title={`~/credentials/${cert.year}`} className="sticky top-0 z-20" action={
           <button
             onClick={onClose}
             aria-label="Close"
@@ -59,7 +59,7 @@ function CertModal({
             <X size={16} />
           </button>
         }>
-          ~/credentials/<span className="text-brand">{cert.year}</span>
+          <span className="text-brand">{cert.year}</span>
         </TerminalBar>
 
         {cert.image ? (
@@ -190,7 +190,7 @@ export default function CertificatesSlider() {
                     isActive ? "ring-1 ring-brand" : ""
                   }`}
                 >
-                  <TerminalBar>~/credentials/{cert.year}</TerminalBar>
+                  <TerminalBar prefix="~/credentials/">{cert.year}</TerminalBar>
                   {cert.image ? (
                     <div className="relative h-36 w-full">
                       <Image
