@@ -5,7 +5,7 @@ import Resume from "@/components/resume/Resume";
 
 const TITLE = "CV — Andry Syva Maldini";
 const DESCRIPTION =
-  "Curriculum Vitae Andry Syva Maldini — Data Scientist, Business Intelligence, Data Analyst & Data Engineer.";
+  "Curriculum Vitae Andry Syva Maldini — Data Scientist, Data Analyst & Data Engineer.";
 
 export const metadata: Metadata = {
   title: TITLE,

@@ -207,8 +207,7 @@ export default function Resume() {
               <span className="cv-accent">Maldini</span>
             </h1>
             <p className="mt-1 text-sm sm:text-base italic text-slate-500">
-              Data Scientist · Business Intelligence · Data Analyst · Data
-              Engineer
+              Data Scientist · Data Analyst · Data Engineer
             </p>
 
             <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs sm:text-sm text-slate-600">

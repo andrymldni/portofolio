@@ -33,9 +33,9 @@ export const viewport: Viewport = {
   colorScheme: "light dark",
 };
 
-const SITE_TITLE = "Andry Syva Maldini – Data Scientist & BI Portfolio";
+const SITE_TITLE = "Andry Syva Maldini – Data Analyst & Data Scientist Portfolio";
 const SITE_DESCRIPTION =
-  "Portfolio of Andry Syva Maldini, a Data Scientist & Business Intelligence specialist from Jakarta, Indonesia — data pipelines, predictive modeling, and BI dashboards built with Python, SQL, Spark & Power BI.";
+  "Portfolio of Andry Syva Maldini, a Data Analyst and Data Scientist from Jakarta, Indonesia — data pipelines, predictive modeling, and BI dashboards built with Python, SQL, Spark & Power BI.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -48,7 +48,6 @@ export const metadata: Metadata = {
     "Andry Syva Maldini",
     "Data Scientist",
     "Data Analyst",
-    "Business Intelligence",
     "Data Engineer",
     "Portfolio",
     "Python",
@@ -111,7 +110,6 @@ const personJsonLd = {
   url: SITE_URL,
   jobTitle: [
     "Data Scientist",
-    "Business Intelligence",
     "Data Analyst",
     "Data Engineer",
   ],
