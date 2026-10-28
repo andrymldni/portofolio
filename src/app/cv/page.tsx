@@ -29,10 +29,10 @@ export default function CVPage() {
     <main id="main" tabIndex={-1} className="container py-10 md:py-16">
       <Link
         href="/"
-        className="inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-ink"
+        className="btn-secondary print:hidden"
       >
         <ArrowLeft size={15} />
-        Back to Home
+        cd ~/ <span className="sr-only">Back to Home</span>
       </Link>
 
       <div className="mt-6">

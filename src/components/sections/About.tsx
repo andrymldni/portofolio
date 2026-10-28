@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Reveal, RevealGroup, rise } from "@/components/ui/Reveal";
 import { CONTACT_EMAIL } from "@/lib/data";
+import TerminalBar from "@/components/ui/TerminalBar";
 
 const FACTS: { label: string; value: string; href?: string }[] = [
   { label: "Based in", value: "Jakarta, Indonesia" },
@@ -34,48 +35,52 @@ const FOCUS = [
 
 export default function About() {
   return (
-    <div className="grid gap-12 md:grid-cols-[1fr_1.1fr] md:gap-16">
-      <Reveal>
-        <p className="text-base leading-relaxed text-ink/85 sm:text-lg">
-          Data Analyst at Bank Rakyat Indonesia and a Data Science graduate
-          with a background in data-pipeline architecture, predictive
-          modeling, and business intelligence, built on hands-on work at a
-          state-owned bank and a national social-security agency. Analytical,
-          detail-oriented, and comfortable in collaborative, fast-paced
-          teams.
-        </p>
+    <div className="grid items-start gap-6 md:grid-cols-[1fr_1.1fr]">
+      <Reveal className="card min-w-0 overflow-hidden">
+        <TerminalBar>~/about.md</TerminalBar>
+        <div className="p-5 sm:p-7">
+          <p className="text-base leading-relaxed text-ink sm:text-lg">
+            Data Analyst at Bank Rakyat Indonesia and a Data Science graduate
+            with a background in data-pipeline architecture, predictive
+            modeling, and business intelligence, built on hands-on work at a
+            state-owned bank and a national social-security agency. Analytical,
+            detail-oriented, and comfortable in collaborative, fast-paced
+            teams.
+          </p>
 
-        <dl className="mt-8 border-t border-line">
-          {FACTS.map((f) => (
-            <div
-              key={f.label}
-              className="grid grid-cols-[6.5rem_1fr] gap-4 border-b border-line py-3 text-sm"
-            >
-              <dt className="text-muted">{f.label}</dt>
-              <dd className="font-medium text-ink">
-                {f.href ? (
-                  <a href={f.href} className="hover:underline">
-                    {f.value}
-                  </a>
-                ) : (
-                  f.value
-                )}
-              </dd>
-            </div>
-          ))}
-        </dl>
+          <dl className="mt-8 border-t border-line">
+            {FACTS.map((f) => (
+              <div
+                key={f.label}
+                className="grid gap-1 border-b border-line py-4 text-sm sm:grid-cols-[6rem_minmax(0,1fr)] sm:gap-4"
+              >
+                <dt className="font-mono text-xs text-muted">{f.label}</dt>
+                <dd className="break-words font-medium text-ink">
+                  {f.href ? (
+                    <a href={f.href} className="hover:underline">
+                      {f.value}
+                    </a>
+                  ) : (
+                    f.value
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
       </Reveal>
 
-      <RevealGroup delay={0.1} gap={0.12}>
-        <p className="text-sm font-medium text-muted">What I work on</p>
-        <ol className="mt-3">
+      <RevealGroup delay={0.1} gap={0.12} className="card min-w-0 overflow-hidden">
+        <TerminalBar>~/focus.md</TerminalBar>
+        <p className="px-5 pt-6 font-mono text-xs text-muted sm:px-7">What I work on</p>
+        <ol className="px-5 pb-2 sm:px-7">
           {FOCUS.map((item, i) => (
             <motion.li
               key={item.title}
               variants={rise}
-              className="grid gap-2 border-t border-line py-5 sm:grid-cols-[2.5rem_1fr] sm:gap-4"
+              className="grid grid-cols-[1.5rem_minmax(0,1fr)] gap-3 border-b border-line py-5 last:border-0"
             >
-              <span className="text-sm font-medium text-muted">
+              <span className="font-mono text-xs text-brand">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>

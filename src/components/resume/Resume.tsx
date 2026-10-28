@@ -186,7 +186,7 @@ export default function Resume() {
   return (
     <div className="flex flex-col items-center">
       {/* Stand-out download action, sitting above the document */}
-      <a href="/Andry_Syva_Maldini_CV.pdf" download className="btn-primary mb-8">
+      <a href="/Andry_Syva_Maldini_CV.pdf" download className="btn-primary mb-8 print:hidden">
         <Download size={16} />
         Download CV
       </a>

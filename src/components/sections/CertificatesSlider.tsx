@@ -15,6 +15,7 @@ import { certifications, type Certification } from "@/lib/data";
 import { EASE_OUT } from "@/components/ui/Reveal";
 import { useDialog } from "@/hooks/useDialog";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import TerminalBar from "@/components/ui/TerminalBar";
 
 const AUTOPLAY_MS = 4200;
 
@@ -48,15 +49,17 @@ function CertModal({
         onClick={(e) => e.stopPropagation()}
         className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.6)]"
       >
-        <div className="sticky top-3 z-10 flex h-0 justify-end pr-3">
+        <TerminalBar className="sticky top-0 z-20" action={
           <button
             onClick={onClose}
             aria-label="Close"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line text-ink transition-colors hover:bg-steel"
           >
             <X size={16} />
           </button>
-        </div>
+        }>
+          ~/credentials/<span className="text-brand">{cert.year}</span>
+        </TerminalBar>
 
         {cert.image ? (
           <div className="relative h-64 w-full bg-steel sm:h-80">
@@ -76,7 +79,7 @@ function CertModal({
 
         <div className="p-6">
           <h3 id={titleId} className="text-lg font-semibold text-ink">{cert.name}</h3>
-          <p className="mt-1 text-sm text-muted">
+          <p className="mt-3 font-mono text-xs leading-relaxed text-muted">
             {cert.issuer} · {cert.year}
           </p>
           {cert.link && (
@@ -145,7 +148,7 @@ export default function CertificatesSlider() {
       className="relative"
     >
       <motion.div
-        className="relative -mx-5 h-[320px] cursor-grab touch-pan-y overflow-hidden px-5 sm:h-[300px] active:cursor-grabbing md:-mx-6 md:px-6"
+        className="relative -mx-5 h-[400px] cursor-grab touch-pan-y overflow-hidden px-5 sm:h-[380px] active:cursor-grabbing md:-mx-6 md:px-6"
         drag="x"
         dragConstraints={{ left: 0, right: 0 }}
         dragElastic={0.2}
@@ -165,7 +168,6 @@ export default function CertificatesSlider() {
           const isActive = offset === 0;
           const x = offset * 78; // % of card width, via translate below
           const scale = isActive ? 1 : abs === 1 ? 0.82 : 0.66;
-          const opacity = isActive ? 1 : abs === 1 ? 0.55 : 0.22;
           const z = 10 - abs;
 
           return (
@@ -177,15 +179,15 @@ export default function CertificatesSlider() {
                 x: `calc(-50% + ${x}%)`,
                 y: "-50%",
                 scale,
-                opacity,
               }}
-              transition={{ type: "spring", stiffness: 260, damping: 28 }}
+              transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
             >
               <div
-                className={`card group relative block w-full overflow-hidden p-0 text-left transition-shadow ${
-                  isActive ? "shadow-[0_24px_48px_-24px_rgba(0,0,0,0.55)]" : ""
+                className={`card group relative block w-full overflow-hidden p-0 text-left ${
+                  isActive ? "ring-1 ring-brand" : ""
                 }`}
               >
+                <TerminalBar>~/credentials/{cert.year}</TerminalBar>
                 {cert.image ? (
                   <div className="relative h-36 w-full">
                     <Image
@@ -196,7 +198,7 @@ export default function CertificatesSlider() {
                       className="object-cover"
                     />
                     {isActive && (
-                      <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
+                      <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas px-2 py-1 font-mono text-[11px] text-ink opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
                         View certificate
                       </span>
                     )}
@@ -221,8 +223,8 @@ export default function CertificatesSlider() {
                       {cert.name}
                     </button>
                   </h3>
-                  <p className="text-xs text-muted">{cert.issuer}</p>
-                  <span className="mt-2 text-xs font-medium text-muted/80">
+                  <p className="mt-2 font-mono text-xs leading-relaxed text-muted">{cert.issuer}</p>
+                  <span className="mt-2 font-mono text-xs text-muted">
                     {cert.year}
                   </span>
                 </div>
@@ -238,7 +240,7 @@ export default function CertificatesSlider() {
           type="button"
           onClick={() => setPaused((value) => !value)}
           disabled={reduce}
-          className="card inline-flex items-center gap-2 px-3 py-2 text-xs text-ink disabled:cursor-default"
+          className="card inline-flex items-center gap-2 px-3 py-2 font-mono text-xs text-ink disabled:cursor-default"
         >
           {paused || reduce ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
           {reduce ? "Autoplay off (reduced motion)" : paused ? "Play autoplay" : "Pause autoplay"}
@@ -254,7 +256,7 @@ export default function CertificatesSlider() {
           <ChevronLeft size={16} />
         </button>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
           {certifications.map((cert, i) => (
             <button
               key={cert.name}
@@ -265,7 +267,7 @@ export default function CertificatesSlider() {
               className="p-1.5"
             >
               <span
-                className={`block h-1.5 rounded-full transition-all ${
+                className={`block h-1.5 rounded-sm transition-colors ${
                   i === index ? "bg-brand" : "bg-ink/25"
                 }`}
                 style={{ width: i === index ? 20 : 6 }}

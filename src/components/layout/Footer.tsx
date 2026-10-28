@@ -11,10 +11,11 @@ export default function Footer() {
   const hrefFor = (hash: string) => (isHome ? hash : `/${hash}`);
 
   return (
-    <footer className="relative mt-16 border-t border-line">
-      <div className="container flex flex-col items-center justify-between gap-6 py-8 text-xs text-muted md:flex-row">
+    <footer className="relative mt-16 border-t border-line bg-surface">
+      <div className="container flex flex-col items-center justify-between gap-6 py-8 font-mono text-xs text-muted lg:flex-row">
         <div className="text-center md:text-left">
-          <p className="text-sm font-medium text-ink">
+          <p className="mb-3 text-sm text-ink"><span className="text-brand">~/</span>andry</p>
+          <p className="font-sans text-sm font-medium text-ink">
             © {year} Andry Syva Maldini
           </p>
           <p className="mt-1">
@@ -23,31 +24,31 @@ export default function Footer() {
         </div>
         <nav
           aria-label="Footer Navigation"
-          className="flex flex-wrap justify-center gap-6 text-sm text-muted"
+          className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs text-muted"
         >
-          <Link href="/" className="transition-colors hover:text-ink">
-            Home
+          <Link href="/" aria-label="Home" className="transition-colors hover:text-ink">
+            ~/
           </Link>
           <Link
             href={hrefFor("#about")}
             className="transition-colors hover:text-ink"
           >
-            About
+            ./about
           </Link>
           <Link href="/cv" className="transition-colors hover:text-ink">
-            CV
+            cv.pdf
           </Link>
           <Link
             href={hrefFor("#projects")}
             className="transition-colors hover:text-ink"
           >
-            Projects
+            ./projects
           </Link>
           <Link
             href={hrefFor("#contact")}
             className="transition-colors hover:text-ink"
           >
-            Contact
+            ./contact
           </Link>
         </nav>
         <div className="flex items-center gap-4">

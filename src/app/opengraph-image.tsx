@@ -1,4 +1,6 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { SITE_URL } from "@/lib/site";
 
 export const alt = "Andry Syva Maldini — Data Analyst, Jakarta";
@@ -11,29 +13,15 @@ const INK = "#E8EAED";
 const MUTED = "#A9AFB7";
 const LIME = "#C5F82A";
 
-async function loadFont(family: string, text: string) {
-  const stylesheet = await fetch(
-    `https://fonts.googleapis.com/css2?family=${family}&text=${encodeURIComponent(text)}`
-  );
-  if (!stylesheet.ok) throw new Error("Unable to load OG font stylesheet");
-  const css = await stylesheet.text();
-  const url = css.match(/src: url\(([^)]+)\)/)?.[1];
-  if (!url) throw new Error("Missing OG font source");
-  const response = await fetch(url);
-  if (!response.ok) throw new Error("Unable to load OG font");
-  return response.arrayBuffer();
-}
-
 export default async function OpengraphImage() {
   const hostname = new URL(SITE_URL).hostname;
   const suffixStart = hostname.lastIndexOf(".");
-  const [displayFont, bodyFont, monoFont] = await Promise.all([
-    loadFont("Space+Grotesk:wght@700", "Andry Syva Maldini"),
-    loadFont(
-      "Space+Grotesk:wght@500",
-      `Data Analyst at Bank Rakyat Indonesia · Jakarta Data pipelines, predictive models and BI dashboards. Python · SQL · Airflow · Power BI · Docker ${hostname}`
-    ),
-    loadFont("JetBrains+Mono", "$ whoami"),
+  // Satori needs TrueType rather than WOFF2; these are local copies of the
+  // same fonts used by the site, so preview generation also works offline.
+  const [nameOutline, bodyFont, monoFont] = await Promise.all([
+    readFile(join(process.cwd(), "src/app/fonts/og-name.svg")),
+    readFile(join(process.cwd(), "src/app/fonts/space-grotesk-latin-500-normal.ttf")),
+    readFile(join(process.cwd(), "src/app/fonts/jetbrains-mono-latin-400-normal.ttf")),
   ]);
   return new ImageResponse(
     (
@@ -46,12 +34,18 @@ export default async function OpengraphImage() {
           justifyContent: "center",
           padding: "80px",
           backgroundColor: CANVAS,
-          backgroundImage: "radial-gradient(circle, #292C30 1px, transparent 1px)",
-          backgroundSize: "22px 22px",
           fontFamily: "Space Grotesk",
           fontWeight: 500,
         }}
       >
+        <svg width="1200" height="630" viewBox="0 0 1200 630" style={{ position: "absolute", top: 0, left: 0 }}>
+          <defs>
+            <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="#292C30" />
+            </pattern>
+          </defs>
+          <rect width="1200" height="630" fill="url(#dots)" />
+        </svg>
         <div
           style={{
             display: "flex",
@@ -77,15 +71,16 @@ export default async function OpengraphImage() {
           style={{
             display: "flex",
             marginTop: 20,
-            fontSize: 84,
-            fontFamily: "Space Grotesk",
-            fontWeight: 700,
-            letterSpacing: -2,
-            lineHeight: 1,
-            color: INK,
           }}
         >
-          Andry Syva Maldini
+          {/* A local outline keeps the display line intact alongside smaller text. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={`data:image/svg+xml;base64,${nameOutline.toString("base64")}`}
+            alt="Andry Syva Maldini"
+            width={744}
+            height={77}
+          />
         </div>
         <div
           style={{
@@ -122,7 +117,6 @@ export default async function OpengraphImage() {
     {
       ...size,
       fonts: [
-        { name: "Space Grotesk", data: displayFont, weight: 700, style: "normal" },
         { name: "Space Grotesk", data: bodyFont, weight: 500, style: "normal" },
         { name: "JetBrains Mono", data: monoFont, weight: 400, style: "normal" },
       ],

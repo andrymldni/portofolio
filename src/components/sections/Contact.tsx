@@ -12,6 +12,7 @@ import {
 import { RandomReveal } from "@/components/ui/RandomReveal";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
+import TerminalBar from "@/components/ui/TerminalBar";
 
 const PHONE = "+62 858-9581-2699";
 
@@ -44,7 +45,7 @@ function QuickContactCard({
         <Icon size={17} strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block text-xs text-muted">{label}</span>
+        <span className="block font-mono text-xs text-muted">{label}</span>
         <span className="block truncate text-sm font-medium text-ink">
           {value}
         </span>
@@ -164,7 +165,7 @@ export default function Contact() {
               target="_blank"
               rel="noreferrer"
               aria-label={s.label}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink/30 hover:bg-ink/[0.04]"
+              className="flex h-11 w-11 items-center justify-center rounded-md border border-line bg-surface text-ink transition-colors hover:border-brand hover:text-brand"
             >
               <s.icon size={17} strokeWidth={1.75} />
             </a>
@@ -176,69 +177,72 @@ export default function Contact() {
       <RandomReveal seed={3} delay={0.1} className="lg:col-span-3">
         <form
           onSubmit={handleSubmit}
-          className="card grid gap-4 p-6 sm:p-8"
+          className="card overflow-hidden"
           aria-describedby="form-status"
         >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <label className="grid gap-1.5 text-sm">
-              <span className="font-medium text-ink">Name</span>
-              <input
-                name="name"
-                required
-                type="text"
-                className="field px-3"
-                placeholder="Your name"
-                autoComplete="name"
-              />
-            </label>
-            <label className="grid gap-1.5 text-sm">
-              <span className="font-medium text-ink">Email</span>
-              <input
-                name="email"
-                required
-                type="email"
-                className="field px-3"
-                placeholder="you@example.com"
-                autoComplete="email"
-              />
-            </label>
-          </div>
+          <TerminalBar>~/contact/<span className="text-brand">draft</span></TerminalBar>
+          <div className="grid gap-5 p-5 sm:p-7">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <label className="grid gap-2 font-mono text-sm">
+                <span className="font-medium text-ink">Name</span>
+                <input
+                  name="name"
+                  required
+                  type="text"
+                  className="field px-3"
+                  placeholder="Your name"
+                  autoComplete="name"
+                />
+              </label>
+              <label className="grid gap-2 font-mono text-sm">
+                <span className="font-medium text-ink">Email</span>
+                <input
+                  name="email"
+                  required
+                  type="email"
+                  className="field px-3"
+                  placeholder="you@example.com"
+                  autoComplete="email"
+                />
+              </label>
+            </div>
 
-          <label className="grid gap-1.5 text-sm">
-            <span className="font-medium text-ink">Message</span>
-            <textarea
-              name="message"
-              required
-              rows={5}
-              className="field px-3"
-              placeholder="Hey, I'd love to collaborate on..."
+            <label className="grid gap-2 font-mono text-sm">
+              <span className="font-medium text-ink">Message</span>
+              <textarea
+                name="message"
+                required
+                rows={5}
+                className="field px-3"
+                placeholder="Hey, I'd love to collaborate on..."
+              />
+            </label>
+
+            <input
+              type="text"
+              tabIndex={-1}
+              autoComplete="off"
+              name="company"
+              className="hidden"
+              aria-hidden="true"
             />
-          </label>
 
-          <input
-            type="text"
-            tabIndex={-1}
-            autoComplete="off"
-            name="company"
-            className="hidden"
-            aria-hidden="true"
-          />
+            <button
+              disabled={sent === "loading"}
+              className="btn-primary w-fit"
+              type="submit"
+            >
+              <Send size={15} />
+              {sent === "loading" ? "Opening draft..." : "Open email draft"}
+            </button>
 
-          <button
-            disabled={sent === "loading"}
-            className="btn-primary w-fit"
-            type="submit"
-          >
-            <Send size={15} />
-            {sent === "loading" ? "Opening draft..." : "Open email draft"}
-          </button>
-
-          <p id="form-status" className="text-xs text-muted" aria-live="polite">
-            {sent === "ok" &&
-              "If Gmail or your email app opened, review the draft and send it there."}
-            {sent === "err" &&
-              "Couldn't open your email client. Try again, or email me directly."}
-          </p>
+            <p id="form-status" className="font-mono text-xs leading-relaxed text-muted" aria-live="polite">
+              {sent === "ok" &&
+                "If Gmail or your email app opened, review the draft and send it there."}
+              {sent === "err" &&
+                "Couldn't open your email client. Try again, or email me directly."}
+            </p>
+          </div>
         </form>
       </RandomReveal>
     </div>

@@ -21,6 +21,7 @@ import { projects, type Project } from "@/lib/data";
 import { EASE_OUT } from "@/components/ui/Reveal";
 import { useRandomEntrance } from "@/components/ui/RandomReveal";
 import { useDialog } from "@/hooks/useDialog";
+import TerminalBar from "@/components/ui/TerminalBar";
 
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
@@ -81,15 +82,17 @@ function ProjectModal({
         onClick={(e) => e.stopPropagation()}
         className="card relative max-h-[85vh] w-full max-w-lg overflow-y-auto overscroll-contain p-0 shadow-[0_32px_64px_-24px_rgba(0,0,0,0.6)]"
       >
-        <div className="sticky top-3 z-10 flex h-0 justify-end pr-3">
+        <TerminalBar className="sticky top-0 z-20" action={
           <button
             onClick={onClose}
             aria-label="Close"
-            className="flex h-9 w-9 items-center justify-center rounded-full bg-black/55 text-white transition-colors hover:bg-black/75"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-line text-ink transition-colors hover:bg-steel"
           >
             <X size={16} />
           </button>
-        </div>
+        }>
+          ~/projects/<span className="text-brand">{project.slug}</span>
+        </TerminalBar>
 
         <div className="relative h-44 w-full sm:h-56">
           {project.image ? (
@@ -107,17 +110,17 @@ function ProjectModal({
 
         <div className="p-6">
           {project.category && (
-            <p className="text-xs font-medium text-muted">{project.category}</p>
+            <p className="font-mono text-xs text-muted">{project.category}</p>
           )}
           <h3 id={titleId} className="mt-2 text-xl font-semibold text-ink">
             {project.title}
           </h3>
           {project.stack && (
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-3 font-mono text-xs leading-relaxed text-muted">
               {project.stack.join(" · ")}
             </p>
           )}
-          <p className="mt-4 text-sm leading-relaxed text-ink/85">
+          <p className="mt-4 text-base leading-relaxed text-muted">
             {project.details ?? project.desc}
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
@@ -179,6 +182,9 @@ function ProjectCard({
         p.featured ? "sm:col-span-2" : ""
       }`}
     >
+      <TerminalBar>
+        ~/projects/<span className="text-brand">{p.slug}</span>
+      </TerminalBar>
       <div
         className={`relative w-full border-b border-line ${
           p.featured ? "h-52 sm:h-64" : "h-44"
@@ -199,11 +205,11 @@ function ProjectCard({
           <ProjectCover category={p.category} />
         )}
         {p.featured && (
-          <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-semibold text-ink">
+          <span className="pointer-events-none absolute left-3 top-3 rounded-md border border-line bg-canvas px-2 py-1 font-mono text-[11px] text-ink">
             Featured
           </span>
         )}
-        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
+        <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas px-2 py-1 font-mono text-[11px] text-ink opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
           Click for details
         </span>
       </div>
@@ -224,9 +230,6 @@ function ProjectCard({
                 {p.title}
               </button>
             </h3>
-            {p.stack && (
-              <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
-            )}
           </div>
           <div className="flex shrink-0 items-center gap-3 pt-1">
             {p.demo && (
@@ -256,7 +259,7 @@ function ProjectCard({
           </div>
         </header>
         {p.category && (
-          <span className="mt-3 inline-block rounded-md bg-ink/[0.06] px-2 py-0.5 text-xs font-medium text-muted">
+          <span className="mt-3 inline-block font-mono text-xs text-muted">
             {p.category}
           </span>
         )}
@@ -265,10 +268,15 @@ function ProjectCard({
             {p.desc}
           </p>
         )}
+        {p.stack && (
+          <p className="mt-4 border-t border-line pt-3 font-mono text-xs leading-relaxed text-muted">
+            {p.stack.join(" · ")}
+          </p>
+        )}
         <Link
           href={`/projects/${p.slug}`}
           aria-label={`Read case study: ${p.title}`}
-          className="relative z-10 mt-4 inline-flex text-sm font-medium text-brand transition-colors hover:text-ink"
+          className="relative z-10 mt-4 inline-flex font-mono text-xs text-brand transition-colors hover:text-ink"
         >
           Read case study
         </Link>
@@ -314,9 +322,9 @@ export default function Projects({
               type="button"
               onClick={() => setActiveCategory(cat)}
               aria-pressed={activeCategory === cat}
-              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
+              className={`rounded-md border px-3.5 py-2 font-mono text-xs transition-colors sm:text-sm ${
                 activeCategory === cat
-                  ? "border-ink bg-ink text-canvas"
+                  ? "border-brand bg-surface text-brand"
                   : "border-line text-muted hover:border-ink/30 hover:text-ink"
               }`}
             >
@@ -326,7 +334,7 @@ export default function Projects({
         </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((p, index) => (
           <ProjectCard
             key={p.title}

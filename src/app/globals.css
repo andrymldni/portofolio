@@ -151,7 +151,7 @@ html {
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-colors;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 font-mono text-sm font-medium transition-colors;
   background: rgb(var(--brand));
   color: rgb(var(--brand-ink));
 }
@@ -163,7 +163,7 @@ html {
 }
 
 .btn-secondary {
-  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-5 py-2.5 text-sm font-semibold text-ink transition-colors;
+  @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line px-5 py-2.5 font-mono text-sm font-medium text-ink transition-colors;
 }
 .btn-secondary:hover {
   border-color: rgb(var(--ink) / 0.3);
@@ -171,7 +171,7 @@ html {
 }
 
 .field {
-  @apply w-full rounded-lg border border-line bg-canvas py-2.5 text-sm text-ink transition-colors placeholder:text-muted;
+  @apply w-full rounded-md border border-line bg-canvas py-2.5 font-mono text-sm text-ink transition-colors placeholder:text-muted;
 }
 .field:hover {
   border-color: rgb(var(--ink) / 0.24);
