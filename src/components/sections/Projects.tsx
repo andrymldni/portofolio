@@ -1,9 +1,11 @@
 "use client";
-import { useCallback, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ExternalLink,
   ArrowUpRight,
+  ChevronDown,
   Github,
   Globe,
   X,
@@ -40,6 +42,7 @@ function getColumns() {
 }
 
 const getServerColumns = () => 1;
+const MOBILE_PROJECT_LIMIT = 4;
 
 // Pack each desktop row in DOM order, expanding its last card to fill spare
 // columns. Filtering cannot leave holes or reorder keyboard navigation.
@@ -197,6 +200,7 @@ function ProjectCard({
   project: p,
   delay,
   span,
+  mobileHidden,
   revealed,
   onReveal,
   onOpen,
@@ -204,6 +208,7 @@ function ProjectCard({
   project: Project;
   delay: number;
   span: number;
+  mobileHidden: boolean;
   revealed: boolean;
   onReveal: (slug: string) => void;
   onOpen: (p: Project) => void;
@@ -217,7 +222,7 @@ function ProjectCard({
     <motion.article
       {...reveal}
       onViewportEnter={() => onReveal(p.slug)}
-      className={`min-w-0 [perspective:1000px] ${spanClasses[span]}`}
+      className={`min-w-0 [perspective:1000px] ${spanClasses[span]} ${mobileHidden ? "max-md:hidden" : ""}`}
     >
       <div ref={tiltRef} className="pointer-surface pointer-tilt group card interactive-card project-card relative flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left">
         <div
@@ -335,6 +340,9 @@ export default function Projects({
     [source],
   );
   const [activeCategory, setActiveCategory] = useState("All");
+  const [expanded, setExpanded] = useState(false);
+  const gridId = useId();
+  const gridRef = useRef<HTMLDivElement | null>(null);
   const list = useMemo(
     () =>
       activeCategory === "All"
@@ -351,6 +359,27 @@ export default function Projects({
   const columns = useSyncExternalStore(subscribeColumns, getColumns, getServerColumns);
   const cells = useMemo(() => desktopCells(list), [list]);
 
+  const toggleExpanded = () => {
+    if (!expanded) {
+      // Remove display:none before moving keyboard focus into the revealed cards.
+      flushSync(() => setExpanded(true));
+      const firstNewCard = gridRef.current?.children[MOBILE_PROJECT_LIMIT];
+      firstNewCard?.querySelector<HTMLButtonElement>("h3 button")?.focus({ preventScroll: true });
+      firstNewCard?.scrollIntoView({ block: "nearest", behavior: "instant" });
+      return;
+    }
+
+    const heading = gridRef.current?.closest("section")?.querySelector("h2");
+    const belowHeading = heading && heading.getBoundingClientRect().top < 0;
+    flushSync(() => setExpanded(false));
+    if (belowHeading) {
+      heading.scrollIntoView({
+        block: "start",
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+      });
+    }
+  };
+
   return (
     <div>
       {categories.length > 2 && (
@@ -359,7 +388,10 @@ export default function Projects({
             <button
               key={cat}
               type="button"
-              onClick={() => setActiveCategory(cat)}
+              onClick={() => {
+                setActiveCategory(cat);
+                setExpanded(false);
+              }}
               aria-pressed={activeCategory === cat}
               className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors sm:text-sm ${
                 activeCategory === cat
@@ -373,19 +405,35 @@ export default function Projects({
         </div>
       )}
 
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div ref={gridRef} id={gridId} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((p, index) => (
           <ProjectCard
             key={p.slug}
             project={p}
             delay={columns === 3 ? cells[index].delay : (index % columns) * 0.06}
             span={cells[index].span}
+            mobileHidden={!expanded && index >= MOBILE_PROJECT_LIMIT}
             revealed={revealed.has(p.slug)}
             onReveal={markRevealed}
             onOpen={setActive}
           />
         ))}
       </div>
+
+      {list.length > MOBILE_PROJECT_LIMIT && (
+        <div className="mt-6 md:hidden">
+          <button
+            type="button"
+            onClick={toggleExpanded}
+            aria-expanded={expanded}
+            aria-controls={gridId}
+            className="btn-secondary w-full"
+          >
+            {expanded ? "Show fewer" : `Show all ${list.length} projects`}
+            <ChevronDown size={16} aria-hidden="true" className={expanded ? "rotate-180" : ""} />
+          </button>
+        </div>
+      )}
 
       <AnimatePresence>
         {active && (
