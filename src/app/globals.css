@@ -1098,3 +1098,226 @@ main > section[id]::before {
     -webkit-text-fill-color: currentColor;
   }
 }
+
+/* =============================================================================
+   Task O: opening loader, cinematic hero intro sequence and page transition.
+============================================================================= */
+:root {
+  --hero-intro-delay: 1s;
+}
+:root[data-loader-skip] {
+  --hero-intro-delay: 0s;
+}
+:root[data-loader-skip] #opening-loader {
+  display: none;
+}
+
+.opening-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  overflow: clip;
+  background: #111418;
+  color: #e6e9ee;
+  pointer-events: none;
+  animation: opening-loader-exit 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.opening-loader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  animation: opening-loader-rise 550ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.opening-loader-brand {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.4vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  color: #e6e9ee;
+}
+.opening-loader-brand span {
+  color: #6ea8ff;
+}
+.opening-loader-chart {
+  width: 15rem;
+  max-width: 62vw;
+  height: auto;
+  color: #6ea8ff;
+}
+.opening-loader-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: opening-loader-draw 800ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+.opening-loader-points {
+  opacity: 0;
+  animation: opening-loader-points 350ms ease 720ms both;
+}
+.opening-loader-progress {
+  display: block;
+  width: 9rem;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(230, 233, 238, 0.14);
+}
+.opening-loader-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #6ea8ff;
+  transform-origin: left center;
+  animation: opening-loader-progress 900ms cubic-bezier(0.16, 1, 0.3, 1) 50ms both;
+}
+@keyframes opening-loader-exit {
+  0%, 62% {
+    clip-path: inset(0);
+    opacity: 1;
+    visibility: visible;
+  }
+  88% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 1;
+    visibility: visible;
+  }
+  100% {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes opening-loader-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes opening-loader-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes opening-loader-points {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes opening-loader-progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Hold the old one-shot hero animations until the intro class is mounted. */
+.hero-surface[data-entrance-ready]:not([data-hero-intro]) [data-hero-rise],
+.hero-surface[data-entrance-ready]:not([data-hero-intro]) .name-line,
+.hero-surface[data-entrance-ready]:not([data-hero-intro]) .hero-portrait-enter,
+.hero-surface:not([data-hero-intro]) .hero-chart[data-chart-ready] .hero-chart-line,
+.hero-surface:not([data-hero-intro]) .hero-chart[data-chart-ready] .hero-chart-points {
+  animation: none;
+}
+
+.hero-surface[data-hero-intro] .name-line {
+  animation: none;
+}
+.hero-surface .name-letter {
+  background-image: linear-gradient(
+    180deg,
+    rgb(var(--ink)) 0%,
+    rgb(var(--ink) / 0.82) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: rgb(var(--ink));
+  -webkit-text-fill-color: transparent;
+}
+.hero-surface[data-hero-intro] .name-letter {
+  display: inline-block;
+  animation: hero-letter-in 600ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--hero-intro-delay) + 0.05s + var(--letter-index) * 0.03s) both;
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .hero-surface .name-letter {
+    background-image: none;
+    color: rgb(var(--ink));
+    -webkit-text-fill-color: currentColor;
+  }
+}
+@keyframes hero-letter-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.hero-surface[data-hero-intro] .hero-portrait-enter {
+  animation: none;
+}
+.hero-surface[data-hero-intro] .hero-portrait-curtain {
+  animation: hero-portrait-wipe 850ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--hero-intro-delay) + 0.15s) both;
+}
+@keyframes hero-portrait-wipe {
+  from { clip-path: inset(0 0 100% 0); }
+  to { clip-path: inset(0); }
+}
+
+.hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-line {
+  stroke-dashoffset: 1;
+  animation: hero-chart-draw 900ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--hero-intro-delay) + 0.3s) both;
+}
+.hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-points {
+  opacity: 0;
+  animation: hero-chart-points-in 450ms ease
+    calc(var(--hero-intro-delay) + 1.1s) both;
+}
+
+.hero-surface[data-hero-intro] [data-hero-rise] {
+  animation: calm-enter 550ms cubic-bezier(0.16, 1, 0.3, 1)
+    calc(var(--hero-intro-delay) + 0.45s) both;
+}
+.hero-surface[data-hero-intro] [data-hero-rise]:nth-child(2) {
+  animation-delay: calc(var(--hero-intro-delay) + 0.55s);
+}
+.hero-surface[data-hero-intro] [data-hero-rise]:nth-child(4) {
+  animation-delay: calc(var(--hero-intro-delay) + 0.65s);
+}
+.hero-surface[data-hero-intro] [data-hero-rise]:nth-child(5) {
+  animation-delay: calc(var(--hero-intro-delay) + 0.75s);
+}
+.hero-surface[data-hero-intro] [data-hero-rise]:nth-child(6) {
+  animation-delay: calc(var(--hero-intro-delay) + 0.85s);
+}
+.hero-surface[data-hero-intro] [data-hero-rise]:nth-child(7) {
+  animation-delay: calc(var(--hero-intro-delay) + 0.95s);
+}
+
+.page-transition-wipe {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  pointer-events: none;
+  background: linear-gradient(135deg, #171d25 0%, #1b2531 55%, #16202b 100%);
+  animation: page-transition-wipe 520ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: transform;
+}
+.page-transition-wipe::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: #6ea8ff;
+  opacity: 0.75;
+}
+@keyframes page-transition-wipe {
+  0% { transform: translateY(100%); }
+  40% { transform: translateY(0); }
+  58% { transform: translateY(0); }
+  100% { transform: translateY(-100%); }
+}

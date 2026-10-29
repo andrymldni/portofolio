@@ -6,6 +6,8 @@ import Footer from "@/components/layout/Footer";
 import ScrollProgress from "@/components/layout/ScrollProgress";
 import BackToTop from "@/components/ui/BackToTop";
 import MotionProvider from "@/components/layout/MotionProvider";
+import OpeningLoader from "@/components/layout/OpeningLoader";
+import PageTransition from "@/components/layout/PageTransition";
 import { CONTACT_EMAIL, socialLinks } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
@@ -128,6 +130,17 @@ const themeInit = `(() => {
   } catch {}
 })();`;
 
+const loaderInit = `(() => {
+  try {
+    const key = 'portfolio-loader-seen';
+    if (sessionStorage.getItem(key)) {
+      document.documentElement.dataset.loaderSkip = '';
+    } else {
+      sessionStorage.setItem(key, '1');
+    }
+  } catch {}
+})();`;
+
 export default function RootLayout({
   children,
 }: {
@@ -137,12 +150,14 @@ export default function RootLayout({
     <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
+        <script dangerouslySetInnerHTML={{ __html: loaderInit }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd) }}
         />
       </head>
       <body className={`${poppins.className} ${poppins.variable}`}>
+        <OpeningLoader />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-lg focus:bg-canvas focus:px-4 focus:py-3 focus:text-ink focus:ring-2 focus:ring-brand"
@@ -158,6 +173,7 @@ export default function RootLayout({
             <Footer />
           </div>
           <BackToTop />
+          <PageTransition />
         </MotionProvider>
       </body>
     </html>

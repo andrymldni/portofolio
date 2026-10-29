@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import {
   motion,
   AnimatePresence,
@@ -22,6 +22,22 @@ const ROLES = [
   "Data Scientist",
 ];
 
+function NameLine({ text, offset }: { text: string; offset: number }) {
+  return (
+    <>
+      {Array.from(text).map((character, index) => (
+        <span
+          key={`${character}-${index}`}
+          className="name-letter"
+          style={{ "--letter-index": offset + index } as CSSProperties}
+        >
+          {character === " " ? "\u00a0" : character}
+        </span>
+      ))}
+    </>
+  );
+}
+
 export default function Hero() {
   const reduce = usePrefersReducedMotion();
   const desktopMotion = useDesktopMotion();
@@ -41,6 +57,12 @@ export default function Hero() {
   // over it. Static on touch and under reduced motion.
   const sectionRef = useRef<HTMLElement | null>(null);
   useProgressiveEntrance(sectionRef, true);
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    section.setAttribute("data-hero-intro", "");
+    return () => section.removeAttribute("data-hero-intro");
+  }, []);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"],
@@ -86,10 +108,14 @@ export default function Hero() {
             >
               <span className="sr-only">Andry Syva Maldini</span>
               <span aria-hidden="true" className="name-mask block overflow-hidden pb-[0.08em]">
-                <span className="name-line block">Andry Syva</span>
+                <span className="name-line block">
+                  <NameLine text="Andry Syva" offset={0} />
+                </span>
               </span>
               <span aria-hidden="true" className="name-mask -mt-[0.08em] block overflow-hidden pb-[0.08em]">
-                <span className="name-line name-line-last block">Maldini</span>
+                <span className="name-line name-line-last block">
+                  <NameLine text="Maldini" offset={10} />
+                </span>
               </span>
             </h1>
 
@@ -180,7 +206,7 @@ export default function Hero() {
                 aria-hidden="true"
                 className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.75rem] border border-brand/25 bg-steel"
               />
-              <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] border border-line bg-surface">
+              <div className="hero-portrait-curtain relative h-full w-full overflow-hidden rounded-[1.75rem] border border-line bg-surface">
                 <Image
                   src="/profile.jpeg"
                   alt="Portrait of Andry Syva Maldini"
