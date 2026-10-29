@@ -256,7 +256,7 @@ export default function CertificatesSlider() {
                       {cert.name}
                     </h3>
                     <p className="text-xs text-muted">{cert.issuer}</p>
-                    <span className="mt-2 text-xs font-medium text-muted/80">
+                    <span className="mt-2 font-mono text-xs font-medium text-muted">
                       {cert.year}
                     </span>
                   </div>

@@ -104,7 +104,7 @@ function EntryBlock({ entry }: { entry: ExperienceEntry }) {
       </div>
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
         <p className="text-sm text-slate-500">{entry.org}</p>
-        <span className="text-xs italic text-slate-600">{entry.period}</span>
+        <span className="font-mono text-xs text-slate-600">{entry.period}</span>
       </div>
       {entry.bullets.length > 0 && (
         <ul className="mt-2 space-y-1.5">
@@ -253,7 +253,7 @@ export default function Resume() {
                   <div key={ed.school}>
                     <div className="flex flex-wrap items-baseline justify-between gap-x-4">
                       <h3 className="font-bold text-slate-900">{ed.school}</h3>
-                      <span className="text-xs italic text-slate-600">
+                      <span className="font-mono text-xs text-slate-600">
                         {ed.period}
                       </span>
                     </div>

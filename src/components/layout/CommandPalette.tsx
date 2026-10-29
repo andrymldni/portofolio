@@ -171,7 +171,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
         </div>
         {!filtered.length && <p className="px-5 py-6 text-sm text-muted">No actions found. Try a project name or section.</p>}
         <div className="shrink-0 border-t border-line px-4 py-3 text-xs text-muted">
-          <p id={`${titleId}-help`}>↑ ↓ to navigate · Enter to run · Esc to close</p>
+          <p id={`${titleId}-help`} className="font-mono"><kbd>↑ ↓</kbd> to navigate · <kbd>Enter</kbd> to run · <kbd>Esc</kbd> to close</p>
           <p role="status" aria-live="polite" className="break-words">{status || `${filtered.length} actions available`}</p>
         </div>
       </div>
@@ -179,7 +179,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
   );
 }
 
-export default function CommandPalette() {
+export default function CommandPalette({ onOpen }: { onOpen?: () => void }) {
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
 
@@ -191,25 +191,31 @@ export default function CommandPalette() {
       // Avoid competing focus traps when a certificate or project dialog is open.
       if (document.querySelector('[role="dialog"][aria-modal="true"]')) return;
       event.preventDefault();
-      if (!event.repeat) setOpen(true);
+      if (!event.repeat) {
+        onOpen?.();
+        setOpen(true);
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [onOpen]);
 
   return (
     <>
       <button
         type="button"
-        onClick={() => setOpen(true)}
-        aria-label="Open command palette (Control or Command K)"
+        onClick={() => {
+          onOpen?.();
+          setOpen(true);
+        }}
+        aria-label="Search"
+        title="Search (Ctrl K / ⌘ K)"
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-keyshortcuts="Control+k Meta+k"
-        className="inline-flex items-center gap-2 rounded-lg border border-line px-2.5 py-2 text-muted transition-colors hover:bg-ink/5 hover:text-ink"
+        className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-line text-muted transition-colors hover:bg-ink/5 hover:text-ink"
       >
         <Search size={16} aria-hidden="true" />
-        <kbd aria-hidden="true" className="font-sans text-xs">⌘/Ctrl K</kbd>
       </button>
       {open && createPortal(<PaletteDialog onClose={close} />, document.body)}
     </>

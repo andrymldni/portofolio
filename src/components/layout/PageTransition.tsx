@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
 /**
- * A short panel wipe after client-side path changes. It only appears after a
+ * A short panel wipe (an opacity fade with reduced motion) after path changes.
+ * It only appears after a
  * navigation has committed, never blocks pointer events, and self-clears even
  * if its animation event is missed.
  */

@@ -31,6 +31,25 @@
   opacity: 1;
 }
 
+.title[data-title-fade] .text {
+  animation: title-fade 300ms ease-out both;
+}
+
+@keyframes title-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title[data-decoding] .text {
+    opacity: 1;
+  }
+
+  .title[data-decoding] .overlay {
+    opacity: 0;
+  }
+}
+
 @supports not ((background-clip: text) or (-webkit-background-clip: text)) {
   .text,
   .overlay {

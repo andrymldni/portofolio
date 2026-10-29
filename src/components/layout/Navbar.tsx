@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,15 +8,12 @@ import {
   X,
   FileText,
 } from "lucide-react";
-import { socialLinks } from "@/lib/data";
 import CommandPalette from "@/components/layout/CommandPalette";
 import ThemeToggle from "@/components/layout/ThemeToggle";
 
 const navItems = [
-  { hash: "#", label: "Home" },
   { hash: "#about", label: "About" },
   { hash: "#experience", label: "Experience" },
-  { hash: "#certifications", label: "Certifications" },
   { hash: "#projects", label: "Projects" },
   { hash: "#contact", label: "Contact" },
 ];
@@ -27,6 +24,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState<string>("#");
+  const closeMenu = useCallback(() => setOpen(false), []);
 
   useEffect(() => {
     if (!isHome) return;
@@ -37,7 +35,7 @@ export default function Navbar() {
     // active, and the last item takes over at the bottom of the page even
     // if it is shorter than the viewport.
     const PROBE_Y = 120;
-    const sectionIds = ["about", "experience", "certifications", "projects", "contact"];
+    const sectionIds = navItems.map((item) => item.hash.slice(1));
     let ticking = false;
     const update = () => {
       ticking = false;
@@ -94,7 +92,6 @@ export default function Navbar() {
 
   // Build the right href for a section link depending on which page we're on.
   const hrefFor = (hash: string) => {
-    if (hash === "#") return "/";
     return isHome ? hash : `/${hash}`;
   };
 
@@ -109,7 +106,7 @@ export default function Navbar() {
           <Link
             href="/"
             onClick={handleHomeClick}
-            className="shrink-0 rounded font-semibold tracking-tight text-ink"
+            className="min-w-0 truncate rounded font-semibold tracking-tight text-ink"
           >
             andrymldni<span className="text-brand">.dev</span>
           </Link>
@@ -119,7 +116,7 @@ export default function Navbar() {
               <li key={n.hash}>
                 <Link
                   href={hrefFor(n.hash)}
-                  onClick={n.hash === "#" ? handleHomeClick : undefined}
+                  aria-current={isHome && active === n.hash ? "location" : undefined}
                   className={`relative rounded-full px-3.5 py-2 text-sm transition-colors ${
                     isHome && active === n.hash
                       ? "text-ink"
@@ -150,19 +147,14 @@ export default function Navbar() {
                 View CV
               </Link>
             </li>
-            <li className="pl-1">
-              <CommandPalette />
-            </li>
-            <li className="pl-1">
-              <ThemeToggle />
-            </li>
           </ul>
 
-          {/* Mobile */}
-          <div className="lg:hidden flex items-center gap-2">
+          {/* One search trigger and shortcut handler across both layouts. */}
+          <div className="flex shrink-0 items-center gap-2">
+            <CommandPalette onOpen={closeMenu} />
             <ThemeToggle />
             <button
-              className="rounded-lg p-2 text-ink transition-colors hover:bg-ink/5"
+              className="rounded-lg p-2 text-ink transition-colors hover:bg-ink/5 lg:hidden"
               onClick={() => setOpen((o) => !o)}
               aria-label="Toggle menu"
               aria-expanded={open}
@@ -193,10 +185,8 @@ export default function Navbar() {
                   >
                     <Link
                       href={hrefFor(n.hash)}
-                      onClick={(e) => {
-                        if (n.hash === "#") handleHomeClick(e);
-                        else setOpen(false);
-                      }}
+                      onClick={() => setOpen(false)}
+                      aria-current={isHome && active === n.hash ? "location" : undefined}
                       className={`block rounded-lg px-3 py-2 transition-colors ${
                         isHome && active === n.hash
                           ? "bg-ink/[0.06] text-ink"
@@ -221,20 +211,6 @@ export default function Navbar() {
                     View CV
                   </Link>
                 </motion.li>
-                <li className="flex gap-4 pt-2 text-muted">
-                  {Object.values(socialLinks).map((social) => (
-                    <a
-                      key={social.label}
-                      href={social.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="transition-colors hover:text-ink"
-                      aria-label={social.label}
-                    >
-                      <social.icon size={18} />
-                    </a>
-                  ))}
-                </li>
               </ul>
             </motion.div>
           )}

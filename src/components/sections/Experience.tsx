@@ -83,9 +83,9 @@ function ExperienceItem({
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
-            <p className="text-sm text-muted">{entry.period}</p>
+            <p className="font-mono text-sm text-muted">{entry.period}</p>
             {current && (
-              <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-semibold text-brand">
+              <span className="rounded-full bg-brand/10 px-2 py-0.5 font-mono text-[11px] font-medium text-brand">
                 Current
               </span>
             )}
@@ -154,7 +154,7 @@ export default function Experience() {
             A timeline of the roles behind the CV, from banking analytics to
             social-security data work.
           </p>
-          <p className="mt-6 text-xs font-medium uppercase tracking-[0.16em] text-muted">
+          <p className="mt-6 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
             {experience.length} roles
           </p>
         </div>

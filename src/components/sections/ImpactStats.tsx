@@ -74,8 +74,8 @@ export default function ImpactStats() {
     <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-line py-6 sm:grid-cols-3 lg:grid-cols-5">
       {stats.map((stat) => (
         <div key={stat.label} className="min-w-0 last:col-span-2 sm:last:col-span-1">
-          <dt className="text-xs leading-relaxed text-muted">{stat.label}</dt>
-          <dd className="mt-2 text-3xl font-semibold tabular-nums tracking-tight text-ink sm:text-4xl">
+          <dt className="font-mono text-xs leading-relaxed text-muted">{stat.label}</dt>
+          <dd className="mt-2 font-mono text-3xl font-medium tabular-nums tracking-tight text-ink sm:text-4xl">
             <span className="sr-only">{stat.final ?? stat.value}</span>
             <span aria-hidden="true" data-count>{stat.final ?? stat.value}</span>
             {/* The same unlabeled rising flourish for every count, not a data series. */}

@@ -18,12 +18,20 @@ export default function DecodeTitle({ title }: { title: string }) {
     let frame = 0;
     let start: number | undefined;
     let previousTick = -1;
+    let running = false;
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
     const letters = Array.from(title);
     const finish = () => {
+      running = false;
       element.removeAttribute("data-decoding");
       overlay.textContent = "";
     };
     const animate = (time: number) => {
+      if (motionPreference.matches) {
+        finish();
+        element.setAttribute("data-title-fade", "");
+        return;
+      }
       start ??= time;
       const elapsed = time - start;
       if (elapsed >= DURATION) {
@@ -46,18 +54,31 @@ export default function DecodeTitle({ title }: { title: string }) {
       frame = requestAnimationFrame(animate);
     };
 
-    // This is a one-shot entrance, so it also plays with reduced motion.
+    // Read the preference at entry, before starting any scramble frame.
     const observer = new IntersectionObserver(([entry]) => {
       if (!entry.isIntersecting) return;
       observer.disconnect();
-      frame = requestAnimationFrame(animate);
+      if (motionPreference.matches) element.setAttribute("data-title-fade", "");
+      else {
+        running = true;
+        frame = requestAnimationFrame(animate);
+      }
     }, { threshold: 0.25 });
     observer.observe(element);
+    const onPreferenceChange = () => {
+      if (!motionPreference.matches || !running) return;
+      cancelAnimationFrame(frame);
+      finish();
+      element.setAttribute("data-title-fade", "");
+    };
+    motionPreference.addEventListener("change", onPreferenceChange);
 
     return () => {
       observer.disconnect();
       cancelAnimationFrame(frame);
+      motionPreference.removeEventListener("change", onPreferenceChange);
       finish();
+      element.removeAttribute("data-title-fade");
     };
   }, [title]);
 

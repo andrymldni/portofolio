@@ -100,7 +100,7 @@ export default function About() {
                 className="about-fact grid grid-cols-[6.5rem_1fr] gap-4 border-b border-line py-3 text-sm"
                 style={{ "--fact-start": FACT_STARTS[index] } as CSSProperties}
               >
-                <dt className="text-muted">{f.label}</dt>
+                <dt className="font-mono text-xs text-muted">{f.label}</dt>
                 <dd className="font-medium text-ink">
                   {f.href ? (
                     <a href={f.href} className="hover:underline">

@@ -20,7 +20,14 @@ const config: Config = {
         ok: "rgb(var(--ok) / <alpha-value>)",
       },
       fontFamily: {
-        sans: ["var(--font-poppins)", "system-ui", "sans-serif"],
+        sans: ["var(--font-geist-sans)", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "monospace"],
+      },
+      fontSize: {
+        xs: ["0.75rem", { lineHeight: "1.5" }],
+        sm: ["0.875rem", { lineHeight: "1.6" }],
+        base: ["1rem", { lineHeight: "1.65" }],
+        lg: ["1.125rem", { lineHeight: "1.6" }],
       },
       transitionTimingFunction: {
         out: "cubic-bezier(0.16, 1, 0.3, 1)",

@@ -13,7 +13,7 @@ import HeroChart from "@/components/effects/HeroChart";
 import MagneticLink from "@/components/ui/MagneticLink";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useDesktopMotion, usePointerSurface } from "@/hooks/usePointerSurface";
-import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
+import { canEnhanceEntrance, useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
 import { socialLinks } from "@/lib/data";
 
 const ROLES = [
@@ -60,8 +60,19 @@ export default function Hero() {
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
+    const loaderAnimation = document.getElementById("opening-loader")?.getAnimations?.()[0];
+    const loaderRunning = loaderAnimation?.playState === "running";
+    // A slow hydration must never hide a hero that is already readable.
+    if (!loaderRunning && !canEnhanceEntrance(section)) return;
+    const elapsed = loaderRunning && typeof loaderAnimation.currentTime === "number"
+      ? loaderAnimation.currentTime / 1000
+      : 0;
+    section.style.setProperty("--hero-intro-delay", `${loaderRunning ? Math.max(0, 0.25 - elapsed) : 0}s`);
     section.setAttribute("data-hero-intro", "");
-    return () => section.removeAttribute("data-hero-intro");
+    return () => {
+      section.removeAttribute("data-hero-intro");
+      section.style.removeProperty("--hero-intro-delay");
+    };
   }, []);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -90,7 +101,7 @@ export default function Hero() {
           <div aria-hidden="true" className="hero-name-glow" />
           <HeroChart />
           <motion.div
-            variants={stagger(0.1, 0.1)}
+            variants={stagger(0, 0.06)}
             initial={false}
             animate="show"
             className="text-center md:text-left"
@@ -129,9 +140,9 @@ export default function Hero() {
                 <motion.span
                   aria-hidden="true"
                   key={idx}
-                  initial={{ y: 12, opacity: 0 }}
+                  initial={{ y: reduce ? 0 : 12, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -12, opacity: 0 }}
+                  exit={{ y: reduce ? 0 : -12, opacity: 0 }}
                   transition={{ duration: 0.35, ease: EASE_OUT }}
                   className="inline-block text-brand"
                 >
@@ -226,7 +237,7 @@ export default function Hero() {
         aria-label="Scroll to the About section"
         initial={false}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1.1, duration: 0.6 }}
+        transition={{ delay: 0.6, duration: 0.35 }}
         className="hero-scroll-cue absolute bottom-6 left-1/2 -translate-x-1/2 text-muted transition-colors hover:text-ink"
       >
         <ArrowDown size={20} strokeWidth={1.75} />
