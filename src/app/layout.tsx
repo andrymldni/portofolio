@@ -14,24 +14,22 @@ import { SITE_URL } from "@/lib/site";
 // Geist is self-hosted from ./fonts so `next dev` and `next build` never
 // need to reach Google Fonts (a failed download breaks Turbopack builds).
 const geistSans = localFont({
-  src: [
-    { path: "./fonts/geist-sans-latin-400-normal.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/geist-sans-latin-500-normal.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/geist-sans-latin-600-normal.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/geist-sans-latin-700-normal.woff2", weight: "700", style: "normal" },
-    { path: "./fonts/geist-sans-latin-800-normal.woff2", weight: "800", style: "normal" },
-  ],
+  src: "./fonts/geist-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-geist-sans",
   display: "swap",
+  preload: true,
 });
 
 const geistMono = localFont({
-  src: [
-    { path: "./fonts/geist-mono-latin-400-normal.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/geist-mono-latin-500-normal.woff2", weight: "500", style: "normal" },
-  ],
+  src: "./fonts/geist-mono-latin-wght-normal.woff2",
+  weight: "100 900",
+  style: "normal",
   variable: "--font-geist-mono",
   display: "swap",
+  // Small labels can load on demand instead of competing with the hero.
+  preload: false,
 });
 
 export const viewport: Viewport = {
