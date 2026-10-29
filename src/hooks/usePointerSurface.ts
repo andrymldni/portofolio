@@ -25,6 +25,8 @@ export function usePointerSurface<T extends HTMLElement>(ref: RefObject<T | null
       cancelAnimationFrame(frame);
       frame = 0;
       element.style.setProperty("--tilt-angle", "0deg");
+      element.style.removeProperty("--pointer-x");
+      element.style.removeProperty("--pointer-y");
     };
     const paint = () => {
       frame = 0;
@@ -38,6 +40,8 @@ export function usePointerSurface<T extends HTMLElement>(ref: RefObject<T | null
       element.style.setProperty("--tilt-axis-x", `${magnitude ? axisX / magnitude : 1}`);
       element.style.setProperty("--tilt-axis-y", `${magnitude ? axisY / magnitude : 0}`);
       element.style.setProperty("--tilt-angle", `${Math.min(1, magnitude) * maxTilt}deg`);
+      element.style.setProperty("--pointer-x", `${x * 100}%`);
+      element.style.setProperty("--pointer-y", `${y * 100}%`);
     };
     const move = (event: PointerEvent) => {
       if (event.pointerType !== "mouse") return;

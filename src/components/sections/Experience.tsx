@@ -39,58 +39,60 @@ function ExperienceItem({
         />
       )}
 
-      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
-        <div className="min-w-0">
-          <h3 className="text-lg font-semibold leading-snug text-ink">
-            {entry.role}
-          </h3>
-          <p className="mt-1 text-sm text-muted">
-            {entry.org}
-            {entry.location ? ` · ${entry.location}` : ""}
-          </p>
+      <div className="card p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
+          <div className="min-w-0">
+            <h3 className="text-lg font-semibold leading-snug text-ink">
+              {entry.role}
+            </h3>
+            <p className="mt-1 text-sm text-muted">
+              {entry.org}
+              {entry.location ? ` · ${entry.location}` : ""}
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
+            <p className="text-sm text-muted">{entry.period}</p>
+            {current && (
+              <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-semibold text-brand">
+                Current
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex shrink-0 flex-col items-start gap-1 sm:items-end">
-          <p className="text-sm text-muted">{entry.period}</p>
-          {current && (
-            <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[11px] font-semibold text-brand">
-              Current
-            </span>
-          )}
-        </div>
+
+        {visible.length > 0 && (
+          <ul className="mt-4 space-y-2">
+            {visible.map((bullet) => (
+              <li
+                key={bullet}
+                className="flex gap-2 text-sm leading-relaxed text-muted"
+              >
+                <span
+                  aria-hidden="true"
+                  className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand/60"
+                />
+                <span>{bullet}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {hiddenCount > 0 && (
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            aria-expanded={open}
+            className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand transition-colors hover:text-ink"
+          >
+            {open ? "Show less" : `Show ${hiddenCount} more`}
+            <ChevronDown
+              size={14}
+              aria-hidden="true"
+              className={`transition-transform ${open ? "rotate-180" : ""}`}
+            />
+          </button>
+        )}
       </div>
-
-      {visible.length > 0 && (
-        <ul className="mt-4 space-y-2">
-          {visible.map((bullet) => (
-            <li
-              key={bullet}
-              className="flex gap-2 text-sm leading-relaxed text-muted"
-            >
-              <span
-                aria-hidden="true"
-                className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand/60"
-              />
-              <span>{bullet}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {hiddenCount > 0 && (
-        <button
-          type="button"
-          onClick={() => setOpen((value) => !value)}
-          aria-expanded={open}
-          className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand transition-colors hover:text-ink"
-        >
-          {open ? "Show less" : `Show ${hiddenCount} more`}
-          <ChevronDown
-            size={14}
-            aria-hidden="true"
-            className={`transition-transform ${open ? "rotate-180" : ""}`}
-          />
-        </button>
-      )}
     </li>
   );
 }
@@ -104,7 +106,7 @@ export default function Experience() {
             aria-hidden="true"
             className="mb-4 block h-[3px] w-10 origin-left bg-brand"
           />
-          <h2 className="text-2xl font-semibold leading-tight tracking-tight md:text-[2rem]">
+          <h2 className="text-2xl font-bold leading-tight tracking-tight md:text-[2rem]">
             Experience
           </h2>
           <p className="mt-3 max-w-sm leading-relaxed text-muted">

@@ -25,11 +25,8 @@ const poppins = localFont({
 });
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f3f5f8" },
-    { media: "(prefers-color-scheme: dark)", color: "#111418" },
-  ],
-  colorScheme: "light dark",
+  themeColor: "#111418",
+  colorScheme: "dark light",
 };
 
 const SITE_TITLE = "Andry Syva Maldini – Data Analyst & Data Scientist Portfolio";
@@ -126,8 +123,7 @@ const themeInit = `(() => {
   try {
     const key = 'theme';
     const saved = localStorage.getItem(key);
-    const mql = window.matchMedia('(prefers-color-scheme: dark)');
-    const theme = saved || (mql.matches ? 'dark' : 'light');
+    const theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
     document.documentElement.dataset.theme = theme;
   } catch {}
 })();`;
@@ -138,7 +134,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" data-theme="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <script

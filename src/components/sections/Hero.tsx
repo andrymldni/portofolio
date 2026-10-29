@@ -65,6 +65,7 @@ export default function Hero() {
       <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr] md:gap-10 lg:gap-16">
         {/* Copy */}
         <motion.div style={{ y: copyY, opacity: copyOpacity }} className="relative">
+          <div aria-hidden="true" className="hero-name-glow" />
           <HeroChart />
           <motion.div
             variants={stagger(0.1, 0.1)}
@@ -81,7 +82,7 @@ export default function Hero() {
             </motion.p>
 
             <h1
-              className="mt-4 text-[2.75rem] font-bold leading-[1.02] tracking-[-0.02em] sm:text-6xl lg:text-[4.5rem]"
+              className="mt-4 text-[2.75rem] font-extrabold leading-[1.02] tracking-[-0.02em] sm:text-6xl lg:text-[4.5rem]"
             >
               <span className="sr-only">Andry Syva Maldini</span>
               <span aria-hidden="true" className="name-mask block overflow-hidden pb-[0.08em]">
@@ -173,6 +174,7 @@ export default function Hero() {
               ref={photoRef}
               className="pointer-surface pointer-tilt relative aspect-[4/5]"
             >
+              <div aria-hidden="true" className="hero-portrait-glow" />
               {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}
               <div
                 aria-hidden="true"

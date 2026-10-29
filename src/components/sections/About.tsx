@@ -118,12 +118,12 @@ export default function About() {
 
       <RevealGroup delay={0.1} gap={0.12}>
         <p className="text-sm font-medium text-muted">What I work on</p>
-        <ol className="mt-3">
+        <ol className="mt-3 space-y-3">
           {FOCUS.map((item, i) => (
             <motion.li
               key={item.title}
               variants={rise}
-              className="grid gap-2 border-t border-line py-5 sm:grid-cols-[2.5rem_1fr] sm:gap-4"
+              className="card grid gap-2 p-5 sm:grid-cols-[2.5rem_1fr] sm:gap-4"
             >
               <span className="text-sm font-medium text-muted">
                 {String(i + 1).padStart(2, "0")}
