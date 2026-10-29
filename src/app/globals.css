@@ -857,3 +857,103 @@ main > section[id]::before {
     animation: calm-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 }
+
+/* Light theme polish: readable controls and quieter surfaces.
+   Every override is scoped to light; shared geometry and dark rendering stay intact.
+   --light-control clears 3:1 against canvas, surface and the contact band. */
+:root[data-theme="light"] {
+  --muted: 82 94 110;
+  --light-control: 118 130 146;
+}
+:root[data-theme="light"] .grain {
+  opacity: 0.02;
+}
+:root[data-theme="light"] .hero-chart-axes {
+  opacity: 0.25;
+}
+:root[data-theme="light"] .section-motif {
+  opacity: 0.22;
+}
+:root[data-theme="light"] .page-motif {
+  opacity: 0.1;
+}
+:root[data-theme="light"] .stat-sparkline {
+  stroke: rgb(var(--brand) / 0.75);
+}
+
+/* Card hairlines are decorative; control outlines must remain identifiable. */
+:root[data-theme="light"] .card {
+  border-color: rgb(var(--ink) / 0.18);
+}
+:root[data-theme="light"] :is(.btn-secondary, .field, button.card, a.card),
+:root[data-theme="light"] button[aria-pressed="false"],
+:root[data-theme="light"] button[aria-keyshortcuts],
+:root[data-theme="light"] .nav-frame a[href="/cv"],
+:root[data-theme="light"] #contact a[aria-label] {
+  border-color: rgb(var(--light-control));
+}
+:root[data-theme="light"] .interactive-card:focus-within,
+:root[data-theme="light"] .contact-field .field:focus-visible,
+:root[data-theme="light"] .field[aria-invalid="true"] {
+  border-color: rgb(var(--brand));
+}
+@media (hover: hover) and (pointer: fine) {
+  :root[data-theme="light"] :is(.interactive-card, .btn-secondary, button.card, a.card):hover,
+  :root[data-theme="light"] button[aria-pressed="false"]:hover,
+  :root[data-theme="light"] .nav-frame a[href="/cv"]:hover,
+  :root[data-theme="light"] #contact a[aria-label]:hover {
+    border-color: rgb(var(--brand));
+  }
+}
+:root[data-theme="light"] .nav-frame--scrolled {
+  background: rgb(var(--surface) / 0.98);
+  border-color: rgb(var(--ink) / 0.2);
+  box-shadow: 0 4px 18px -12px rgb(var(--ink) / 0.18);
+}
+
+/* Depth comes from perspective, not faded text. Framer sets inline opacity. */
+:root[data-theme="light"] .certificate-pose {
+  opacity: 1 !important;
+}
+:root[data-theme="light"] .certificate-pose .text-muted\/80 {
+  color: rgb(var(--muted));
+}
+:root[data-theme="light"] .certificate-pose > .card {
+  box-shadow: 0 12px 24px -18px rgb(var(--ink) / 0.24);
+}
+:root[data-theme="light"] .certificate-pose > .card:has(> button[aria-haspopup="dialog"]) {
+  box-shadow: 0 20px 36px -22px rgb(var(--ink) / 0.28);
+}
+:root[data-theme="light"] .certificate-carousel [aria-current="false"] > span {
+  background: rgb(var(--muted));
+}
+:root[data-theme="light"] #experience .bg-line {
+  background: rgb(var(--light-control));
+}
+:root[data-theme="light"] #experience .border-brand\/50 {
+  border-color: rgb(var(--brand));
+}
+:root[data-theme="light"] #experience .bg-brand\/10 {
+  color: rgb(var(--brand-strong));
+}
+
+:root[data-theme="light"] #contact > .rounded-2xl {
+  background: rgb(234 239 246);
+  border-color: rgb(var(--ink) / 0.18);
+}
+:root[data-theme="light"] .contact-field .field:focus::placeholder {
+  color: rgb(var(--muted));
+}
+:root[data-theme="light"] .modal-backdrop {
+  background: rgb(var(--ink) / 0.32);
+}
+:root[data-theme="light"] .modal-backdrop [role="dialog"] {
+  box-shadow: 0 24px 64px -24px rgb(var(--ink) / 0.24);
+}
+:root[data-theme="light"] .command-dialog [role="option"][aria-selected="true"] {
+  background: rgb(var(--brand) / 0.08);
+  box-shadow: inset 3px 0 0 rgb(var(--brand));
+}
+:root[data-theme="light"] .cv-paper {
+  box-shadow: 0 20px 50px -24px rgb(var(--ink) / 0.16), 0 0 0 1px rgb(var(--ink) / 0.14);
+}
