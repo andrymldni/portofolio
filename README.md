@@ -12,7 +12,7 @@
 ## 📸 Preview
 <img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/5f361bfc-51db-492a-8991-a16163d1103d" />
 
-Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
+Live Demo: **[andrymldni-portfolio.vercel.app](https://andrymldni-portfolio.vercel.app)**
 
 ---
 
@@ -24,11 +24,11 @@ Live Demo: **[andrymldni.dev](https://andrymldni.dev)**
 - 📂 **Section Lengkap**:
   - **About** – Profil singkat, kontak, dan CV.
   - **Resume** – Pengalaman kerja, organisasi, pendidikan, sertifikasi.
-  - **Projects** – Showcase proyek dengan gambar, stack, link, dan halaman studi kasus statis untuk setiap proyek.
+  - **Projects** – Proyek flagship dengan angka dari data highlights, diikuti grid More projects; filter berlaku untuk kedua grup dan ponsel memakai tombol Show all. Label Course project menandai submission kursus; setiap proyek memiliki dialog dan halaman studi kasus statis.
   - **Contact** – Membuka draft Gmail, dengan fallback `mailto` jika popup diblokir; tanpa backend dan isi pesan tetap tersimpan di form.
-- 🎨 **Tema terang & gelap** – Palet abu-abu dan biru (grafit, abu terang, satu aksen biru) tanpa gradien neon; mengikuti tema sistem.
+- 🎨 **Tema terang & gelap** – Palet abu-abu dan biru (grafit, abu terang, satu aksen biru) tanpa gradien neon; gelap sebagai default.
 - 📜 **Scroll reveal** – Setiap bagian muncul saat masuk viewport (Framer Motion `whileInView`).
-- ♿ **Aksesibilitas** – Skip link, fokus keyboard, dan pengelolaan fokus modal; gerakan berulang/otomatis, parallax, dan tilt mengikuti `prefers-reduced-motion`, dengan kontrol pause/play sertifikat. Animasi masuk tetap berjalan.
+- ♿ **Aksesibilitas** – Skip link, fokus keyboard, dan pengelolaan fokus modal; gerakan berulang/otomatis, parallax, dan tilt mengikuti `prefers-reduced-motion`, dengan kontrol pause/play sertifikat. Loader, intro hero, judul, dan transisi halaman memakai fade singkat saat reduced motion aktif.
 
 ---
 
@@ -48,7 +48,7 @@ src/
  ├─ app/
  │   ├─ cv/             # Halaman CV (merender Resume inline)
  │   ├─ projects/[slug]/ # Halaman studi kasus statis dari data proyek
- │   ├─ fonts/          # Poppins (self-hosted, woff2)
+ │   ├─ fonts/          # Geist Sans / Geist Mono (self-hosted, woff2)
  │   ├─ layout.tsx      # Layout utama (Navbar, Footer, MotionProvider)
  │   ├─ page.tsx        # Halaman utama
  │   └─ globals.css     # Style global + custom class
@@ -100,6 +100,8 @@ npm run start
 Buat file `.env.local` di root proyek:
 ```env
 NEXT_PUBLIC_CONTACT_EMAIL=youremail@example.com
+# Opsional: override URL kanonis dengan URL absolut, termasuk https://
+# NEXT_PUBLIC_SITE_URL=https://portfolio.example.com
 ```
 Jika tidak diisi atau kosong, alamat default di `src/lib/data.ts` digunakan.
 Variabel publik ini dibaca saat build dan dipakai bersama oleh form kontak,
@@ -107,7 +109,23 @@ About, CV, dan JSON-LD; lakukan build/deploy ulang setelah mengubahnya.
 Form membuka draft Gmail dan memakai `mailto` jika popup diblokir; pesan tidak
 dikirim otomatis. Pengguna meninjau dan mengirim draft sendiri di Gmail atau
 aplikasi email yang terkonfigurasi.
-URL kanonis situs diatur di `src/lib/site.ts`.
+URL kanonis situs diatur di `src/lib/site.ts`, dengan urutan prioritas:
+
+1. `NEXT_PUBLIC_SITE_URL`, jika diisi (URL absolut, misalnya `https://portfolio.example.com`).
+2. `https://` + `VERCEL_PROJECT_PRODUCTION_URL`, domain produksi yang disediakan Vercel.
+3. `https://andrymldni-portfolio.vercel.app` sebagai fallback lokal/non-Vercel.
+
+Biarkan `NEXT_PUBLIC_SITE_URL` kosong agar domain mengikuti konfigurasi produksi
+Vercel saat custom domain dipasang. Nilai ini dipakai bersama oleh metadataBase,
+canonical, Open Graph, sitemap, robots, dan JSON-LD; lakukan build/deploy ulang
+setelah mengubah domain atau environment variable. Trailing slash dinormalisasi
+agar tautan turunan tidak memiliki slash ganda.
+
+Kurasi proyek ada di `src/lib/data.ts`: `flagship: true` menempatkan proyek di
+grup utama, dan `courseProject: true` menampilkan label submission kursus.
+Angka kartu flagship berasal langsung dari `highlights`, sementara jumlah proyek,
+filter, rute statis, navigasi proyek, sitemap, dan command palette mengikuti array
+proyek yang sama.
 
 ---
 
@@ -115,7 +133,7 @@ URL kanonis situs diatur di `src/lib/site.ts`.
 1. Fork atau clone repository ini.
 2. Login ke [Vercel](https://vercel.com/).
 3. Import repository ke Vercel.
-4. Tambahkan environment variable `NEXT_PUBLIC_CONTACT_EMAIL`.
+4. Tambahkan environment variable `NEXT_PUBLIC_CONTACT_EMAIL`; isi `NEXT_PUBLIC_SITE_URL` hanya jika perlu override domain produksi otomatis.
 5. Deploy dan nikmati hasilnya ✨.
 
 ---
@@ -125,4 +143,4 @@ Proyek ini dilisensikan di bawah **MIT License** – silakan lihat file [LICENSE
 
 ---
 
-💡 **Dibuat dengan semangat oleh [Andry](https://andrymldni.dev)**
+💡 **Dibuat dengan semangat oleh [Andry](https://andrymldni-portfolio.vercel.app)**

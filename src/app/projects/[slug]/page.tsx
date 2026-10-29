@@ -127,9 +127,14 @@ export default async function ProjectPage({ params }: Props) {
 
       <PageEntrance key={project.slug} className="case-study-enter mx-auto mt-8 max-w-5xl">
         <header className="max-w-3xl">
-          {project.category && (
-            <p className="text-sm font-medium text-brand">{project.category}</p>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            {project.category && (
+              <p className="text-sm font-medium text-brand">{project.category}</p>
+            )}
+            {project.courseProject && (
+              <span className="rounded-md border border-line px-2 py-0.5 font-mono text-xs text-muted">Course project</span>
+            )}
+          </div>
           <h1 className="mt-3 break-words text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl md:text-5xl">
             {project.title}
           </h1>

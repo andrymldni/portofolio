@@ -91,8 +91,10 @@ export type Project = {
   /** Live demo / deployed app URL, shown as a secondary CTA when present. */
   demo?: string;
   image?: string;
-  /** Marks the project for a larger "featured" grid cell on desktop. */
-  featured?: boolean;
+  /** Curated work shown before the compact project grid, with its highlights. */
+  flagship?: boolean;
+  /** A course submission, identified by its repository and documented role. */
+  courseProject?: boolean;
   category?: string;
   desc?: string;
   details?: string;
@@ -103,7 +105,7 @@ export type Project = {
   highlights?: { value: string; label: string }[];
 };
 
-// Editorial order stays intact in the desktop bento and in filtered views.
+// Preserve editorial order within each curated group and in case-study navigation.
 export const projects: Project[] = [
   {
     title: "BRILink Sentiment Intelligence",
@@ -111,7 +113,7 @@ export const projects: Project[] = [
     stack: ["Airflow", "dbt", "PostgreSQL", "IndoBERT", "Metabase", "Docker"],
     link: "https://github.com/andrymldni/de-sentiment-analisis",
     image: "/projects/brilink-sentiment.jpg",
-    featured: true,
+    flagship: true,
     category: "Data Engineering",
     desc: "End-to-end pipeline tracking public sentiment on BRILink across news, app reviews, and social media.",
     details:
@@ -137,6 +139,7 @@ export const projects: Project[] = [
   {
     title: "Human Resources Analytics",
     slug: "human-resources-analytics",
+    courseProject: true,
     stack: ["Python", "Docker", "Metabase"],
     link: "https://github.com/andrymldni/Dicoding-HR-Analytics",
     image: "/proyek1.jpeg",
@@ -165,6 +168,7 @@ export const projects: Project[] = [
   {
     title: "Human Stress Detection",
     slug: "human-stress-detection",
+    courseProject: true,
     stack: ["Python", "TensorFlow", "Pipeline"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Pipeline",
     image: "/proyek2.jpeg",
@@ -191,34 +195,10 @@ export const projects: Project[] = [
     ],
   },
   {
-    title: "FloraScan — Plant Disease Scanner",
-    slug: "florascan",
-    stack: ["JavaScript", "TensorFlow.js", "Computer Vision"],
-    link: "https://github.com/andrymldni/plantDisease",
-    demo: "https://andrymldni.github.io/plantDisease/",
-    image: "/projects/florascan.png",
-    featured: true,
-    category: "Computer Vision",
-    desc: "Scan a leaf photo, get an instant plant-disease diagnosis in the browser.",
-    details:
-      "A browser-based plant disease scanner: snap or upload a leaf photo and an in-browser TensorFlow.js model identifies the disease instantly, with zero server round-trip. Built to give smallholder farmers and hobby growers a fast, accessible diagnosis tool that runs on any phone browser.",
-    problem:
-      "A diseased leaf can look like several different problems, and growers often lack a quick way to narrow down the cause. FloraScan puts a trained image classifier and symptom/treatment guidance in the browser so a photo can be checked without a server call.",
-    role: "Individual project: built the browser interface and integrated the Keras model after converting it to TensorFlow.js.",
-    approach: [
-      "Train a 5-block CNN in Keras 2.15 with Conv2D and MaxPooling2D layers, followed by Flatten, Dropout, and Dense layers.",
-      "Convert the 16-layer model to a TensorFlow.js 4.20 layers model.",
-      "Load model/model.json in the browser when the page opens.",
-      "Resize the uploaded leaf photo to 256x256, run the prediction, and take the highest-scoring class.",
-      "Map the class to one of five categories (Bacterial, Fungal, Hama, Healthy, Virus) and show symptoms and treatment guidance in a popup.",
-    ],
-    results:
-      "The app runs entirely client-side: an uploaded image is classified in the browser and the predicted category opens a popup with symptoms and treatment steps.",
-    highlights: [],
-  },
-  {
     title: "Certification Success Prediction",
     slug: "certification-success-prediction",
+    flagship: true,
+    courseProject: true,
     stack: ["Python", "Scikit-learn", "Neural Network"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%20-%20Andry.md",
     image: "/proyek3.jpeg",
@@ -247,6 +227,7 @@ export const projects: Project[] = [
   {
     title: "Book Recommendation System",
     slug: "book-recommendation-system",
+    courseProject: true,
     stack: ["Python"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%202%20-%20Andry.md",
     image: "/proyek4.jpg",
@@ -275,6 +256,7 @@ export const projects: Project[] = [
   {
     title: "Bike Sharing Analytics Dashboard",
     slug: "bike-sharing-analytics-dashboard",
+    courseProject: true,
     stack: ["Python", "Pandas", "Streamlit"],
     link: "https://github.com/andrymldni/Dicoding-Bikes-Sharing",
     image: "/projects/bike-sharing.jpg",
@@ -299,6 +281,7 @@ export const projects: Project[] = [
   {
     title: "Student Dropout Prediction",
     slug: "student-dropout-prediction",
+    courseProject: true,
     stack: ["Python", "Scikit-learn", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-Student-Status-Predictions",
     image: "/projects/student-dropout.jpg",
@@ -327,6 +310,8 @@ export const projects: Project[] = [
   {
     title: "Campus Placement Prediction",
     slug: "campus-placement-prediction",
+    flagship: true,
+    courseProject: true,
     stack: ["Python", "MLOps", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Campus",
     image: "/projects/campus-placement.jpg",

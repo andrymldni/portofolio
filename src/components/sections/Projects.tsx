@@ -28,9 +28,9 @@ import { usePointerSurface } from "@/hooks/usePointerSurface";
 const screenshotAlt = (project: Project) =>
   `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
 
-// Match the grid's sm/lg breakpoints without listening to every resize frame.
+// Match the grid's md/lg breakpoints without listening to every resize frame.
 function subscribeColumns(onChange: () => void) {
-  const queries = [640, 1024].map((width) => window.matchMedia(`(min-width: ${width}px)`));
+  const queries = [768, 1024].map((width) => window.matchMedia(`(min-width: ${width}px)`));
   queries.forEach((query) => query.addEventListener("change", onChange));
   return () => queries.forEach((query) => query.removeEventListener("change", onChange));
 }
@@ -38,31 +38,10 @@ function subscribeColumns(onChange: () => void) {
 function getColumns() {
   return window.matchMedia("(min-width: 1024px)").matches
     ? 3
-    : window.matchMedia("(min-width: 640px)").matches ? 2 : 1;
+    : window.matchMedia("(min-width: 768px)").matches ? 2 : 1;
 }
 
 const getServerColumns = () => 1;
-const MOBILE_PROJECT_LIMIT = 4;
-
-// Pack each desktop row in DOM order, expanding its last card to fill spare
-// columns. Filtering cannot leave holes or reorder keyboard navigation.
-function desktopCells(list: Project[]) {
-  let column = 0;
-  const cells: { span: number; delay: number }[] = [];
-  for (const project of list) {
-    const span = project.featured ? 2 : 1;
-    if (column + span > 3) {
-      cells[cells.length - 1].span += 3 - column;
-      column = 0;
-    }
-    cells.push({ span, delay: column * 0.06 });
-    column = (column + span) % 3;
-  }
-  if (column && cells.length) cells[cells.length - 1].span += 3 - column;
-  return cells;
-}
-
-const spanClasses = ["", "lg:col-span-1", "lg:col-span-2", "lg:col-span-3"];
 
 /** Category → icon + muted tint, used as the cover when a project has no screenshot. */
 const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
@@ -145,9 +124,12 @@ function ProjectModal({
         </div>
 
         <div className="p-6">
-          {project.category && (
-            <p className="text-xs font-medium text-muted">{project.category}</p>
-          )}
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs text-muted">
+            {project.category && <p>{project.category}</p>}
+            {project.courseProject && (
+              <span className="rounded-md border border-line px-2 py-0.5">Course project</span>
+            )}
+          </div>
           <h3 id={titleId} className="mt-2 text-xl font-semibold text-ink">
             {project.title}
           </h3>
@@ -199,16 +181,14 @@ function ProjectModal({
 function ProjectCard({
   project: p,
   delay,
-  span,
-  mobileHidden,
+  wide = false,
   revealed,
   onReveal,
   onOpen,
 }: {
   project: Project;
   delay: number;
-  span: number;
-  mobileHidden: boolean;
+  wide?: boolean;
   revealed: boolean;
   onReveal: (slug: string) => void;
   onOpen: (p: Project) => void;
@@ -222,12 +202,14 @@ function ProjectCard({
     <motion.article
       {...reveal}
       onViewportEnter={() => onReveal(p.slug)}
-      className={`min-w-0 [perspective:1000px] ${spanClasses[span]} ${mobileHidden ? "max-md:hidden" : ""}`}
+      className={`min-w-0 [perspective:1000px] ${wide ? "md:col-span-2" : ""}`}
     >
-      <div ref={tiltRef} className="pointer-surface pointer-tilt group card interactive-card project-card relative flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left">
+      <div ref={tiltRef} className={`pointer-surface pointer-tilt group card interactive-card project-card relative flex h-full cursor-pointer flex-col overflow-hidden p-0 text-left ${wide ? "md:flex-row" : ""}`}>
         <div
           className={`relative w-full shrink-0 overflow-hidden border-b border-line ${
-            p.featured ? "h-44 sm:h-48 lg:h-72" : "h-44 sm:h-48"
+            wide
+              ? "h-44 sm:h-56 md:h-auto md:min-h-[22rem] md:w-[45%] md:border-b-0 md:border-r"
+              : p.flagship ? "h-44 sm:h-56" : "h-36 sm:h-40"
           }`}
         >
           {p.image ? (
@@ -235,26 +217,28 @@ function ProjectCard({
               src={p.image}
               alt={screenshotAlt(p)}
               fill
-              sizes={`(min-width: 1152px) ${span * 376 - 24}px, (min-width: 1024px) calc(${span * 100 / 3}vw - ${8 * span + 24}px), (min-width: 768px) calc(50vw - 36px), (min-width: 640px) calc(50vw - 32px), calc(100vw - 40px)`}
+              sizes={p.flagship
+                ? "(min-width: 1152px) 540px, (min-width: 768px) calc(50vw - 36px), calc(100vw - 40px)"
+                : "(min-width: 1152px) 352px, (min-width: 1024px) calc(33vw - 32px), (min-width: 768px) calc(50vw - 36px), calc(100vw - 40px)"}
               className="project-image object-cover"
               loading="lazy"
             />
           ) : (
             <ProjectCover category={p.category} />
           )}
-          {p.featured && (
-            <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-semibold text-ink">
-              Featured
+          {p.flagship && (
+            <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 font-mono text-[11px] font-medium text-ink">
+              Flagship
             </span>
           )}
           <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
             Click for details
           </span>
         </div>
-        <div className="flex flex-1 flex-col p-5">
+        <div className={`flex min-w-0 flex-1 flex-col ${p.flagship ? "p-5 sm:p-6" : "p-4 sm:p-5"}`}>
           <header className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <h3 className="text-lg font-semibold leading-snug md:text-xl">
+              <h4 className={`font-semibold leading-snug ${p.flagship ? "text-xl md:text-2xl" : "text-lg"}`}>
                 <button
                   type="button"
                   aria-haspopup="dialog"
@@ -267,7 +251,7 @@ function ProjectCard({
                 >
                   {p.title}
                 </button>
-              </h3>
+              </h4>
               {p.stack && (
                 <p className="mt-1 text-sm text-muted">{p.stack.join(" · ")}</p>
               )}
@@ -299,15 +283,28 @@ function ProjectCard({
               )}
             </div>
           </header>
-          {p.category && (
-            <span className="mt-3 inline-block self-start rounded-md bg-ink/[0.06] px-2 py-0.5 text-xs font-medium text-muted">
-              {p.category}
-            </span>
-          )}
+          <div className="mt-3 flex flex-wrap gap-2 font-mono text-xs text-muted">
+            {p.category && (
+              <span className="rounded-md bg-ink/[0.06] px-2 py-0.5">{p.category}</span>
+            )}
+            {p.courseProject && (
+              <span className="rounded-md border border-line px-2 py-0.5">Course project</span>
+            )}
+          </div>
           {p.desc && (
-            <p className="mt-3 text-sm leading-relaxed text-muted md:text-base">
+            <p className={`mt-3 text-sm leading-relaxed text-muted ${p.flagship ? "md:text-base" : ""}`}>
               {p.desc}
             </p>
+          )}
+          {p.flagship && Boolean(p.highlights?.length) && (
+            <dl className="mt-5 grid grid-cols-3 gap-3 border-t border-line pt-4">
+              {p.highlights?.map((highlight) => (
+                <div key={`${highlight.value}-${highlight.label}`} className="flex min-w-0 flex-col">
+                  <dt className="order-2 mt-1 text-[11px] leading-snug text-muted sm:text-xs">{highlight.label}</dt>
+                  <dd className="break-words font-mono text-lg font-medium tracking-tight text-ink sm:text-xl">{highlight.value}</dd>
+                </div>
+              ))}
+            </dl>
           )}
           <Link
             href={`/projects/${p.slug}`}
@@ -341,8 +338,9 @@ export default function Projects({
   );
   const [activeCategory, setActiveCategory] = useState("All");
   const [expanded, setExpanded] = useState(false);
-  const gridId = useId();
-  const gridRef = useRef<HTMLDivElement | null>(null);
+  const groupId = useId();
+  const moreId = `${groupId}-more`;
+  const moreRef = useRef<HTMLElement | null>(null);
   const list = useMemo(
     () =>
       activeCategory === "All"
@@ -357,19 +355,22 @@ export default function Projects({
     setRevealed((seen) => seen.has(slug) ? seen : new Set(seen).add(slug));
   }, []);
   const columns = useSyncExternalStore(subscribeColumns, getColumns, getServerColumns);
-  const cells = useMemo(() => desktopCells(list), [list]);
+  const flagships = list.filter((project) => project.flagship);
+  const moreProjects = list.filter((project) => !project.flagship);
+  // A filter with no flagship should show its matching projects immediately.
+  const canCollapse = flagships.length > 0 && moreProjects.length > 0;
 
   const toggleExpanded = () => {
     if (!expanded) {
       // Remove display:none before moving keyboard focus into the revealed cards.
       flushSync(() => setExpanded(true));
-      const firstNewCard = gridRef.current?.children[MOBILE_PROJECT_LIMIT];
-      firstNewCard?.querySelector<HTMLButtonElement>("h3 button")?.focus({ preventScroll: true });
+      const firstNewCard = moreRef.current?.querySelector("article");
+      firstNewCard?.querySelector<HTMLButtonElement>("h4 button")?.focus({ preventScroll: true });
       firstNewCard?.scrollIntoView({ block: "nearest", behavior: "instant" });
       return;
     }
 
-    const heading = gridRef.current?.closest("section")?.querySelector("h2");
+    const heading = moreRef.current?.closest("section#projects")?.querySelector("h2");
     const belowHeading = heading && heading.getBoundingClientRect().top < 0;
     flushSync(() => setExpanded(false));
     if (belowHeading) {
@@ -405,28 +406,59 @@ export default function Projects({
         </div>
       )}
 
-      <div ref={gridRef} id={gridId} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {list.map((p, index) => (
-          <ProjectCard
-            key={p.slug}
-            project={p}
-            delay={columns === 3 ? cells[index].delay : (index % columns) * 0.06}
-            span={cells[index].span}
-            mobileHidden={!expanded && index >= MOBILE_PROJECT_LIMIT}
-            revealed={revealed.has(p.slug)}
-            onReveal={markRevealed}
-            onOpen={setActive}
-          />
-        ))}
-      </div>
+      {flagships.length > 0 && (
+        <section aria-labelledby={`${groupId}-flagships`}>
+          <h3 id={`${groupId}-flagships`} className="mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
+            Flagship projects
+          </h3>
+          <div className="grid gap-6 md:grid-cols-2">
+            {flagships.map((p, index) => (
+              <ProjectCard
+                key={p.slug}
+                project={p}
+                delay={(index % Math.min(columns, 2)) * 0.06}
+                wide={index === 0 && flagships.length % 2 === 1}
+                revealed={revealed.has(p.slug)}
+                onReveal={markRevealed}
+                onOpen={setActive}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      {list.length > MOBILE_PROJECT_LIMIT && (
+      {moreProjects.length > 0 && (
+        <section
+          ref={moreRef}
+          id={moreId}
+          aria-labelledby={`${moreId}-heading`}
+          className={`${flagships.length ? "mt-10 border-t border-line pt-8" : ""} ${canCollapse && !expanded ? "hidden md:block" : ""}`}
+        >
+          <h3 id={`${moreId}-heading`} className="mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
+            More projects
+          </h3>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {moreProjects.map((p, index) => (
+              <ProjectCard
+                key={p.slug}
+                project={p}
+                delay={(index % columns) * 0.06}
+                revealed={revealed.has(p.slug)}
+                onReveal={markRevealed}
+                onOpen={setActive}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {canCollapse && (
         <div className="mt-6 md:hidden">
           <button
             type="button"
             onClick={toggleExpanded}
             aria-expanded={expanded}
-            aria-controls={gridId}
+            aria-controls={moreId}
             className="btn-secondary w-full"
           >
             {expanded ? "Show fewer" : `Show all ${list.length} projects`}

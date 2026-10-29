@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { notFound } from "next/navigation";
 import { projects } from "@/lib/data";
 
 export const alt = "Project case study";
@@ -11,7 +12,8 @@ export function generateStaticParams() {
 
 export default async function Image({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = projects.find((entry) => entry.slug === slug) ?? projects[0];
+  const project = projects.find((entry) => entry.slug === slug);
+  if (!project) notFound();
   const stack = project.stack?.slice(0, 4) ?? [];
 
   return new ImageResponse(
