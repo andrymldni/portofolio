@@ -18,7 +18,7 @@ type Command = {
 };
 
 const commands: Command[] = [
-  ...["About", "Certifications", "Projects", "Contact"].map((label) => ({
+  ...["About", "Experience", "Certifications", "Projects", "Contact"].map((label) => ({
     id: `section-${label.toLowerCase()}`,
     label: `Jump to ${label}`,
     description: "Home section",

@@ -824,3 +824,36 @@ main > section[id]::before {
   }
 }
 /* End Task E enhancements. */
+
+/* =============================================================================
+   Task L additions: Experience timeline and varied section layouts.
+============================================================================= */
+.section-motif--inline {
+  position: static;
+  display: none;
+  margin-top: 1.5rem;
+  width: 8rem;
+  height: 4rem;
+}
+@media (min-width: 640px) {
+  .section-motif--inline {
+    display: block;
+  }
+}
+@media (min-width: 1024px) {
+  .section-motif--inline {
+    margin-top: 2rem;
+    width: 10rem;
+    height: 5rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  [data-experience-reveal][data-entrance-ready]:not([data-entrance-entered]) {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  [data-experience-reveal][data-entrance-entered] {
+    animation: calm-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}

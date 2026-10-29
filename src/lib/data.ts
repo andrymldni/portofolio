@@ -40,6 +40,49 @@ export const socialLinks = {
   },
 };
 
+export type ExperienceEntry = {
+  role: string;
+  org: string;
+  location?: string;
+  period: string;
+  bullets: string[];
+};
+
+// Kept in one place so the home timeline and the CV render the same history.
+export const experience: ExperienceEntry[] = [
+  {
+    role: "Data Analyst",
+    org: "PT Bank Rakyat Indonesia (Persero) Tbk",
+    location: "Jakarta",
+    period: "Sep 2026 – Present",
+    bullets: [],
+  },
+  {
+    role: "Data Analyst Intern",
+    org: "PT Bank Rakyat Indonesia — BRILink Business Group",
+    location: "Jakarta",
+    period: "Nov 2025 – May 2026",
+    bullets: [
+      `Extracted, reconciled, and analyzed transactional data covering ${briAgentCountLabel} BRILink agents across ${briInternshipCoverage.regionalOffices} regional offices using Python and SQL, resolving cross-system discrepancies and turning findings into business narratives for leadership reviews.`,
+      `Built interactive Power BI dashboards tracking 150 product features across all ${briInternshipCoverage.regionalOffices} regional offices, giving management granular, real-time KPI and performance views for each region.`,
+      `Developed K-Means clustering models on 120 transaction features to uncover sales patterns across ${briInternshipCoverage.regencies} regencies, shaping market-penetration strategies aimed at improving agent profitability.`,
+      "Engineered a data-driven Acquisition Scorecard by statistically profiling 4,631 high-tier agents across 5 financial dimensions, replacing subjective field recruitment with a prioritized pipeline of high-yield prospects.",
+    ],
+  },
+  {
+    role: "Data Analyst Intern",
+    org: "BPJS Ketenagakerjaan Tanjung Perak",
+    location: "Surabaya",
+    period: "Jul 2023 – Dec 2023",
+    bullets: [
+      "Processed, reconciled, and validated 7,000+ participant records across legacy operational systems, improving data quality and the accuracy of claim-status tracking.",
+      "Developed an LSTM-based forecasting model for Work Accident Insurance (JKK) claims, improving accuracy by 17% over baseline methods.",
+      "Built Python automation scripts that removed manual data-entry bottlenecks in reporting workflows, improving processing efficiency by about 15%.",
+      "Designed dashboards and structured reports on claim and participant trends, streamlining data requests and supporting data-driven decisions.",
+    ],
+  },
+];
+
 export type Project = {
   slug: string;
   title: string;

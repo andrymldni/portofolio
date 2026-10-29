@@ -15,6 +15,7 @@ import ThemeToggle from "@/components/layout/ThemeToggle";
 const navItems = [
   { hash: "#", label: "Home" },
   { hash: "#about", label: "About" },
+  { hash: "#experience", label: "Experience" },
   { hash: "#certifications", label: "Certifications" },
   { hash: "#projects", label: "Projects" },
   { hash: "#contact", label: "Contact" },
@@ -36,7 +37,7 @@ export default function Navbar() {
     // active, and the last item takes over at the bottom of the page even
     // if it is shorter than the viewport.
     const PROBE_Y = 120;
-    const sectionIds = ["about", "certifications", "projects", "contact"];
+    const sectionIds = ["about", "experience", "certifications", "projects", "contact"];
     let ticking = false;
     const update = () => {
       ticking = false;

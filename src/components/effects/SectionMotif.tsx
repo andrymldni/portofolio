@@ -8,7 +8,7 @@ export type SectionMotifKind =
 
 type Props = {
   kind: SectionMotifKind;
-  placement: "heading" | "foot";
+  placement: "heading" | "foot" | "inline";
 };
 
 /**

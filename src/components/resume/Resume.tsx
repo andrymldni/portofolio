@@ -8,52 +8,10 @@ import {
   Linkedin,
   Download,
 } from "lucide-react";
-import { briAgentCountLabel, briInternshipCoverage, certifications, CONTACT_EMAIL, socialLinks } from "@/lib/data";
+import { certifications, CONTACT_EMAIL, experience, socialLinks, type ExperienceEntry } from "@/lib/data";
 import { SITE_URL } from "@/lib/site";
 
-type Entry = {
-  role: string;
-  org: string;
-  location?: string;
-  period: string;
-  bullets: string[];
-};
-
-const EXPERIENCE: Entry[] = [
-  {
-    role: "Data Analyst",
-    org: "PT Bank Rakyat Indonesia (Persero) Tbk",
-    location: "Jakarta",
-    period: "Sep 2026 – Present",
-    bullets: [],
-  },
-  {
-    role: "Data Analyst Intern",
-    org: "PT Bank Rakyat Indonesia — BRILink Business Group",
-    location: "Jakarta",
-    period: "Nov 2025 – May 2026",
-    bullets: [
-      `Extracted, reconciled, and analyzed transactional data covering ${briAgentCountLabel} BRILink agents across ${briInternshipCoverage.regionalOffices} regional offices using Python and SQL, resolving cross-system discrepancies and turning findings into business narratives for leadership reviews.`,
-      `Built interactive Power BI dashboards tracking 150 product features across all ${briInternshipCoverage.regionalOffices} regional offices, giving management granular, real-time KPI and performance views for each region.`,
-      `Developed K-Means clustering models on 120 transaction features to uncover sales patterns across ${briInternshipCoverage.regencies} regencies, shaping market-penetration strategies aimed at improving agent profitability.`,
-      "Engineered a data-driven Acquisition Scorecard by statistically profiling 4,631 high-tier agents across 5 financial dimensions, replacing subjective field recruitment with a prioritized pipeline of high-yield prospects.",
-    ],
-  },
-  {
-    role: "Data Analyst Intern",
-    org: "BPJS Ketenagakerjaan Tanjung Perak",
-    location: "Surabaya",
-    period: "Jul 2023 – Dec 2023",
-    bullets: [
-      "Processed, reconciled, and validated 7,000+ participant records across legacy operational systems, improving data quality and the accuracy of claim-status tracking.",
-      "Developed an LSTM-based forecasting model for Work Accident Insurance (JKK) claims, improving accuracy by 17% over baseline methods.",
-      "Built Python automation scripts that removed manual data-entry bottlenecks in reporting workflows, improving processing efficiency by about 15%.",
-      "Designed dashboards and structured reports on claim and participant trends, streamlining data requests and supporting data-driven decisions.",
-    ],
-  },
-];
-
-const ORGANIZATION: Entry[] = [
+const ORGANIZATION: ExperienceEntry[] = [
   {
     role: "Technical & Event Support (Volunteer)",
     org: "Google Developer Group (GDG) Surabaya",
@@ -131,7 +89,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-function EntryBlock({ entry }: { entry: Entry }) {
+function EntryBlock({ entry }: { entry: ExperienceEntry }) {
   return (
     <div className="mb-6 last:mb-0">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-0.5">
@@ -269,7 +227,7 @@ export default function Resume() {
           <div className="mt-8 space-y-10">
             <section>
               <SectionHeading>Work Experience</SectionHeading>
-              {EXPERIENCE.map((e) => (
+              {experience.map((e) => (
                 <EntryBlock key={e.role + e.org + e.period} entry={e} />
               ))}
             </section>

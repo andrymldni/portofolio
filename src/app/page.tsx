@@ -3,6 +3,7 @@ import PageDataMotifs from "@/components/effects/PageDataMotifs";
 import Hero from "@/components/sections/Hero";
 import Section from "@/components/ui/Section";
 import About from "@/components/sections/About";
+import Experience from "@/components/sections/Experience";
 import ImpactStats from "@/components/sections/ImpactStats";
 import TechCarousel from "@/components/sections/TechCarousel";
 import CertificatesSlider from "@/components/sections/CertificatesSlider";
@@ -21,9 +22,12 @@ export default function HomePage() {
         <About />
       </Section>
 
+      <Experience />
+
       <Section
         id="tools"
         title="Tools & Technologies"
+        layout="split"
         motif="bars"
         subtitle="The stack I reach for day-to-day — from data pipelines and analysis to deployment."
       >
@@ -53,7 +57,13 @@ export default function HomePage() {
         <Projects />
       </Section>
 
-      <Section id="contact" title="Contact" motif="donut" motifAfter="band">
+      <Section
+        id="contact"
+        title="Contact"
+        layout="band"
+        motif="donut"
+        motifAfter="band"
+      >
         <Contact />
       </Section>
     </main>
