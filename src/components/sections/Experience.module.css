@@ -1,0 +1,29 @@
+.card {
+  transform-origin: top center;
+}
+
+@media (min-width: 768px) {
+  .item.item {
+    position: sticky;
+    top: calc(96px + var(--stack-index) * 24px);
+    z-index: calc(var(--stack-index) + 1);
+  }
+
+  /* A keyboard user can still reach and expand a card beneath the stack. */
+  .item:focus-within {
+    z-index: 10;
+  }
+}
+
+/* Sticky geometry remains under reduced motion; only the scroll effects stop. */
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .card {
+    transform: scale(var(--stack-scale, 1));
+    filter: brightness(var(--stack-brightness, 1));
+  }
+
+  .item:focus-within .card {
+    transform: none;
+    filter: none;
+  }
+}

@@ -1,20 +1,48 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, type CSSProperties, type RefObject } from "react";
+import { motion, useScroll, useTransform, type MotionStyle, type MotionValue } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { experience, type ExperienceEntry } from "@/lib/data";
 import { VIEWPORT } from "@/components/ui/Reveal";
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
+import DecodeTitle from "@/components/ui/DecodeTitle";
+import styles from "./Experience.module.css";
 
 function ExperienceItem({
   entry,
   isLast,
+  index,
+  timelineRef,
+  scrollYProgress,
 }: {
   entry: ExperienceEntry;
   isLast: boolean;
+  index: number;
+  timelineRef: RefObject<HTMLOListElement | null>;
+  scrollYProgress: MotionValue<number>;
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLLIElement | null>(null);
   useProgressiveEntrance(ref, false, true, VIEWPORT.margin);
+
+  const progress = useTransform(scrollYProgress, (value) => {
+    const item = ref.current;
+    const timeline = timelineRef.current;
+    if (!item || !timeline || isLast) return 0;
+
+    // Measure normal-flow heights, not sticky offsetTop (which moves on scroll).
+    // Reading current heights also accommodates expanded bullets and wrapping.
+    let top = 0;
+    let previous = item.previousElementSibling;
+    while (previous instanceof HTMLElement) {
+      top += previous.offsetHeight;
+      previous = previous.previousElementSibling;
+    }
+    const distance = value * timeline.clientHeight - (top - index * 24);
+    return Math.min(1, Math.max(0, distance / Math.max(1, item.offsetHeight - 24)));
+  });
+  const scale = useTransform(progress, [0, 1], [1, 0.94]);
+  const brightness = useTransform(progress, [0, 1], [1, 0.84]);
 
   const current = /\bPresent\b/i.test(entry.period);
   const visible = open ? entry.bullets : entry.bullets.slice(0, 2);
@@ -24,7 +52,8 @@ function ExperienceItem({
     <li
       ref={ref}
       data-experience-reveal
-      className="relative pb-10 pl-8 last:pb-0"
+      className={`${styles.item} relative pb-10 pl-8 last:pb-0`}
+      style={{ "--stack-index": index } as CSSProperties}
     >
       <span
         aria-hidden="true"
@@ -39,7 +68,10 @@ function ExperienceItem({
         />
       )}
 
-      <div className="card p-5 sm:p-6">
+      <motion.div
+        className={`${styles.card} card p-5 sm:p-6`}
+        style={{ "--stack-scale": scale, "--stack-brightness": brightness } as MotionStyle}
+      >
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
           <div className="min-w-0">
             <h3 className="text-lg font-semibold leading-snug text-ink">
@@ -92,12 +124,18 @@ function ExperienceItem({
             />
           </button>
         )}
-      </div>
+      </motion.div>
     </li>
   );
 }
 
 export default function Experience() {
+  const timelineRef = useRef<HTMLOListElement | null>(null);
+  const { scrollYProgress } = useScroll({
+    target: timelineRef,
+    offset: ["start 96px", "end 96px"],
+  });
+
   return (
     <section id="experience" className="relative py-12 md:py-16">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.5fr)] lg:gap-14">
@@ -106,8 +144,11 @@ export default function Experience() {
             aria-hidden="true"
             className="mb-4 block h-[3px] w-10 origin-left bg-brand"
           />
-          <h2 className="text-2xl font-bold leading-tight tracking-tight md:text-[2rem]">
-            Experience
+          <h2
+            className="text-2xl font-bold leading-tight tracking-tight md:text-[2rem]"
+            style={{ backgroundImage: "none", WebkitTextFillColor: "currentColor" }}
+          >
+            <DecodeTitle title="Experience" />
           </h2>
           <p className="mt-3 max-w-sm leading-relaxed text-muted">
             A timeline of the roles behind the CV, from banking analytics to
@@ -118,12 +159,15 @@ export default function Experience() {
           </p>
         </div>
 
-        <ol aria-label="Work experience timeline">
+        <ol ref={timelineRef} className="relative isolate min-w-0 md:pb-[20vh]" aria-label="Work experience timeline">
           {experience.map((entry, index) => (
             <ExperienceItem
               key={`${entry.role}-${entry.org}-${entry.period}`}
               entry={entry}
               isLast={index === experience.length - 1}
+              index={index}
+              timelineRef={timelineRef}
+              scrollYProgress={scrollYProgress}
             />
           ))}
         </ol>

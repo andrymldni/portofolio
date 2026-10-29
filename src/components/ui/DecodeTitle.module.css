@@ -1,0 +1,40 @@
+.title {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: top;
+}
+
+.text,
+.overlay {
+  background-image: linear-gradient(180deg, rgb(var(--ink)), rgb(var(--ink) / 0.82));
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: rgb(var(--ink));
+  -webkit-text-fill-color: transparent;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+}
+
+.title[data-decoding] .text {
+  opacity: 0;
+}
+
+.title[data-decoding] .overlay {
+  opacity: 1;
+}
+
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .text,
+  .overlay {
+    background-image: none;
+    -webkit-text-fill-color: currentColor;
+  }
+}

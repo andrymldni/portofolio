@@ -3,6 +3,7 @@ import { useRef, type PropsWithChildren } from "react";
 import { VIEWPORT } from "@/components/ui/Reveal";
 import SectionMotif, { type SectionMotifKind } from "@/components/effects/SectionMotif";
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
+import DecodeTitle from "@/components/ui/DecodeTitle";
 
 export default function Section({
   id,
@@ -42,7 +43,12 @@ export default function Section({
         className="section-rule mb-4 block h-[3px] w-10 origin-left bg-brand"
       />
       <h2 className={titleClass}>
-        <span className="section-title-line block">{title}</span>
+        <span
+          className="section-title-line block"
+          style={{ backgroundImage: "none", WebkitTextFillColor: "currentColor" }}
+        >
+          <DecodeTitle title={title} />
+        </span>
       </h2>
       {subtitle && (
         <p className="section-subtitle mt-3 leading-relaxed text-muted">
