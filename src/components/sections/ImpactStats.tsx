@@ -71,7 +71,7 @@ export default function ImpactStats() {
   }, []);
 
   return (
-    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-10 grid grid-cols-2 border-y border-line lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
+    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-10 grid grid-cols-2 gap-8 border-b border-line pb-8 md:grid-cols-4">
       {stats.map((stat) => (
         <div key={stat.label} className="impact-stat min-w-0">
           <dt className="font-mono text-xs leading-relaxed text-muted">{stat.label}</dt>

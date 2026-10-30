@@ -1,7 +1,6 @@
 "use client";
 import { useRef, type PropsWithChildren } from "react";
 import { VIEWPORT } from "@/components/ui/Reveal";
-import SectionMotif, { type SectionMotifKind } from "@/components/effects/SectionMotif";
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
 import DecodeTitle from "@/components/ui/DecodeTitle";
 
@@ -19,8 +18,6 @@ export default function Section({
   subtitle,
   className,
   layout = "stack",
-  motif,
-  motifAfter,
   children,
 }: PropsWithChildren<{
   id?: string;
@@ -28,8 +25,6 @@ export default function Section({
   subtitle?: string;
   className?: string;
   layout?: "stack" | "split" | "band";
-  motif?: SectionMotifKind;
-  motifAfter?: SectionMotifKind;
 }>) {
   const headerRef = useRef<HTMLElement | null>(null);
   useProgressiveEntrance(headerRef, false, true, VIEWPORT.margin);
@@ -73,12 +68,8 @@ export default function Section({
         className={`relative py-12 md:py-16 ${className ?? ""}`}
       >
         <div className="section-band-panel relative overflow-hidden rounded-2xl border border-line bg-surface/60 px-5 py-10 sm:px-8 md:px-10 md:py-12">
-          <div className="relative">
-            {motif && <SectionMotif kind={motif} placement="heading" />}
-            {header}
-          </div>
+          {header}
           {children}
-          {motifAfter && <SectionMotif kind={motifAfter} placement="foot" />}
         </div>
       </section>
     );
@@ -96,18 +87,9 @@ export default function Section({
             : ""
         }
       >
-        <div className="relative">
-          {!isSplit && motif && (
-            <SectionMotif kind={motif} placement="heading" />
-          )}
-          {header}
-          {isSplit && motif && (
-            <SectionMotif kind={motif} placement="inline" />
-          )}
-        </div>
+        {header}
         <div className={isSplit ? "min-w-0" : ""}>{children}</div>
       </div>
-      {motifAfter && <SectionMotif kind={motifAfter} placement="foot" />}
     </section>
   );
 }

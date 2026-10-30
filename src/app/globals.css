@@ -672,50 +672,6 @@ main > section[id]::before {
   }
 }
 
-/* Section motifs: placed in the empty space beside headings and below content. */
-.section-motif {
-  position: absolute;
-  display: none;
-  pointer-events: none;
-  color: rgb(var(--brand));
-  opacity: 0.08;
-}
-.section-motif--heading {
-  top: 0.25rem;
-  right: 0;
-  width: 3rem;
-  height: 2rem;
-}
-.section-motif--foot {
-  right: 0;
-  bottom: 0.5rem;
-  width: 18rem;
-  height: 3rem;
-}
-.section-motif--donut.section-motif--foot {
-  left: 50%;
-  right: auto;
-  bottom: 0.25rem;
-  width: 3.5rem;
-  height: 3.5rem;
-  translate: -50% 0;
-}
-@media (min-width: 640px) {
-  .section-motif--heading {
-    display: block;
-  }
-}
-@media (min-width: 1024px) {
-  .section-motif--heading {
-    top: 0;
-    width: 8.5rem;
-    height: 5.5rem;
-  }
-  .section-motif--foot {
-    display: block;
-  }
-}
-
 /* =============================================================================
    Task E: opposing tool rows, certificate coverflow, decorative stat flourishes,
    and accessible floating contact fields. Keep these enhancements self-contained.
@@ -849,26 +805,6 @@ main > section[id]::before {
 /* =============================================================================
    Task L additions: Experience timeline and varied section layouts.
 ============================================================================= */
-.section-motif--inline {
-  position: static;
-  display: none;
-  margin-top: 1.5rem;
-  width: 8rem;
-  height: 4rem;
-}
-@media (min-width: 640px) {
-  .section-motif--inline {
-    display: block;
-  }
-}
-@media (min-width: 1024px) {
-  .section-motif--inline {
-    margin-top: 2rem;
-    width: 10rem;
-    height: 5rem;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
   [data-experience-reveal][data-entrance-ready]:not([data-entrance-entered]) {
     opacity: 0;
@@ -891,9 +827,6 @@ main > section[id]::before {
 }
 :root[data-theme="light"] .hero-chart-axes {
   opacity: 0.2;
-}
-:root[data-theme="light"] .section-motif {
-  opacity: 0.18;
 }
 :root[data-theme="light"] .page-motif {
   opacity: 0.08;
@@ -1465,14 +1398,8 @@ main > section[id]::before {
   transform: translate(10px, 10px);
   background: rgb(var(--brand) / 0.035);
 }
-.impact-stat {
-  padding: 1.25rem 0;
-  border-bottom: 1px solid rgb(var(--ink) / 0.12);
-}
 .impact-stat:first-child { grid-column: 1 / -1; }
-.impact-stat:first-child dd { color: rgb(var(--brand)); font-size: 2.75rem; }
-.impact-stat:nth-child(2n + 3) { padding-left: 1.5rem; border-left: 1px solid rgb(var(--ink) / 0.12); }
-.impact-stat:nth-last-child(-n + 2) { border-bottom: 0; }
+.impact-stat:first-child dd { color: rgb(var(--brand)); font-size: clamp(2.75rem, 4.5vw, 3.5rem); }
 .impact-stats dt { max-width: 16ch; }
 .impact-stat:first-child dt { max-width: none; }
 .impact-stats dd { margin-top: 0.5rem; line-height: 1.2; }
@@ -1505,18 +1432,6 @@ main > section[id]::before {
   .hero-portrait-caption { font-size: 0.6875rem; }
   .hero-surface { padding-top: 4rem; padding-bottom: 6rem; }
   .contact-section { padding-top: 5rem; padding-bottom: 5rem; }
-}
-@media (min-width: 1024px) {
-  .impact-stat,
-  .impact-stat:nth-child(n) {
-    grid-column: auto;
-    padding: 1.75rem 1.5rem;
-    border-bottom: 0;
-    border-left: 1px solid rgb(var(--ink) / 0.12);
-  }
-  .impact-stat:first-child { border-left: 0; padding-left: 0; }
-  .impact-stat:first-child dd { font-size: 2.5rem; }
-  .impact-stats dt { min-height: 2.5rem; }
 }
 @media (hover: hover) and (pointer: fine) {
   .contact-detail:hover { background: rgb(var(--brand) / 0.035); }
