@@ -498,6 +498,106 @@ export const projects: Project[] = [
   },
 ];
 
+/**
+ * Editorial index into the BRILink case study above. Every count and system
+ * label is already documented in its approach, details, or results; these are
+ * architecture facts, not sampled records or a running pipeline's telemetry.
+ */
+export const brilinkPipeline = {
+  projectSlug: "brilink-sentiment-intelligence",
+  stages: [
+    {
+      id: "collect",
+      label: "Collect",
+      tool: "PostgreSQL",
+      value: "11",
+      metric: "data connectors",
+      title: "Bring scattered signals into one raw layer.",
+      input: "News, app reviews, forums, search trends, and social comments",
+      output: "PostgreSQL raw layer",
+      approachIndex: 0,
+      supporting: [
+        { label: "Sources", value: "Public signals" },
+        { label: "Storage", value: "PostgreSQL" },
+      ],
+    },
+    {
+      id: "validate",
+      label: "Validate",
+      tool: "Great Expectations",
+      value: "10",
+      metric: "data-quality checks",
+      title: "Put a quality gate before the model.",
+      input: "Incoming connector data",
+      output: "Data gated by Great Expectations checks",
+      approachIndex: 1,
+      supporting: [
+        { label: "Validation", value: "Great Expectations" },
+        { label: "Connector state", value: "Redis" },
+      ],
+    },
+    {
+      id: "score",
+      label: "Score",
+      tool: "IndoBERT",
+      value: "8",
+      metric: "business aspects",
+      title: "Keep confidence alongside sentiment.",
+      input: "Documents from the validated data layer",
+      output: "Aspect-level sentiment and document confidence",
+      approachIndex: 2,
+      supporting: [
+        { label: "Ensemble", value: "4 signals" },
+        { label: "Low confidence", value: "Human review" },
+      ],
+    },
+    {
+      id: "model",
+      label: "Model",
+      tool: "dbt",
+      value: "79",
+      metric: "warehouse tests",
+      title: "Make the warehouse testable.",
+      input: "Scored documents",
+      output: "Staging, intermediate, and mart models",
+      approachIndex: 3,
+      supporting: [
+        { label: "Staging models", value: "5" },
+        { label: "Intermediate models", value: "2" },
+        { label: "Mart models", value: "9" },
+      ],
+    },
+    {
+      id: "explore",
+      label: "Explore",
+      tool: "Metabase",
+      value: "22",
+      metric: "dashboard cards",
+      title: "Make the result useful to a decision-maker.",
+      input: "Modeled warehouse data",
+      output: "Sentiment KPIs, aspect trends, source scorecards, alerts, and CSV exports",
+      approachIndex: 4,
+      supporting: [
+        { label: "Dashboard", value: "Metabase" },
+        { label: "Orchestration", value: "Airflow" },
+      ],
+    },
+  ],
+  review: {
+    id: "review",
+    label: "Human review",
+    tool: "Confidence routing",
+    title: "Uncertainty gets a place in the workflow.",
+    input: "Low-confidence documents",
+    output: "Human review queue",
+    evidence: "The IndoBERT-based ensemble scores each document with a confidence level. Low-confidence documents are routed to a human review queue, included in the Metabase dashboard.",
+    supporting: [
+      { label: "Routing signal", value: "Document confidence" },
+      { label: "Destination", value: "Human review queue" },
+    ],
+  },
+} as const;
+
 export type Certification = {
   name: string;
   /** Preserve the CV's compact labels and ordering from the same records. */

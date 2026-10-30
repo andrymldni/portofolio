@@ -7,7 +7,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { ArrowDown, ArrowUpRight } from "lucide-react";
+import { ArrowDown, ArrowUpRight, GitBranch } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
 import HeroChart from "@/components/effects/HeroChart";
 import MagneticLink from "@/components/ui/MagneticLink";
@@ -172,6 +172,14 @@ export default function Hero() {
               <MagneticLink href="#contact" className="btn-secondary hero-action magnetic-link">
                 Say hello
               </MagneticLink>
+              <a
+                href="#signal-path"
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2 text-sm text-brand underline-offset-4 hover:underline md:justify-start"
+              >
+                <GitBranch size={15} aria-hidden="true" />
+                Step inside the BRILink pipeline
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </a>
             </motion.div>
 
             <motion.div

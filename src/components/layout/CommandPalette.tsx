@@ -18,6 +18,13 @@ type Command = {
 };
 
 const commands: Command[] = [
+  {
+    id: "signal-path",
+    label: "Trace the BRILink pipeline",
+    description: "Interactive architecture · Evidence and human review",
+    icon: ArrowUpRight,
+    href: "/#signal-path",
+  },
   ...["About", "Experience", "Certifications", "Projects", "Contact"].map((label) => ({
     id: `section-${label.toLowerCase()}`,
     label: `Jump to ${label}`,

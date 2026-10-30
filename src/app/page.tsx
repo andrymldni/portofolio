@@ -8,6 +8,7 @@ import ImpactStats from "@/components/sections/ImpactStats";
 import TechCarousel from "@/components/sections/TechCarousel";
 import CertificatesSlider from "@/components/sections/CertificatesSlider";
 import Projects from "@/components/sections/Projects";
+import SignalPath from "@/components/sections/SignalPath";
 import Contact from "@/components/sections/Contact";
 
 export default function HomePage() {
@@ -54,6 +55,7 @@ export default function HomePage() {
         motif="ticks"
         subtitle="Selected work — from production data pipelines to applied machine learning."
       >
+        <SignalPath />
         <Projects />
       </Section>
 
