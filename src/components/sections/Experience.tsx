@@ -69,7 +69,7 @@ function ExperienceItem({
       )}
 
       <motion.div
-        className={`${styles.card} card p-5 sm:p-6`}
+        className={`${styles.card} card p-5 sm:p-6 ${current ? styles.current : ""}`}
         style={{ "--stack-scale": scale, "--stack-brightness": brightness } as MotionStyle}
       >
         <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
@@ -140,10 +140,10 @@ export default function Experience() {
     <section id="experience" className="relative py-12 md:py-16">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.5fr)] lg:gap-14">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <span
-            aria-hidden="true"
-            className="mb-4 block h-[3px] w-10 origin-left bg-brand"
-          />
+          <p className="section-kicker mb-4">
+            <span aria-hidden="true" className="h-px w-6 bg-brand" />
+            02 / Experience
+          </p>
           <h2
             className="text-2xl font-bold leading-tight tracking-tight md:text-[2rem]"
             style={{ backgroundImage: "none", WebkitTextFillColor: "currentColor" }}

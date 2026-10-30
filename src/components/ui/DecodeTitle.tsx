@@ -19,7 +19,8 @@ export default function DecodeTitle({ title }: { title: string }) {
     let start: number | undefined;
     let previousTick = -1;
     let running = false;
-    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Touch uses an opacity entrance; character scrambling repaints every frame.
+    const motionPreference = window.matchMedia("(prefers-reduced-motion: reduce), (hover: none), (pointer: coarse)");
     const letters = Array.from(title);
     const finish = () => {
       running = false;

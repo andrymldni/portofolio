@@ -7,7 +7,7 @@ import {
   useScroll,
   useTransform,
 } from "framer-motion";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, ArrowUpRight } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
 import HeroChart from "@/components/effects/HeroChart";
 import MagneticLink from "@/components/ui/MagneticLink";
@@ -157,8 +157,7 @@ export default function Hero() {
               className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted sm:text-lg md:mx-0"
             >
               I turn raw data into decisions — ETL pipelines, predictive
-              models, and BI dashboards that support real operations. Always
-              up for data collaborations.
+              models, and BI dashboards that support real operations.
             </motion.p>
 
             <motion.div
@@ -166,11 +165,12 @@ export default function Hero() {
               data-hero-rise
               className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
             >
-              <MagneticLink href="#contact" className="btn-primary hero-action magnetic-link">
-                Say hello
-              </MagneticLink>
-              <MagneticLink href="#projects" className="btn-secondary hero-action magnetic-link">
+              <MagneticLink href="#projects" className="btn-primary hero-action magnetic-link">
                 View projects
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </MagneticLink>
+              <MagneticLink href="#contact" className="btn-secondary hero-action magnetic-link">
+                Say hello
               </MagneticLink>
             </motion.div>
 
@@ -198,36 +198,37 @@ export default function Hero() {
         {/* Portrait */}
         <motion.div
           style={{ y: photoY }}
-          className="mx-auto w-56 sm:w-64 md:w-full md:max-w-[19rem] lg:max-w-[22rem]"
+          className="hero-portrait-wrap mx-auto w-64 sm:w-72 md:w-full md:max-w-[19rem] lg:max-w-[22rem]"
         >
           <motion.div
             variants={rise}
             initial={false}
             animate="show"
             custom={0.35}
-            className="hero-portrait-enter [perspective:900px]"
+            className="hero-portrait-enter hero-portrait-frame [perspective:900px]"
           >
+            <div className="hero-portrait-label"><span>Data / Analytics</span><span aria-hidden="true">↗</span></div>
             <div
               ref={photoRef}
               className="pointer-surface pointer-tilt relative aspect-[4/5]"
             >
               <div aria-hidden="true" className="hero-portrait-glow" />
-              {/* Offset grey block behind the photo: a paper cut-out, not a glow. */}
               <div
                 aria-hidden="true"
-                className="absolute inset-0 translate-x-4 translate-y-4 rounded-[1.75rem] border border-brand/25 bg-steel"
+                className="hero-portrait-rail absolute inset-0"
               />
-              <div className="hero-portrait-curtain relative h-full w-full overflow-hidden rounded-[1.75rem] border border-line bg-surface">
+              <div className="hero-portrait-curtain relative h-full w-full overflow-hidden rounded-lg border border-line bg-surface">
                 <Image
                   src="/profile.jpeg"
                   alt="Portrait of Andry Syva Maldini"
                   fill
                   priority
-                  sizes="(max-width: 640px) 14rem, (max-width: 768px) 16rem, (max-width: 1024px) 19rem, 22rem"
+                  sizes="(max-width: 640px) 16rem, (max-width: 768px) 18rem, (max-width: 1024px) 19rem, 22rem"
                   className="object-cover"
                 />
               </div>
             </div>
+            <div className="hero-portrait-caption"><span>Based in Jakarta, Indonesia</span><span className="text-brand" aria-hidden="true">●</span></div>
           </motion.div>
         </motion.div>
       </div>

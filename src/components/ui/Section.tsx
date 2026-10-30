@@ -5,6 +5,14 @@ import SectionMotif, { type SectionMotifKind } from "@/components/effects/Sectio
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
 import DecodeTitle from "@/components/ui/DecodeTitle";
 
+const SECTION_LABELS: Record<string, string> = {
+  about: "01 / Profile",
+  tools: "03 / Toolkit",
+  certifications: "04 / Credentials",
+  projects: "05 / Selected work",
+  contact: "06 / Get in touch",
+};
+
 export default function Section({
   id,
   title,
@@ -38,10 +46,10 @@ export default function Section({
         isSplit ? "" : "mb-10 md:mb-12"
       }`}
     >
-      <span
-        aria-hidden="true"
-        className="section-rule mb-4 block h-[3px] w-10 origin-left bg-brand"
-      />
+      <p className="section-kicker mb-4">
+        <span aria-hidden="true" className="section-rule block h-px w-6 origin-left bg-brand" />
+        {SECTION_LABELS[id ?? ""] ?? "Portfolio"}
+      </p>
       <h2 className={titleClass}>
         <span
           className="section-title-line block"

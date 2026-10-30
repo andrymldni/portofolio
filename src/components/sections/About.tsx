@@ -1,7 +1,7 @@
 "use client";
 import { Fragment, useEffect, useRef, type CSSProperties } from "react";
-import { motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { Reveal, RevealGroup, rise } from "@/components/ui/Reveal";
+import { useMotionValueEvent, useScroll } from "framer-motion";
+import { Reveal } from "@/components/ui/Reveal";
 import { useDesktopMotion } from "@/hooks/usePointerSurface";
 import { CONTACT_EMAIL } from "@/lib/data";
 
@@ -69,7 +69,7 @@ export default function About() {
           className="about-copy"
           data-scrollytelling={desktopMotion ? "" : undefined}
         >
-          <p className="text-base leading-relaxed sm:text-lg">
+          <p className="about-intro text-base leading-relaxed sm:text-lg">
             {INTRO_WORDS.map((word, index) => (
               <Fragment key={`${word}-${index}`}>
                 <span
@@ -116,16 +116,15 @@ export default function About() {
         </div>
       </Reveal>
 
-      <RevealGroup delay={0.1} gap={0.12}>
-        <p className="text-sm font-medium text-muted">What I work on</p>
-        <ol className="mt-3 space-y-3">
+      <Reveal delay={0.1}>
+        <p className="section-kicker">Areas of focus</p>
+        <ol className="mt-4 border-t border-line">
           {FOCUS.map((item, i) => (
-            <motion.li
+            <li
               key={item.title}
-              variants={rise}
-              className="card grid gap-2 p-5 sm:grid-cols-[2.5rem_1fr] sm:gap-4"
+              className="focus-row grid grid-cols-[2rem_minmax(0,1fr)] gap-3 border-b border-line py-6 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:gap-4"
             >
-              <span className="text-sm font-medium text-muted">
+              <span className="pt-1 font-mono text-xs text-brand">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
@@ -134,10 +133,10 @@ export default function About() {
                 </h3>
                 <p className="mt-1.5 leading-relaxed text-muted">{item.body}</p>
               </div>
-            </motion.li>
+            </li>
           ))}
         </ol>
-      </RevealGroup>
+      </Reveal>
     </div>
   );
 }

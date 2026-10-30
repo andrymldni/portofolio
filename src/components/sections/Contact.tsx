@@ -50,7 +50,7 @@ function QuickContactCard({
 
   const inner = (
     <>
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-steel text-ink">
+      <span className="flex h-10 w-10 shrink-0 items-center justify-center text-brand">
         <Icon size={17} strokeWidth={1.75} />
       </span>
       <span className="min-w-0 flex-1">
@@ -72,7 +72,7 @@ function QuickContactCard({
   );
 
   const className =
-    "card interactive-card group flex w-full items-center gap-3 p-4 text-left";
+    "contact-detail group flex w-full items-center gap-3 border-b border-line py-4 text-left";
 
   return copyable ? (
     <button type="button" onClick={handleCopy} className={className}>
@@ -173,7 +173,7 @@ export default function Contact() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col border-t border-line">
           <QuickContactCard
             icon={Mail}
             label="Email — click to copy"
@@ -215,9 +215,10 @@ export default function Contact() {
         <form
           onSubmit={handleSubmit}
           noValidate
-          className="card grid gap-4 p-6 sm:p-8"
+          className="contact-form card grid gap-4 p-5 sm:p-8"
           aria-describedby="form-status"
         >
+          <p className="section-kicker mb-1">A note to my inbox</p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="min-w-0">
               <div className="contact-field">
@@ -297,6 +298,7 @@ export default function Contact() {
           </button>
 
           <p id="form-status" className="text-xs text-muted" aria-live="polite">
+            {!sent && "Opens an email draft for you to review and send."}
             {sent === "ok" && (
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false" className="contact-success-mark mr-1.5 inline-block align-middle text-brand">
                 <path d="m5 12 4 4L19 6" pathLength={1} fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />

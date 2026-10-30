@@ -158,6 +158,12 @@ export default function CertificatesSlider() {
       }}
       className="certificate-carousel relative"
     >
+      <div className="certificate-caption mb-5 flex items-center justify-between gap-4 border-b border-line pb-4 font-mono text-xs text-muted">
+        <span>Professional credentials</span>
+        <span aria-label={`Certificate ${index + 1} of ${n}`}>
+          <span className="text-brand">{String(index + 1).padStart(2, "0")}</span> / {String(n).padStart(2, "0")}
+        </span>
+      </div>
       <div className="certificate-stage -mx-5 md:-mx-6">
         <motion.div
           // Let the card faces receive hits even behind the stage's Z=0 plane.
@@ -300,10 +306,10 @@ export default function CertificatesSlider() {
               className="p-1.5"
             >
               <span
-                className={`block h-1.5 rounded-full transition-all ${
+                className={`block h-1.5 w-5 rounded-full transition-transform ${
                   i === index ? "bg-brand" : "bg-ink/25"
                 }`}
-                style={{ width: i === index ? 20 : 6 }}
+                style={{ transform: `scaleX(${i === index ? 1 : 0.3})` }}
               />
             </button>
           ))}

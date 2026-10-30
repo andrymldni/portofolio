@@ -83,6 +83,14 @@ export const experience: ExperienceEntry[] = [
   },
 ];
 
+/** Cover diagrams summarize the documented approach/results, never sample data. */
+export type ProjectDiagram = {
+  kind: "flow" | "bars" | "distribution";
+  heading: string;
+  note: string;
+  items: { label: string; value: string; amount?: number }[];
+};
+
 export type Project = {
   slug: string;
   title: string;
@@ -91,6 +99,7 @@ export type Project = {
   /** Live demo / deployed app URL, shown as a secondary CTA when present. */
   demo?: string;
   image?: string;
+  diagram?: ProjectDiagram;
   /** Curated work shown before the compact project grid, with its highlights. */
   flagship?: boolean;
   /** A course submission, identified by its repository and documented role. */
@@ -113,6 +122,16 @@ export const projects: Project[] = [
     stack: ["Airflow", "dbt", "PostgreSQL", "IndoBERT", "Metabase", "Docker"],
     link: "https://github.com/andrymldni/de-sentiment-analisis",
     image: "/projects/brilink-sentiment.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "From public signals to insight",
+      note: "Airflow · PostgreSQL · IndoBERT",
+      items: [
+        { label: "Ingest", value: "11 connectors" },
+        { label: "Model", value: "79 dbt tests" },
+        { label: "Explore", value: "22 dashboard cards" },
+      ],
+    },
     flagship: true,
     category: "Data Engineering",
     desc: "End-to-end pipeline tracking public sentiment on BRILink across news, app reviews, and social media.",
@@ -143,6 +162,16 @@ export const projects: Project[] = [
     stack: ["Python", "Docker", "Metabase"],
     link: "https://github.com/andrymldni/Dicoding-HR-Analytics",
     image: "/proyek1.jpeg",
+    diagram: {
+      kind: "flow",
+      heading: "Understanding retention risk",
+      note: "1,471 employees · 35 columns",
+      items: [
+        { label: "Prepare", value: "HR records" },
+        { label: "Predict", value: "Logistic regression" },
+        { label: "Explore", value: "Metabase" },
+      ],
+    },
     category: "AI/ML",
     desc: "Predict employee churn and retention dashboard.",
     details:
@@ -172,6 +201,15 @@ export const projects: Project[] = [
     stack: ["Python", "TensorFlow", "Pipeline"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Pipeline",
     image: "/proyek2.jpeg",
+    diagram: {
+      kind: "bars",
+      heading: "Text classification, evaluated",
+      note: "575 evaluation examples",
+      items: [
+        { label: "AUC", value: "83%", amount: 0.83 },
+        { label: "Binary accuracy", value: "74%", amount: 0.74 },
+      ],
+    },
     category: "AI/ML",
     desc: "Detect stress from diary-like text using DL binary classifier.",
     details:
@@ -202,6 +240,15 @@ export const projects: Project[] = [
     stack: ["Python", "Scikit-learn", "Neural Network"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%20-%20Andry.md",
     image: "/proyek3.jpeg",
+    diagram: {
+      kind: "bars",
+      heading: "Certification model comparison",
+      note: "Accuracy · 20,000 dataset rows",
+      items: [
+        { label: "Neural network", value: "0.9535", amount: 0.9535 },
+        { label: "K-nearest neighbors", value: "0.9340", amount: 0.934 },
+      ],
+    },
     category: "AI/ML",
     desc: "Predict assessment outcomes with NN for consistency and efficiency.",
     details:
@@ -231,6 +278,16 @@ export const projects: Project[] = [
     stack: ["Python"],
     link: "https://github.com/andrymldni/Dicoding-ML-Terapan/blob/main/Laporan%20Proyek%20Machine%20Learning%202%20-%20Andry.md",
     image: "/proyek4.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "Two paths to the next read",
+      note: "10,000 records used",
+      items: [
+        { label: "Content", value: "TF-IDF" },
+        { label: "Collaborative", value: "Embeddings" },
+        { label: "Recommend", value: "Top 10 titles" },
+      ],
+    },
     category: "AI/ML",
     desc: "Personalized book recommendations via ML.",
     details:
@@ -260,6 +317,16 @@ export const projects: Project[] = [
     stack: ["Python", "Pandas", "Streamlit"],
     link: "https://github.com/andrymldni/Dicoding-Bikes-Sharing",
     image: "/projects/bike-sharing.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "Making ridership explorable",
+      note: "Descriptive analytics · Streamlit",
+      items: [
+        { label: "Gather", value: "Day / hour logs" },
+        { label: "Explore", value: "Usage patterns" },
+        { label: "Deliver", value: "Dashboard" },
+      ],
+    },
     category: "Data Analytics",
     desc: "Interactive dashboard uncovering ridership trends and seasonality.",
     details:
@@ -285,6 +352,16 @@ export const projects: Project[] = [
     stack: ["Python", "Scikit-learn", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-Student-Status-Predictions",
     image: "/projects/student-dropout.jpg",
+    diagram: {
+      kind: "distribution",
+      heading: "A view of student outcomes",
+      note: "4,424 students in the dataset",
+      items: [
+        { label: "Graduates", value: "2,209", amount: 2209 },
+        { label: "Dropouts", value: "1,421", amount: 1421 },
+        { label: "Enrolled", value: "794", amount: 794 },
+      ],
+    },
     category: "AI/ML",
     desc: "Early-warning model flagging students at risk of dropping out.",
     details:
@@ -315,6 +392,16 @@ export const projects: Project[] = [
     stack: ["Python", "MLOps", "Classification"],
     link: "https://github.com/andrymldni/Dicoding-MLOps-Campus",
     image: "/projects/campus-placement.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "From validation to serving",
+      note: "84.42% validation accuracy",
+      items: [
+        { label: "Validate", value: "TFX pipeline" },
+        { label: "Train", value: "Binary classifier" },
+        { label: "Monitor", value: "Prometheus" },
+      ],
+    },
     category: "MLOps",
     desc: "Binary classifier predicting campus placement outcomes for applicant screening.",
     details:
@@ -343,6 +430,16 @@ export const projects: Project[] = [
     stack: ["Python", "OpenCV", "MediaPipe"],
     link: "https://github.com/andrymldni/GestureVolumeControl",
     image: "/projects/gesture-volume.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "A gesture becomes a control",
+      note: "21 hand landmarks · MediaPipe",
+      items: [
+        { label: "Capture", value: "OpenCV" },
+        { label: "Measure", value: "50–300 px" },
+        { label: "Control", value: "System volume" },
+      ],
+    },
     category: "Computer Vision",
     desc: "Control system volume in real time using hand-gesture recognition.",
     details:
@@ -371,6 +468,16 @@ export const projects: Project[] = [
     stack: ["Python", "NLP"],
     link: "https://github.com/andrymldni/cek-kata-baku",
     image: "/projects/cek-kata-baku.jpg",
+    diagram: {
+      kind: "flow",
+      heading: "From input to standard spelling",
+      note: "Normalized Levenshtein similarity",
+      items: [
+        { label: "Normalize", value: "Lowercase text" },
+        { label: "Look up", value: "Local dictionary" },
+        { label: "Suggest", value: "Similarity > 0.6" },
+      ],
+    },
     category: "NLP",
     desc: "Checks Indonesian words against standard spelling with smart suggestions.",
     details:

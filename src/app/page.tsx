@@ -60,7 +60,7 @@ export default function HomePage() {
       <Section
         id="contact"
         title="Contact"
-        layout="band"
+        className="contact-section"
         motif="donut"
         motifAfter="band"
       >

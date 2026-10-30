@@ -9,24 +9,13 @@ import {
   Github,
   Globe,
   X,
-  Brain,
-  Database,
-  BarChart3,
-  Workflow,
-  ScanEye,
-  Languages,
-  Boxes,
-  type LucideIcon,
 } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
+import ProjectArtwork from "@/components/ui/ProjectArtwork";
 import { projects, type Project } from "@/lib/data";
 import { EASE_OUT, useReveal } from "@/components/ui/Reveal";
 import { useDialog } from "@/hooks/useDialog";
 import { usePointerSurface } from "@/hooks/usePointerSurface";
-
-const screenshotAlt = (project: Project) =>
-  `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
 
 // Match the grid's md/lg breakpoints without listening to every resize frame.
 function subscribeColumns(onChange: () => void) {
@@ -42,32 +31,6 @@ function getColumns() {
 }
 
 const getServerColumns = () => 1;
-
-/** Category → icon + muted tint, used as the cover when a project has no screenshot. */
-const CATEGORY_META: Record<string, { icon: LucideIcon; tint: string }> = {
-  "Data Engineering": { icon: Database, tint: "cover-blue" },
-  "AI/ML": { icon: Brain, tint: "cover-graphite" },
-  "Data Analytics": { icon: BarChart3, tint: "cover-mist" },
-  MLOps: { icon: Workflow, tint: "cover-slate" },
-  "Computer Vision": { icon: ScanEye, tint: "cover-graphite" },
-  NLP: { icon: Languages, tint: "cover-mist" },
-};
-const DEFAULT_META = { icon: Boxes, tint: "cover-slate" };
-
-function ProjectCover({ category }: { category?: string }) {
-  const meta = (category && CATEGORY_META[category]) || DEFAULT_META;
-  const Icon = meta.icon;
-  return (
-    <div
-      className={`flex h-full w-full items-center justify-center ${meta.tint}`}
-      aria-hidden="true"
-    >
-      <span className="flex h-14 w-14 items-center justify-center rounded-xl border border-line bg-canvas/60 text-ink">
-        <Icon size={24} strokeWidth={1.75} />
-      </span>
-    </div>
-  );
-}
 
 function ProjectModal({
   project,
@@ -109,18 +72,8 @@ function ProjectModal({
           </button>
         </div>
 
-        <div className="relative h-44 w-full sm:h-56">
-          {project.image ? (
-            <Image
-              src={project.image}
-              alt={screenshotAlt(project)}
-              fill
-              sizes="(max-width: 640px) 100vw, 32rem"
-              className="object-cover"
-            />
-          ) : (
-            <ProjectCover category={project.category} />
-          )}
+        <div className="relative h-60 w-full border-b border-line sm:h-72">
+          <ProjectArtwork project={project} />
         </div>
 
         <div className="p-6">
@@ -208,29 +161,11 @@ function ProjectCard({
         <div
           className={`relative w-full shrink-0 overflow-hidden border-b border-line ${
             wide
-              ? "h-44 sm:h-56 md:h-auto md:min-h-[22rem] md:w-[45%] md:border-b-0 md:border-r"
-              : p.flagship ? "h-44 sm:h-56" : "h-36 sm:h-40"
+              ? "h-60 sm:h-64 md:h-auto md:min-h-[24rem] md:w-[45%] md:border-b-0 md:border-r"
+              : p.flagship ? "h-60 sm:h-64" : "h-56"
           }`}
         >
-          {p.image ? (
-            <Image
-              src={p.image}
-              alt={screenshotAlt(p)}
-              fill
-              sizes={p.flagship
-                ? "(min-width: 1152px) 540px, (min-width: 768px) calc(50vw - 36px), calc(100vw - 40px)"
-                : "(min-width: 1152px) 352px, (min-width: 1024px) calc(33vw - 32px), (min-width: 768px) calc(50vw - 36px), calc(100vw - 40px)"}
-              className="project-image object-cover"
-              loading="lazy"
-            />
-          ) : (
-            <ProjectCover category={p.category} />
-          )}
-          {p.flagship && (
-            <span className="pointer-events-none absolute left-3 top-3 rounded-md bg-canvas/90 px-2 py-1 font-mono text-[11px] font-medium text-ink">
-              Flagship
-            </span>
-          )}
+          <ProjectArtwork project={p} />
           <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">
             Click for details
           </span>
@@ -383,8 +318,11 @@ export default function Projects({
 
   return (
     <div>
+      <noscript>
+        <style>{"#projects [data-more-projects]{display:block} #projects [data-project-toggle], #projects .project-filters{display:none}"}</style>
+      </noscript>
       {categories.length > 2 && (
-        <div className="mb-8 flex flex-wrap gap-2">
+        <div className="project-filters mb-8 flex flex-wrap gap-2" aria-label="Filter projects">
           {categories.map((cat) => (
             <button
               key={cat}
@@ -408,7 +346,7 @@ export default function Projects({
 
       {flagships.length > 0 && (
         <section aria-labelledby={`${groupId}-flagships`}>
-          <h3 id={`${groupId}-flagships`} className="mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
+          <h3 id={`${groupId}-flagships`} className="project-group-title mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
             Flagship projects
           </h3>
           <div className="grid gap-6 md:grid-cols-2">
@@ -430,11 +368,12 @@ export default function Projects({
       {moreProjects.length > 0 && (
         <section
           ref={moreRef}
+          data-more-projects
           id={moreId}
           aria-labelledby={`${moreId}-heading`}
           className={`${flagships.length ? "mt-10 border-t border-line pt-8" : ""} ${canCollapse && !expanded ? "hidden md:block" : ""}`}
         >
-          <h3 id={`${moreId}-heading`} className="mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
+          <h3 id={`${moreId}-heading`} className="project-group-title mb-5 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
             More projects
           </h3>
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
@@ -453,7 +392,7 @@ export default function Projects({
       )}
 
       {canCollapse && (
-        <div className="mt-6 md:hidden">
+        <div data-project-toggle className="mt-6 md:hidden">
           <button
             type="button"
             onClick={toggleExpanded}

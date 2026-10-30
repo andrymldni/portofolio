@@ -71,17 +71,13 @@ export default function ImpactStats() {
   }, []);
 
   return (
-    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-8 grid grid-cols-2 gap-x-6 gap-y-6 border-y border-line py-6 sm:grid-cols-3 lg:grid-cols-5">
+    <dl ref={ref} aria-label="BRI internship coverage and portfolio counts" className="impact-stats mb-10 grid grid-cols-2 border-y border-line lg:grid-cols-[1.4fr_repeat(4,minmax(0,1fr))]">
       {stats.map((stat) => (
-        <div key={stat.label} className="min-w-0 last:col-span-2 sm:last:col-span-1">
+        <div key={stat.label} className="impact-stat min-w-0">
           <dt className="font-mono text-xs leading-relaxed text-muted">{stat.label}</dt>
           <dd className="mt-2 font-mono text-3xl font-medium tabular-nums tracking-tight text-ink sm:text-4xl">
             <span className="sr-only">{stat.final ?? stat.value}</span>
             <span aria-hidden="true" data-count>{stat.final ?? stat.value}</span>
-            {/* The same unlabeled rising flourish for every count, not a data series. */}
-            <svg aria-hidden="true" focusable="false" viewBox="0 0 80 24" className="mt-2 h-6 w-20 text-brand/60">
-              <path className="stat-sparkline" d="M2 21 C18 21 22 17 32 16 S48 14 56 10 S68 5 78 3" pathLength={1} fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" />
-            </svg>
           </dd>
         </div>
       ))}

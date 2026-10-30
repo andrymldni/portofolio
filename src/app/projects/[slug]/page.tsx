@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -12,6 +11,7 @@ import {
 } from "lucide-react";
 import { projects, type Project } from "@/lib/data";
 import { PageEntrance } from "@/components/ui/Reveal";
+import ProjectArtwork from "@/components/ui/ProjectArtwork";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -26,9 +26,6 @@ function getProject(slug: string) {
   if (!project) notFound();
   return project;
 }
-
-const screenshotAlt = (project: Project) =>
-  `Screenshot of ${project.title}${project.desc ? `: ${project.desc}` : ` (${project.category ?? "project"})`}`;
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const project = getProject((await params).slug);
@@ -78,18 +75,7 @@ function ProjectNavCard({
       className="card interactive-card group flex min-w-0 items-center gap-4 p-3 sm:p-4"
     >
       <div className="relative h-16 w-24 shrink-0 overflow-hidden rounded-lg border border-line bg-steel">
-        {project.image ? (
-          <Image
-            src={project.image}
-            alt={screenshotAlt(project)}
-            fill
-            loading="eager"
-            sizes="96px"
-            className="object-cover"
-          />
-        ) : (
-          <span aria-hidden="true" className="block h-full w-full bg-ink/[0.04]" />
-        )}
+        <ProjectArtwork project={project} compact />
       </div>
       <div className="min-w-0">
         <span className="flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
@@ -126,7 +112,8 @@ export default async function ProjectPage({ params }: Props) {
       </Link>
 
       <PageEntrance key={project.slug} className="case-study-enter mx-auto mt-8 max-w-5xl">
-        <header className="max-w-3xl">
+        <header className="case-study-header max-w-3xl">
+          <p className="section-kicker mb-5">Case study / {String(projectIndex + 1).padStart(2, "0")}</p>
           <div className="flex flex-wrap items-center gap-3">
             {project.category && (
               <p className="text-sm font-medium text-brand">{project.category}</p>
@@ -179,31 +166,22 @@ export default async function ProjectPage({ params }: Props) {
           </div>
         </header>
 
-        {project.image && (
-          <div className="card relative mt-8 aspect-[16/9] overflow-hidden bg-ink/[0.03] p-0 sm:mt-10">
-            <Image
-              src={project.image}
-              alt={screenshotAlt(project)}
-              fill
-              priority
-              sizes="(max-width: 1152px) calc(100vw - 40px), 1104px"
-              className="object-contain"
-            />
-          </div>
-        )}
+        <div className="case-study-art card relative mt-8 h-72 overflow-hidden p-0 sm:mt-10 sm:h-[24rem]">
+          <ProjectArtwork project={project} />
+        </div>
 
         {hasHighlights && (
-          <dl className="mt-6 grid grid-cols-3 gap-2 sm:mt-8 sm:gap-4">
+          <dl className="case-study-metrics mt-6 grid grid-cols-3 gap-2 border-y border-line sm:mt-8 sm:gap-4">
             {project.highlights?.map((highlight) => (
               <div
                 key={`${highlight.value}-${highlight.label}`}
-                className="card min-w-0 px-3 py-4 sm:px-5 sm:py-5"
+                className="min-w-0 px-2 py-5 sm:px-5 sm:py-6"
               >
-                <dt className="break-words text-lg font-semibold tracking-tight text-ink sm:text-3xl">
-                  {highlight.value}
-                </dt>
-                <dd className="mt-1 text-[11px] leading-snug text-muted sm:text-xs">
+                <dt className="text-[11px] leading-snug text-muted sm:text-xs">
                   {highlight.label}
+                </dt>
+                <dd className="mt-2 break-words font-mono text-lg font-medium tracking-tight text-ink sm:text-3xl">
+                  {highlight.value}
                 </dd>
               </div>
             ))}

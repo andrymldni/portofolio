@@ -55,7 +55,7 @@
   --surface: 251 252 253;
   --steel: 225 230 236;
   --ink: 23 27 33;
-  --muted: 95 105 117;
+  --muted: 88 99 113;
   --brand: 29 95 194;
   --brand-strong: 23 79 163;
   --brand-ink: 255 255 255;
@@ -1412,4 +1412,137 @@ main > section[id]::before {
 @keyframes page-transition-fade {
   0%, 100% { opacity: 0; }
   45%, 55% { opacity: 1; }
+}
+
+/* Portfolio refinement: an indexed rhythm, factual diagrams and quieter surfaces.
+   These are static layout treatments; the existing entrance policy owns motion. */
+.section-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  line-height: 1.6;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(var(--muted));
+}
+.section-heading h2,
+#experience h2 {
+  font-size: clamp(1.875rem, 3.2vw, 2.625rem);
+  line-height: 1.15;
+}
+.section-subtitle { max-width: 36rem; }
+.hero-surface h1 { font-size: clamp(2.875rem, 6.2vw, 5.25rem); }
+.hero-surface .name-line {
+  background-image: none;
+  -webkit-text-fill-color: currentColor;
+}
+.hero-name-glow { opacity: 0.65; }
+.hero-portrait-frame { position: relative; }
+.hero-portrait-label,
+.hero-portrait-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.625rem;
+  line-height: 1.5;
+  color: rgb(var(--muted));
+}
+.hero-portrait-label {
+  margin-bottom: 1rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.hero-portrait-label > :last-child { color: rgb(var(--brand)); font-size: 1rem; }
+.hero-portrait-caption { margin-top: 1.25rem; padding-top: 0.875rem; border-top: 1px solid rgb(var(--ink) / 0.16); }
+.hero-portrait-rail {
+  border: 1px solid rgb(var(--brand) / 0.35);
+  border-radius: 0.5rem;
+  transform: translate(10px, 10px);
+  background: rgb(var(--brand) / 0.035);
+}
+.impact-stat {
+  padding: 1.25rem 0;
+  border-bottom: 1px solid rgb(var(--ink) / 0.12);
+}
+.impact-stat:first-child { grid-column: 1 / -1; }
+.impact-stat:first-child dd { color: rgb(var(--brand)); font-size: 2.75rem; }
+.impact-stat:nth-child(2n + 3) { padding-left: 1.5rem; border-left: 1px solid rgb(var(--ink) / 0.12); }
+.impact-stat:nth-last-child(-n + 2) { border-bottom: 0; }
+.impact-stats dt { max-width: 16ch; }
+.impact-stat:first-child dt { max-width: none; }
+.impact-stats dd { margin-top: 0.5rem; line-height: 1.2; }
+.about-intro { font-weight: 400; }
+.about-fact dd { min-width: 0; overflow-wrap: anywhere; }
+.focus-row h3 { letter-spacing: -0.025em; }
+.focus-row p { font-size: 0.9375rem; }
+.project-group-title { display: flex; align-items: center; gap: 1rem; }
+.project-group-title::after { content: ""; height: 1px; flex: 1; background: rgb(var(--ink) / 0.12); }
+.project-filters { padding-bottom: 1.5rem; border-bottom: 1px solid rgb(var(--ink) / 0.12); }
+.project-filters button { min-height: 2.5rem; border-radius: 0.5rem; }
+.project-filters button[aria-pressed="true"] { background: rgb(var(--brand) / 0.12); border-color: rgb(var(--brand) / 0.5); color: rgb(var(--brand)); }
+.project-card { border-radius: 0.75rem; }
+.project-card h4 { letter-spacing: -0.025em; }
+.project-card dl dd { color: rgb(var(--brand)); }
+:root .tool-card.card { border-color: transparent; background: rgb(var(--ink) / 0.025); border-radius: 0.5rem; box-shadow: none; }
+.certificate-caption { max-width: 40rem; margin-inline: auto; }
+.contact-section { margin-top: 1rem; }
+.contact-section .section-heading { margin-bottom: 2rem; }
+.contact-detail { border-radius: 2px; }
+.contact-detail:focus-visible { outline-offset: 4px; }
+:root .contact-form.card { box-shadow: none; border-top: 2px solid rgb(var(--brand)); }
+.case-study-header h1 { letter-spacing: -0.045em; }
+.case-study-metrics > div + div { border-left: 1px solid rgb(var(--ink) / 0.12); }
+.case-study-metrics dd { color: rgb(var(--brand)); }
+
+@media (min-width: 768px) {
+  .hero-portrait-wrap { padding-right: 0.5rem; }
+  .hero-portrait-label,
+  .hero-portrait-caption { font-size: 0.6875rem; }
+  .hero-surface { padding-top: 4rem; padding-bottom: 6rem; }
+  .contact-section { padding-top: 5rem; padding-bottom: 5rem; }
+}
+@media (min-width: 1024px) {
+  .impact-stat,
+  .impact-stat:nth-child(n) {
+    grid-column: auto;
+    padding: 1.75rem 1.5rem;
+    border-bottom: 0;
+    border-left: 1px solid rgb(var(--ink) / 0.12);
+  }
+  .impact-stat:first-child { border-left: 0; padding-left: 0; }
+  .impact-stat:first-child dd { font-size: 2.5rem; }
+  .impact-stats dt { min-height: 2.5rem; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .contact-detail:hover { background: rgb(var(--brand) / 0.035); }
+  :root .tool-card.card:hover { border-color: rgb(var(--brand) / 0.4); }
+}
+
+/* The portrait wipe/path draw are desktop effects. Touch uses composited fades. */
+@media (hover: none), (pointer: coarse) {
+  .opening-loader {
+    animation-name: opening-loader-fade;
+    clip-path: none;
+  }
+  .opening-loader-path {
+    animation-name: fade-enter;
+    stroke-dashoffset: 0;
+  }
+  .hero-surface[data-hero-intro] .name-letter {
+    animation-name: fade-enter;
+    filter: none;
+  }
+  .hero-surface[data-hero-intro] .hero-portrait-curtain {
+    animation-name: fade-enter;
+    clip-path: none;
+  }
+  .hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-line {
+    animation-name: fade-enter;
+    stroke-dashoffset: 0;
+  }
 }
