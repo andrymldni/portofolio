@@ -66,9 +66,10 @@ function CertModal({
             <Image
               src={cert.image}
               alt={cert.name}
+              draggable={false}
               fill
               sizes="(max-width: 640px) 100vw, 32rem"
-              className="object-contain"
+              className="select-none object-contain [-webkit-user-drag:none]"
             />
           </div>
         ) : (
@@ -242,9 +243,10 @@ export default function CertificatesSlider() {
                       <Image
                         src={cert.image}
                         alt={cert.name}
+                        draggable={false}
                         fill
                         sizes="(max-width: 640px) 240px, 280px"
-                        className="object-cover"
+                        className="select-none object-cover [-webkit-user-drag:none]"
                       />
                       {isActive && (
                         <span className="pointer-events-none absolute bottom-2 right-2 rounded-md bg-canvas/90 px-2 py-1 text-[11px] font-medium text-ink opacity-0 transition-opacity group-hover:opacity-100">

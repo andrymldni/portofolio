@@ -229,10 +229,11 @@ export default function Hero() {
                 <Image
                   src="/profile.jpeg"
                   alt="Portrait of Andry Syva Maldini"
+                  draggable={false}
                   fill
                   priority
                   sizes="(max-width: 640px) 16rem, (max-width: 768px) 18rem, (max-width: 1024px) 19rem, 22rem"
-                  className="object-cover"
+                  className="select-none object-cover [-webkit-user-drag:none]"
                 />
               </div>
             </div>
