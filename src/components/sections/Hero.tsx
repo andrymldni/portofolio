@@ -9,7 +9,6 @@ import {
 } from "framer-motion";
 import { ArrowDown, ArrowUpRight, GitBranch } from "lucide-react";
 import { EASE_OUT, rise, stagger } from "@/components/ui/Reveal";
-import HeroChart from "@/components/effects/HeroChart";
 import MagneticLink from "@/components/ui/MagneticLink";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { useDesktopMotion, usePointerSurface } from "@/hooks/usePointerSurface";
@@ -93,13 +92,12 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="hero-surface relative isolate grid min-h-[calc(100svh-4rem)] items-center pb-20 pt-10 md:pb-24 md:pt-12"
+      className="hero-surface relative isolate grid min-h-[calc(100svh-4.125rem)] items-center pb-16 pt-8"
     >
       <div className="grid items-center gap-12 md:grid-cols-[1.15fr_0.85fr] md:gap-10 lg:gap-16">
         {/* Copy */}
         <motion.div style={{ y: copyY, opacity: copyOpacity }} className="relative">
           <div aria-hidden="true" className="hero-name-glow" />
-          <HeroChart />
           <motion.div
             variants={stagger(0, 0.06)}
             initial={false}
@@ -133,7 +131,7 @@ export default function Hero() {
             <motion.div
               variants={rise}
               data-hero-rise
-              className="mt-5 flex min-h-[1.6em] items-center justify-center text-xl font-semibold sm:text-2xl md:justify-start"
+              className="mt-4 flex min-h-[1.6em] items-center justify-center text-xl font-semibold sm:text-2xl md:justify-start"
             >
               <span className="sr-only">{ROLES.join(", ")}</span>
               <AnimatePresence mode="wait" initial={false}>
@@ -154,7 +152,7 @@ export default function Hero() {
             <motion.p
               variants={rise}
               data-hero-rise
-              className="mx-auto mt-6 max-w-lg text-base leading-relaxed text-muted sm:text-lg md:mx-0"
+              className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-muted sm:text-lg md:mx-0"
             >
               I turn raw data into decisions — ETL pipelines, predictive
               models, and BI dashboards that support real operations.
@@ -163,7 +161,7 @@ export default function Hero() {
             <motion.div
               variants={rise}
               data-hero-rise
-              className="mt-8 flex flex-wrap items-center justify-center gap-3 md:justify-start"
+              className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 md:justify-start"
             >
               <MagneticLink href="#projects" className="btn-primary hero-action magnetic-link">
                 View projects
@@ -185,7 +183,7 @@ export default function Hero() {
             <motion.div
               variants={rise}
               data-hero-rise
-              className="mt-8 flex items-center justify-center gap-5 md:justify-start"
+              className="mt-4 flex items-center justify-center gap-2 md:justify-start"
             >
               {Object.values(socialLinks).map((s) => (
                 <a
@@ -194,7 +192,7 @@ export default function Hero() {
                   target="_blank"
                   rel="noreferrer"
                   aria-label={s.label}
-                  className="link-nudge text-muted transition-colors hover:text-ink"
+                  className="link-nudge inline-flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors hover:text-ink"
                 >
                   <s.icon size={20} strokeWidth={1.75} />
                 </a>
@@ -215,7 +213,7 @@ export default function Hero() {
             custom={0.35}
             className="hero-portrait-enter hero-portrait-frame [perspective:900px]"
           >
-            <div className="hero-portrait-label"><span>Data / Analytics</span><span aria-hidden="true">↗</span></div>
+            <p className="hero-portrait-label">Data / Analytics</p>
             <div
               ref={photoRef}
               className="pointer-surface pointer-tilt relative aspect-[4/5]"

@@ -568,73 +568,8 @@ main > section[id]::before {
 }
 
 /* =============================================================================
-   Task D additions: hero chart, page data motifs, About scrollytelling and
-   magnetic hero CTAs. Kept in one block so parallel section work can merge
-   around it without hunting for individual rules.
+   About scrollytelling and magnetic hero CTAs.
 ============================================================================= */
-.hero-chart {
-  color: rgb(var(--brand));
-  opacity: 0.16;
-}
-.hero-chart-axes {
-  opacity: 0.32;
-}
-.hero-chart-line {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-.hero-chart-points {
-  opacity: 1;
-}
-@keyframes hero-chart-draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
-}
-@keyframes hero-chart-points-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-@media (prefers-reduced-motion: no-preference) {
-  .hero-chart[data-chart-ready] .hero-chart-line {
-    stroke-dashoffset: 1;
-    animation: hero-chart-draw 1.6s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
-  }
-  .hero-chart[data-chart-ready] .hero-chart-points {
-    opacity: 0;
-    animation: hero-chart-points-in 0.5s ease 1.55s forwards;
-  }
-}
-
-.page-motifs {
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  display: none;
-  pointer-events: none;
-}
-@media (min-width: 1360px) {
-  .page-motifs {
-    display: block;
-  }
-}
-.page-motif {
-  position: absolute;
-  width: 2.75rem;
-  height: auto;
-  color: rgb(var(--brand));
-  opacity: 0.04;
-}
-.page-motif--left {
-  left: calc(-1 * ((100vw - 72rem) / 2) + 0.5rem);
-}
-.page-motif--right {
-  right: calc(-1 * ((100vw - 72rem) / 2) + 0.5rem);
-}
-.page-motif--1 { top: 24%; }
-.page-motif--2 { top: 41%; }
-.page-motif--3 { top: 62%; }
-.page-motif--4 { top: 81%; }
-
 .about-copy {
   --about-progress: 1;
 }
@@ -697,6 +632,11 @@ main > section[id]::before {
 }
 .certificate-pose {
   backface-visibility: hidden;
+}
+@media (min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .certificate-pose {
+    transition: transform 400ms cubic-bezier(0.16, 1, 0.3, 1), opacity 400ms ease-out;
+  }
 }
 .stat-sparkline {
   stroke-dasharray: 1;
@@ -808,10 +748,9 @@ main > section[id]::before {
 @media (prefers-reduced-motion: no-preference) {
   [data-experience-reveal][data-entrance-ready]:not([data-entrance-entered]) {
     opacity: 0;
-    transform: translateY(12px);
   }
   [data-experience-reveal][data-entrance-entered] {
-    animation: calm-enter 600ms cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: fade-enter 400ms ease-out both;
   }
 }
 
@@ -824,12 +763,6 @@ main > section[id]::before {
 }
 :root[data-theme="light"] .grain {
   opacity: 0.015;
-}
-:root[data-theme="light"] .hero-chart-axes {
-  opacity: 0.2;
-}
-:root[data-theme="light"] .page-motif {
-  opacity: 0.08;
 }
 :root[data-theme="light"] .stat-sparkline {
   stroke: rgb(var(--brand) / 0.75);
@@ -865,13 +798,6 @@ main > section[id]::before {
   box-shadow: 0 4px 18px -12px rgb(var(--ink) / 0.18);
 }
 
-/* Depth comes from perspective, not faded text. Framer sets inline opacity. */
-:root[data-theme="light"] .certificate-pose {
-  opacity: 1 !important;
-}
-:root[data-theme="light"] .certificate-pose .text-muted\/80 {
-  color: rgb(var(--muted));
-}
 :root[data-theme="light"] .certificate-pose > .card {
   box-shadow: 0 12px 24px -18px rgb(var(--ink) / 0.2);
 }
@@ -976,48 +902,6 @@ main > section[id]::before {
 :root[data-theme="light"] .hero-name-glow,
 :root[data-theme="light"] .hero-portrait-glow {
   opacity: 0.5;
-}
-
-/* A masked gradient border that follows the card edge on hover. */
-@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .project-card::after,
-  .certificate-pose > .card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    border-radius: inherit;
-    padding: 1px;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    background: radial-gradient(
-      circle at var(--pointer-x, 78%) var(--pointer-y, 0%),
-      rgb(var(--brand) / 0.75) 0%,
-      rgb(var(--brand) / 0.28) 24%,
-      transparent 52%
-    );
-    -webkit-mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    mask:
-      linear-gradient(#000 0 0) content-box,
-      linear-gradient(#000 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-  .certificate-pose > .card::after {
-    background: conic-gradient(
-      from 205deg at 50% 50%,
-      transparent 0 28%,
-      rgb(var(--brand) / 0.72) 40%,
-      transparent 52% 100%
-    );
-  }
-  .project-card:hover::after,
-  .certificate-pose > .card:hover::after {
-    opacity: 1;
-  }
 }
 
 /* Bolder display type with a gentle vertical ink gradient. */
@@ -1162,9 +1046,7 @@ main > section[id]::before {
 /* Hold the old one-shot hero animations until the intro class is mounted. */
 .hero-surface[data-entrance-ready]:not([data-hero-intro]) [data-hero-rise],
 .hero-surface[data-entrance-ready]:not([data-hero-intro]) .name-line,
-.hero-surface[data-entrance-ready]:not([data-hero-intro]) .hero-portrait-enter,
-.hero-surface:not([data-hero-intro]) .hero-chart[data-chart-ready] .hero-chart-line,
-.hero-surface:not([data-hero-intro]) .hero-chart[data-chart-ready] .hero-chart-points {
+.hero-surface[data-entrance-ready]:not([data-hero-intro]) .hero-portrait-enter {
   animation: none;
 }
 
@@ -1222,17 +1104,6 @@ main > section[id]::before {
 @keyframes hero-portrait-wipe {
   from { clip-path: inset(0 0 100% 0); }
   to { clip-path: inset(0); }
-}
-
-.hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-line {
-  stroke-dashoffset: 1;
-  animation: hero-chart-draw 550ms cubic-bezier(0.16, 1, 0.3, 1)
-    calc(var(--hero-intro-delay) + 0.12s) both;
-}
-.hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-points {
-  opacity: 0;
-  animation: hero-chart-points-in 250ms ease
-    calc(var(--hero-intro-delay) + 0.6s) both;
 }
 
 .hero-surface[data-hero-intro] [data-hero-rise] {
@@ -1320,12 +1191,6 @@ main > section[id]::before {
     animation: fade-enter 300ms ease-out both;
   }
 
-  .hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-line,
-  .hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-points {
-    animation: fade-enter 300ms ease-out both;
-    stroke-dashoffset: 0;
-  }
-
   .status-dot {
     animation: none;
   }
@@ -1372,7 +1237,7 @@ main > section[id]::before {
   background-image: none;
   -webkit-text-fill-color: currentColor;
 }
-.hero-name-glow { opacity: 0.65; }
+.hero-name-glow { opacity: 0.85; }
 .hero-portrait-frame { position: relative; }
 .hero-portrait-label,
 .hero-portrait-caption {
@@ -1390,7 +1255,6 @@ main > section[id]::before {
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
-.hero-portrait-label > :last-child { color: rgb(var(--brand)); font-size: 1rem; }
 .hero-portrait-caption { margin-top: 1.25rem; padding-top: 0.875rem; border-top: 1px solid rgb(var(--ink) / 0.16); }
 .hero-portrait-rail {
   border: 1px solid rgb(var(--brand) / 0.35);
@@ -1430,7 +1294,7 @@ main > section[id]::before {
   .hero-portrait-wrap { padding-right: 0.5rem; }
   .hero-portrait-label,
   .hero-portrait-caption { font-size: 0.6875rem; }
-  .hero-surface { padding-top: 4rem; padding-bottom: 6rem; }
+  .hero-surface { padding-top: 2rem; padding-bottom: 4rem; }
   .contact-section { padding-top: 5rem; padding-bottom: 5rem; }
 }
 @media (hover: hover) and (pointer: fine) {
@@ -1455,9 +1319,5 @@ main > section[id]::before {
   .hero-surface[data-hero-intro] .hero-portrait-curtain {
     animation-name: fade-enter;
     clip-path: none;
-  }
-  .hero-surface[data-hero-intro] .hero-chart[data-chart-ready] .hero-chart-line {
-    animation-name: fade-enter;
-    stroke-dashoffset: 0;
   }
 }

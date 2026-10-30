@@ -31,12 +31,13 @@ export default function Navbar() {
     // A section becomes current once its top passes this line. It sits
     // below the navbar's scroll-padding (5.5rem), so a section you jump to
     // from the menu lands *above* the line and lights up straight away.
-    // Sections that aren't menu items (Tools) simply keep the previous item
-    // active, and the last item takes over at the bottom of the page even
-    // if it is shorter than the viewport.
+    // Observe every top-level section, including those without a menu item.
+    // The last item takes over at the bottom even if shorter than the viewport.
     const PROBE_Y = 120;
-    const sectionIds = navItems.map((item) => item.hash.slice(1));
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("main > section[id]"));
+    const navHashes = new Set(navItems.map((item) => item.hash));
     let ticking = false;
+    let frame = 0;
     const update = () => {
       ticking = false;
       setScrolled(window.scrollY > 16);
@@ -44,25 +45,25 @@ export default function Navbar() {
         window.innerHeight + window.scrollY >=
         document.documentElement.scrollHeight - 2;
       if (atBottom) {
-        setActive(`#${sectionIds[sectionIds.length - 1]}`);
+        setActive("#contact");
         return;
       }
       let current = "#";
-      for (const id of sectionIds) {
-        const el = document.getElementById(id);
-        if (el && el.getBoundingClientRect().top <= PROBE_Y) current = `#${id}`;
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= PROBE_Y) current = `#${section.id}`;
       }
-      setActive(current);
+      setActive(navHashes.has(current) ? current : "#");
     };
     const onScroll = () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(update);
+      frame = requestAnimationFrame(update);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onScroll);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onScroll);
     };

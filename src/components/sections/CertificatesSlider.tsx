@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -18,6 +18,14 @@ import { useDialog } from "@/hooks/useDialog";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 
 const AUTOPLAY_MS = 4200;
+const COVERFLOW_MOTION = "(min-width: 768px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)";
+const subscribeCoverflowMotion = (onChange: () => void) => {
+  const media = window.matchMedia(COVERFLOW_MOTION);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+};
+const getCoverflowMotion = () => window.matchMedia(COVERFLOW_MOTION).matches;
+const getServerCoverflowMotion = () => false;
 
 function CertModal({
   cert,
@@ -117,6 +125,10 @@ export default function CertificatesSlider() {
   const [focused, setFocused] = useState(false);
   const [dragging, setDragging] = useState(false);
   const reduce = usePrefersReducedMotion();
+  const animateCoverflow = useSyncExternalStore(subscribeCoverflowMotion, getCoverflowMotion, getServerCoverflowMotion);
+  // One selection owns the image pose, caption, counter and pagination.
+  // CSS interpolates desktop poses; touch poses update in this same render.
+  const displayedCert = certifications[index];
   const [active, setActive] = useState<Certification | null>(null);
   const closeModal = useCallback(() => setActive(null), []);
   const wrapRef = useRef<HTMLDivElement | null>(null);
@@ -161,7 +173,7 @@ export default function CertificatesSlider() {
     >
       <div className="certificate-caption mb-5 flex items-center justify-between gap-4 border-b border-line pb-4 font-mono text-xs text-muted">
         <span>Professional credentials</span>
-        <span aria-label={`Certificate ${index + 1} of ${n}`}>
+        <span className="tabular-nums" aria-label={`Certificate ${index + 1} of ${n}`}>
           <span className="text-brand">{String(index + 1).padStart(2, "0")}</span> / {String(n).padStart(2, "0")}
         </span>
       </div>
@@ -169,10 +181,10 @@ export default function CertificatesSlider() {
         <motion.div
           // Let the card faces receive hits even behind the stage's Z=0 plane.
           // Their pointer events still bubble here to drive the shared drag.
-          className="certificate-coverflow pointer-events-none relative h-[320px] cursor-grab touch-pan-y px-5 sm:h-[300px] active:cursor-grabbing md:px-6"
+          className="certificate-coverflow pointer-events-none relative h-[220px] cursor-grab touch-pan-y px-5 sm:h-[240px] active:cursor-grabbing md:px-6"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={reduce ? 0 : 0.2}
+          dragElastic={animateCoverflow ? 0.2 : 0}
           dragMomentum={false}
           onPointerDownCapture={() => { didDrag.current = false; }}
           onPointerCancelCapture={() => { didDrag.current = true; }}
@@ -200,21 +212,17 @@ export default function CertificatesSlider() {
             const rotateY = isActive ? 0 : -Math.sign(offset) * 38;
 
             return (
-              <motion.div
+              <div
                 key={cert.name}
                 className="certificate-pose pointer-events-auto absolute left-1/2 top-1/2 w-[240px] sm:w-[280px]"
-                // CSS owns centering; initial=false serializes the resting pose
-                // so cards never stack at the stage's centre before hydration.
-                style={{ zIndex: 10 - abs, translate: "-50% -50%" }}
-                initial={false}
-                animate={{
-                  x: `${x}%`,
-                  z: depth,
-                  rotateY,
-                  scale,
+                // Serialize the complete pose for SSR and update it directly.
+                // An animation callback must never hold up mobile selection.
+                style={{
+                  zIndex: 10 - abs,
+                  translate: "-50% -50%",
+                  transform: `translateX(${x}%) translateZ(${depth}px) rotateY(${rotateY}deg) scale(${scale})`,
                   opacity,
                 }}
-                transition={reduce ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
               >
                 <div
                   className={`card interactive-card group relative block w-full overflow-hidden p-0 text-left ${
@@ -239,7 +247,7 @@ export default function CertificatesSlider() {
                     className="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand"
                   />
                   {cert.image ? (
-                    <div className="relative h-36 w-full">
+                    <div className="relative h-40 w-full sm:h-44">
                       <Image
                         src={cert.image}
                         alt={cert.name}
@@ -255,24 +263,26 @@ export default function CertificatesSlider() {
                       )}
                     </div>
                   ) : (
-                    <div className="m-5 mb-0 flex h-11 w-11 items-center justify-center rounded-lg bg-steel text-ink">
+                    <div className="flex h-40 w-full items-center justify-center bg-steel text-ink sm:h-44">
                       <Award size={20} strokeWidth={1.75} />
                     </div>
                   )}
-                  <div className="flex flex-col gap-1 p-5">
-                    <h3 className="text-sm font-semibold leading-snug text-ink">
-                      {cert.name}
-                    </h3>
-                    <p className="text-xs text-muted">{cert.issuer}</p>
-                    <span className="mt-2 font-mono text-xs font-medium text-muted">
-                      {cert.year}
-                    </span>
-                  </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </motion.div>
+      </div>
+
+      <div
+        className="mx-auto min-h-[5rem] max-w-sm px-3 text-center"
+        aria-live={paused || focused ? "polite" : "off"}
+        aria-atomic="true"
+      >
+        <h3 className="text-sm font-semibold leading-snug text-ink">{displayedCert.name}</h3>
+        <p className="mt-2 text-xs text-muted">
+          {displayedCert.issuer} <span aria-hidden="true">·</span> <span className="font-mono">{displayedCert.year}</span>
+        </p>
       </div>
 
       {/* Controls */}
@@ -281,23 +291,23 @@ export default function CertificatesSlider() {
           type="button"
           onClick={() => setPaused((value) => !value)}
           disabled={reduce}
-          className="card inline-flex items-center gap-2 px-3 py-2 text-xs text-ink disabled:cursor-default"
+          className="inline-flex min-h-11 items-center gap-2 rounded px-3 text-xs text-muted transition-colors hover:text-ink disabled:cursor-default"
         >
           {paused || reduce ? <Play size={14} aria-hidden="true" /> : <Pause size={14} aria-hidden="true" />}
           {reduce ? "Autoplay off (reduced motion)" : paused ? "Play autoplay" : "Pause autoplay"}
         </button>
       </div>
-      <div className="mt-4 flex items-center justify-center gap-4">
+      <div className="mt-2 flex items-center justify-center gap-2 sm:gap-4">
         <button
           type="button"
           onClick={prev}
           aria-label="Previous certificate"
-          className="card flex h-9 w-9 items-center justify-center text-ink hover:bg-ink/5"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5"
         >
           <ChevronLeft size={16} />
         </button>
 
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center">
           {certifications.map((cert, i) => (
             <button
               key={cert.name}
@@ -305,10 +315,10 @@ export default function CertificatesSlider() {
               onClick={() => setIndex(i)}
               aria-label={`Go to ${cert.name}`}
               aria-current={i === index}
-              className="p-1.5"
+              className="flex h-11 w-8 items-center justify-center rounded"
             >
               <span
-                className={`block h-1.5 w-5 rounded-full transition-transform ${
+                className={`block h-1.5 w-5 rounded-full ${
                   i === index ? "bg-brand" : "bg-ink/25"
                 }`}
                 style={{ transform: `scaleX(${i === index ? 1 : 0.3})` }}
@@ -321,7 +331,7 @@ export default function CertificatesSlider() {
           type="button"
           onClick={next}
           aria-label="Next certificate"
-          className="card flex h-9 w-9 items-center justify-center text-ink hover:bg-ink/5"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink transition-colors hover:bg-ink/5"
         >
           <ChevronRight size={16} />
         </button>

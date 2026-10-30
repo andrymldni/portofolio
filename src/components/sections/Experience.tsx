@@ -1,10 +1,11 @@
 "use client";
-import { useRef, useState, type CSSProperties, type RefObject } from "react";
-import { motion, useScroll, useTransform, type MotionStyle, type MotionValue } from "framer-motion";
+import { useEffect, useRef, useState, type CSSProperties, type RefObject } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform, type MotionStyle, type MotionValue } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { experience, type ExperienceEntry } from "@/lib/data";
 import { VIEWPORT } from "@/components/ui/Reveal";
 import { useProgressiveEntrance } from "@/hooks/useProgressiveEntrance";
+import { useDesktopMotion } from "@/hooks/usePointerSurface";
 import DecodeTitle from "@/components/ui/DecodeTitle";
 import styles from "./Experience.module.css";
 
@@ -22,13 +23,33 @@ function ExperienceItem({
   scrollYProgress: MotionValue<number>;
 }) {
   const [open, setOpen] = useState(false);
+  const desktopMotion = useDesktopMotion();
   const ref = useRef<HTMLLIElement | null>(null);
   useProgressiveEntrance(ref, false, true, VIEWPORT.margin);
+
+  useEffect(() => {
+    const item = ref.current;
+    if (!item) return;
+    // Long expanded cards must be able to scroll fully past the navbar.
+    // Only layout changes are measured; touch scrolling stays CSS-only.
+    const measure = () => {
+      const top = window.innerWidth >= 768 ? 96 + index * 32 : 88 + index * 16;
+      item.dataset.stackStatic = String(item.offsetHeight > window.innerHeight - top - 24);
+    };
+    const observer = new ResizeObserver(measure);
+    observer.observe(item);
+    window.addEventListener("resize", measure);
+    measure();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [index]);
 
   const progress = useTransform(scrollYProgress, (value) => {
     const item = ref.current;
     const timeline = timelineRef.current;
-    if (!item || !timeline || isLast) return 0;
+    if (!desktopMotion || window.innerWidth < 768 || !item || !timeline || isLast || item.dataset.stackStatic === "true") return 0;
 
     // Measure normal-flow heights, not sticky offsetTop (which moves on scroll).
     // Reading current heights also accommodates expanded bullets and wrapping.
@@ -38,10 +59,10 @@ function ExperienceItem({
       top += previous.offsetHeight;
       previous = previous.previousElementSibling;
     }
-    const distance = value * timeline.clientHeight - (top - index * 24);
-    return Math.min(1, Math.max(0, distance / Math.max(1, item.offsetHeight - 24)));
+    const distance = value * timeline.clientHeight - (top - index * 32);
+    return Math.min(1, Math.max(0, distance / Math.max(1, item.offsetHeight - 32)));
   });
-  const scale = useTransform(progress, [0, 1], [1, 0.94]);
+  const scale = useTransform(progress, [0, 1], [1, 1 - (experience.length - index - 1) * 0.045]);
   const brightness = useTransform(progress, [0, 1], [1, 0.84]);
 
   const current = /\bPresent\b/i.test(entry.period);
@@ -52,6 +73,7 @@ function ExperienceItem({
     <li
       ref={ref}
       data-experience-reveal
+      data-experience-item={index}
       className={`${styles.item} relative pb-10 pl-8 last:pb-0`}
       style={{ "--stack-index": index } as CSSProperties}
     >
@@ -131,15 +153,36 @@ function ExperienceItem({
 
 export default function Experience() {
   const timelineRef = useRef<HTMLOListElement | null>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const { scrollYProgress } = useScroll({
     target: timelineRef,
     offset: ["start 96px", "end 96px"],
   });
 
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    const timeline = timelineRef.current;
+    if (!timeline || window.innerWidth < 1024) return;
+    const focusedItem = document.activeElement?.closest<HTMLElement>("[data-experience-item]");
+    if (focusedItem && timeline.contains(focusedItem)) {
+      setActiveIndex(Number(focusedItem.dataset.experienceItem));
+      return;
+    }
+    // Use normal-flow heights: sticky rectangles all converge at the top.
+    const readingLine = value * timeline.clientHeight + window.innerHeight * 0.35 - 96;
+    let top = 0;
+    let current = 0;
+    Array.from(timeline.children).forEach((item, index) => {
+      if (!(item instanceof HTMLElement)) return;
+      if (top <= readingLine) current = index;
+      top += item.offsetHeight;
+    });
+    setActiveIndex(current);
+  });
+
   return (
     <section id="experience" className="relative py-12 md:py-16">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1.5fr)] lg:gap-14">
-        <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className={`${styles.sidebar} lg:sticky lg:top-24 lg:self-start`}>
           <p className="section-kicker mb-4">
             <span aria-hidden="true" className="h-px w-6 bg-brand" />
             02 / Experience
@@ -157,9 +200,33 @@ export default function Experience() {
           <p className="mt-6 font-mono text-xs font-medium uppercase tracking-[0.12em] text-muted">
             {experience.length} roles
           </p>
+          <ol className={styles.roleIndex} aria-label="Roles in this timeline">
+            {experience.map((entry, index) => (
+              <li
+                key={`${entry.org}-${entry.period}`}
+                className={styles.roleSummary}
+                aria-current={activeIndex === index ? "step" : undefined}
+              >
+                <span className={styles.roleNumber} aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <div>
+                  <p className={styles.roleTitle}>{entry.role}</p>
+                  <p className={styles.roleOrg}>{entry.org}</p>
+                  <p className={styles.rolePeriod}>{entry.period}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
 
-        <ol ref={timelineRef} className="relative isolate min-w-0 md:pb-[20vh]" aria-label="Work experience timeline">
+        <ol
+          ref={timelineRef}
+          className={`${styles.timeline} relative isolate min-w-0`}
+          aria-label="Work experience timeline"
+          onFocusCapture={(event) => {
+            const item = event.target.closest<HTMLElement>("[data-experience-item]");
+            if (item) setActiveIndex(Number(item.dataset.experienceItem));
+          }}
+        >
           {experience.map((entry, index) => (
             <ExperienceItem
               key={`${entry.role}-${entry.org}-${entry.period}`}
